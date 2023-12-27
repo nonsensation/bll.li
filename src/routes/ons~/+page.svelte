@@ -86,5 +86,5 @@
 <script lang="ts">
 	import GameCard from './GameCard.svelte';
 
-	export let data../ons~Regio/$types.js;
+	export let data;
 </script>
