@@ -12,7 +12,7 @@ import type { GameCard } from '$lib/types'
 
 export async function load( loadEvent: LoadEvent )
 {
-    const { fetch , setHeaders } = loadEvent
+    const { fetch, setHeaders } = loadEvent
 
     const upcomingGamesCount = 1
     const finishedGamesCount = 2
@@ -26,7 +26,19 @@ export async function load( loadEvent: LoadEvent )
     const _g = games_regio[ 0 ]
     const _logoUrl = SM.UrlBuilder.getLogoUrl( _g.matchResult.guest_team_logo )
     console.log( _logoUrl )
-    const _logoResponse = await fetch( _logoUrl )
+
+    try
+    {
+        const _logoResponse = await fetch( _logoUrl )
+        console.log( "SUCCESS" )
+        console.log( JSON.stringify( _logoResponse ) )
+
+    }
+    catch( error )
+    {
+        console.log( "ERROR" )
+        console.log( error )
+    }
 
     debugger
 
@@ -53,7 +65,7 @@ export async function load( loadEvent: LoadEvent )
     }
 }
 
-async function prepareGames( fetch: LoadEvent[ "fetch" ], leagueId: number, upcomingGamesCount: number , finishedGamesCount: number, teamName: string )
+async function prepareGames( fetch: LoadEvent[ "fetch" ], leagueId: number, upcomingGamesCount: number, finishedGamesCount: number, teamName: string )
     : Promise<GameCard[]>
 {
     const currentDateStr = new Date().toISOString().split( 'T' )[ 0 ] // 2023-12-27T09:57:34.671Z
@@ -83,8 +95,8 @@ async function prepareGames( fetch: LoadEvent[ "fetch" ], leagueId: number, upco
         finishedGames = finishedGames.slice( 0, finishedGamesCount )
 
     const gs = [
-        ...upcomingGames ,
-        ...finishedGames ,
+        ...upcomingGames,
+        ...finishedGames,
     ]
 
     const gameCards = gs.map( game => ( {
