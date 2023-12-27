@@ -39,8 +39,8 @@
 </style>
 
 <svelte:head>
-	<title>Regio</title>
-	<meta name="description" content="Regio" />
+	<title>Black Lions Landsberg</title>
+	<meta name="description" content="Black Lions Landsberg - Floorball Verein" />
 </svelte:head>
 
 <div class="content">
@@ -86,5 +86,5 @@
 <script lang="ts">
 	import GameCard from './GameCard.svelte';
 
-	export let data;
+	export let data../ons~Regio/$types.js;
 </script>
