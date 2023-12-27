@@ -25,6 +25,7 @@ export async function load( loadEvent: LoadEvent )
 
     const _g = games_regio[ 0 ]
     const _logoUrl = SM.UrlBuilder.getLogoUrl( _g.matchResult.guest_team_logo )
+
     console.log( _logoUrl )
 
     try
