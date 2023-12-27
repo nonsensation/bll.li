@@ -18,7 +18,7 @@ export async function cachedFetch<T>( loadEvent: LoadEvent, url: string, expirat
     {
         const cachedText = await redis.get( url )
 
-        if( false && cachedText )
+        if( cachedText )
         {
             console.log( "CACHE HIT for: " + url )
 
@@ -26,7 +26,7 @@ export async function cachedFetch<T>( loadEvent: LoadEvent, url: string, expirat
 
             const ttl = await redis.ttl( url )
 
-            setHeaders( { 'cache-control': `max-age=${ ttl }` } )
+            // setHeaders( { 'cache-control': `max-age=${ ttl }` } )
         }
         else
         {
@@ -62,12 +62,11 @@ export async function cachedFetch<T>( loadEvent: LoadEvent, url: string, expirat
         return jsonData as T
 
     }
-    catch( error )
+    catch( err: any  )
     {
-        console.error( "error" )
-        console.error( error )
+        console.error( err )
 
-        return {} as T
+        error( 500 , "Error!" )
     }
 }
 

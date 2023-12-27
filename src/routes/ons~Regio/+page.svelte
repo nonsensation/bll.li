@@ -2,11 +2,12 @@
 	section.matches {
 		display: grid;
 		grid-auto-flow: row;
-		align-content: start;
+		align-content: space-around;
 		gap: 1em;
 		overflow-y: scroll;
 		padding: var(--gap);
 		margin: var(--gap) 0;
+		/* width: 100%; */
 	}
 
 	.content {
@@ -14,10 +15,7 @@
 		flex-direction: row;
 		gap: 1rem;
 		padding: 1rem;
-		/* height: 100vh;
-		height: 100%; */
-		justify-self: stretch;
-		align-self: stretch;
+		justify-content: center;
 	}
 
 	section.teamfoto {
@@ -46,17 +44,22 @@
 </svelte:head>
 
 <div class="content">
-	<section class="teamfoto">
-		<img
-			src="https://reddevils.org/wp-content/uploads/2018/11/pokal_runde3_vs_landsberg.jpg"
-			alt="Teamfoto"
-		/>
-	</section>
-
 	<section class="matches">
 		{#await data}
 			<span>Lade Spiele...</span>
 		{:then data}
+
+			{#if data.liveGames.length > 0}
+				<span class="title">LIVE</span>
+				{#each data.liveGames as gameCard}
+					<GameCard {gameCard}></GameCard>
+				{/each}
+			{/if}
+
+			{#if data.liveGames.length > 0 && (data.finishedGames.length > 0 || data.upcomingGames.length > 0)}
+				<div class="hline"></div>
+			{/if}
+
 			{#if data.upcomingGames.length > 0}
 				<span class="title">Kommende Spiele</span>
 				{#each data.upcomingGames as gameCard}

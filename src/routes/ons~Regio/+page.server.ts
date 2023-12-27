@@ -8,38 +8,73 @@ import { LeagueId_Regio, LeagueId_u11_1, LeagueId_u11_2 } from '$lib/Saisonmange
 import type { LoadEvent } from '@sveltejs/kit'
 import type { GameCard } from '$lib/types'
 import { cachedFetch } from '$lib/server/redis'
+import type { MatchReport } from 'floorball-saisonmanager/lib/Saisonmanager/Match'
 
 
-const expirationTime = 60
+const expirationTime = 60 * 60
 
 
 export async function load( loadEvent: LoadEvent )
 {
     const { fetch, setHeaders } = loadEvent
 
-    const upcomingGamesCount = 1
-    const finishedGamesCount = 1
+    const upcomingGamesCount = 2
+    const finishedGamesCount = 3
     const teamName = "Black Lions Landsberg"
 
     const games_regio = await prepareGames( loadEvent, LeagueId_Regio, upcomingGamesCount, finishedGamesCount, teamName )
     const games_u11_1 = await prepareGames( loadEvent, LeagueId_u11_1, upcomingGamesCount, finishedGamesCount, teamName )
     const games_u11_2 = await prepareGames( loadEvent, LeagueId_u11_2, upcomingGamesCount, finishedGamesCount, teamName )
 
-    const upcomingGames = games_regio.filter( g => g.isUpcoming )
-        .concat( games_u11_1.filter( g => g.isUpcoming ) )
-        .concat( games_u11_2.filter( g => g.isUpcoming ) )
-        .sort( ( gc1, gc2 ) => gc1.matchResult.date.localeCompare( gc2.matchResult.date ) )
+    const gameCardSorter = ( a: GameCard , b: GameCard ) => matchResultSorter( a.matchResult, b.matchResult )
 
-    const finishedGames = games_regio.filter( g => !g.isUpcoming )
-        .concat( games_u11_1.filter( g => !g.isUpcoming ) )
-        .concat( games_u11_2.filter( g => !g.isUpcoming ) )
-        .sort( ( gc1, gc2 ) => gc1.matchResult.date.localeCompare( gc2.matchResult.date ) )
+    const liveGames = [
+        ...games_regio.filter( g => g.isToday ),
+        ...games_u11_1.filter( g => g.isToday ),
+        ...games_u11_2.filter( g => g.isToday ),
+    ].sort( gameCardSorter )
+
+    // debug
+    // const liveGames = [
+    //     ...games_regio.filter( g => g.matchResult.date === "2024-01-13" ),
+    //     ...games_u11_1.filter( g => g.matchResult.date === "2024-01-13" ),
+    //     ...games_u11_2.filter( g => g.matchResult.date === "2024-01-13" ),
+    // ].sort( gameCardSorter )
+    // for( let g of liveGames )
+    // {
+    //     g.isToday = true
+    // }
+
+    const upcomingGames = [
+        ...games_regio.filter( g => g.isUpcoming ),
+        ...games_u11_1.filter( g => g.isUpcoming ),
+        ...games_u11_2.filter( g => g.isUpcoming ),
+    ].sort( gameCardSorter )
+
+    const finishedGames = [
+        ...games_regio.filter( g => !g.isUpcoming ),
+        ...games_u11_1.filter( g => !g.isUpcoming ),
+        ...games_u11_2.filter( g => !g.isUpcoming ),
+    ].sort( gameCardSorter )
         .toReversed()
 
     return {
+        liveGames,
         upcomingGames,
         finishedGames,
     }
+}
+
+const matchResultSorter = ( a: SM.MatchResult, b: SM.MatchResult ): number =>
+{
+    const dateComparison = a.date.localeCompare( b.date )
+
+    if( dateComparison != 0 )
+        return dateComparison
+
+    const timeComparison = a.time.localeCompare( b.time )
+
+    return timeComparison
 }
 
 async function getImage( loadEvent: LoadEvent, imgUrl: string ): Promise<string | null>
@@ -77,11 +112,13 @@ async function prepareGames( loadEvent: LoadEvent, leagueId: number, upcomingGam
 
     const filteredGames = games.filter( g => g.home_team_name === teamName || g.guest_team_name === teamName )
 
-    let upcomingGames = filteredGames.filter( g => g.date.localeCompare( currentDateStr ) >= 0 )
+    let liveGames = filteredGames.filter( g => g.date.localeCompare( currentDateStr ) == 0 )
+    let upcomingGames = filteredGames.filter( g => g.date.localeCompare( currentDateStr ) > 0 )
     let finishedGames = filteredGames.filter( g => g.date.localeCompare( currentDateStr ) < 0 )
 
-    upcomingGames = upcomingGames.sort( ( g1, g2 ) => g1.date.localeCompare( g2.date ) )
-    finishedGames = finishedGames.sort( ( g1, g2 ) => g1.date.localeCompare( g2.date ) )
+    liveGames = liveGames.sort( matchResultSorter )
+    upcomingGames = upcomingGames.sort( matchResultSorter )
+    finishedGames = finishedGames.sort( matchResultSorter )
 
     finishedGames.reverse()
 
@@ -93,6 +130,7 @@ async function prepareGames( loadEvent: LoadEvent, leagueId: number, upcomingGam
 
     const gs = [
         ...upcomingGames,
+        ...liveGames,
         ...finishedGames,
     ]
 
