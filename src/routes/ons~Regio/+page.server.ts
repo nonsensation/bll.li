@@ -3,11 +3,14 @@
 export const prerender = true
 
 
-
 import { SM } from 'floorball-saisonmanager'
 import { LeagueId_Regio, LeagueId_u11_1, LeagueId_u11_2 } from '$lib/Saisonmanger'
 import type { LoadEvent } from '@sveltejs/kit'
 import type { GameCard } from '$lib/types'
+import { cachedFetch } from '$lib/server/redis'
+
+
+const expirationTime = 60
 
 
 export async function load( loadEvent: LoadEvent )
@@ -15,39 +18,12 @@ export async function load( loadEvent: LoadEvent )
     const { fetch, setHeaders } = loadEvent
 
     const upcomingGamesCount = 1
-    const finishedGamesCount = 2
+    const finishedGamesCount = 1
     const teamName = "Black Lions Landsberg"
 
-    const games_regio = await prepareGames( fetch, LeagueId_Regio, upcomingGamesCount, finishedGamesCount, teamName )
-    const games_u11_1 = await prepareGames( fetch, LeagueId_u11_1, upcomingGamesCount, finishedGamesCount, teamName )
-    const games_u11_2 = await prepareGames( fetch, LeagueId_u11_2, upcomingGamesCount, finishedGamesCount, teamName )
-
-
-    const _g = games_regio[ 0 ]
-    const _logoUrl = SM.UrlBuilder.getLogoUrl( _g.matchResult.guest_team_logo )
-
-    console.log( _logoUrl )
-
-    try
-    {
-        const _logoResponse = await fetch( _logoUrl )
-        console.log( "SUCCESS" )
-        console.log( JSON.stringify( _logoResponse ) )
-
-    }
-    catch( error )
-    {
-        console.log( "ERROR" )
-        console.log( error )
-    }
-
-    debugger
-
-
-
-
-
-
+    const games_regio = await prepareGames( loadEvent, LeagueId_Regio, upcomingGamesCount, finishedGamesCount, teamName )
+    const games_u11_1 = await prepareGames( loadEvent, LeagueId_u11_1, upcomingGamesCount, finishedGamesCount, teamName )
+    const games_u11_2 = await prepareGames( loadEvent, LeagueId_u11_2, upcomingGamesCount, finishedGamesCount, teamName )
 
     const upcomingGames = games_regio.filter( g => g.isUpcoming )
         .concat( games_u11_1.filter( g => g.isUpcoming ) )
@@ -66,18 +42,38 @@ export async function load( loadEvent: LoadEvent )
     }
 }
 
-async function prepareGames( fetch: LoadEvent[ "fetch" ], leagueId: number, upcomingGamesCount: number, finishedGamesCount: number, teamName: string )
+async function getImage( loadEvent: LoadEvent, imgUrl: string ): Promise<string | null>
+{
+    const { fetch, setHeaders } = loadEvent
+    const logoUrl = SM.UrlBuilder.getLogoUrl( imgUrl )
+
+    try
+    {
+        const logoResponse = await fetch( `/proxy?url=${ encodeURIComponent( logoUrl ) }` )
+        const imgData = await logoResponse.arrayBuffer()
+        const buffer = Buffer.from( imgData )
+
+        return "data:image/*;base64," + buffer.toString( 'base64' )
+    }
+    catch( error )
+    {
+        console.error( error )
+    }
+
+    return null
+}
+
+async function prepareGames( loadEvent: LoadEvent, leagueId: number, upcomingGamesCount: number, finishedGamesCount: number, teamName: string )
     : Promise<GameCard[]>
 {
+    const { fetch, setHeaders } = loadEvent
     const currentDateStr = new Date().toISOString().split( 'T' )[ 0 ] // 2023-12-27T09:57:34.671Z
 
     const leagueUrl = SM.UrlBuilder.getLeagueUrl( leagueId )
-    const leagueResponse = await fetch( leagueUrl )
-    const league: SM.League = await leagueResponse.json()
+    const league: SM.League = await cachedFetch( loadEvent, leagueUrl, expirationTime )
 
     const gamesUrl = SM.UrlBuilder.getMatchSheduleUrl( leagueId )
-    const gamesResponse = await fetch( gamesUrl )
-    const games: SM.MatchResult[] = await gamesResponse.json()
+    const games: SM.MatchResult[] = await cachedFetch( loadEvent, gamesUrl, expirationTime )
 
     const filteredGames = games.filter( g => g.home_team_name === teamName || g.guest_team_name === teamName )
 
@@ -100,13 +96,25 @@ async function prepareGames( fetch: LoadEvent[ "fetch" ], leagueId: number, upco
         ...finishedGames,
     ]
 
-    const gameCards = gs.map( game => ( {
-        league,
-        matchResult: game,
-        isUpcoming: game.date.localeCompare( currentDateStr ) > 0,
-        isToday: game.date.localeCompare( currentDateStr ) == 0,
-        isFinished: game.date.localeCompare( currentDateStr ) < 0,
-    } as GameCard ) )
+    let gameCards: GameCard[] = []
+
+    for( const game of gs )
+    {
+        // const imgDataLogoHome = await getImage( loadEvent, game.guest_team_logo )
+        // const imgDataLogoGuest = await getImage( loadEvent, game.home_team_logo )
+
+        const gameCard = {
+            league,
+            matchResult: game,
+            isUpcoming: game.date.localeCompare( currentDateStr ) > 0,
+            isToday: game.date.localeCompare( currentDateStr ) == 0,
+            isFinished: game.date.localeCompare( currentDateStr ) < 0,
+            // imgDataLogoHome,
+            // imgDataLogoGuest,
+        } as GameCard
+
+        gameCards.push( gameCard )
+    }
 
     return gameCards
 }

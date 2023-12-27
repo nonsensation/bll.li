@@ -8,5 +8,7 @@ export interface GameCard
     isUpcoming: boolean
     isToday: boolean
     isFinished: boolean
+    imgDataLogoHome?: string
+    imgDataLogoGuest?: string
 }
 

@@ -1,4 +1,4 @@
-<style>
+<style lang="postcss">
 	section.matches {
 		display: grid;
 		grid-auto-flow: row;
