@@ -21,6 +21,7 @@
         border-radius: var(--border-radius);
         box-shadow: var(--shadow);
         /* margin: 1rem; */
+
     }
 </style>
 

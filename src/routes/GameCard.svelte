@@ -6,12 +6,12 @@
             border-radius: var(--border-radius);
             text-decoration: none;
             outline: 2px solid var(--color-text-highlight);
-            border: 1px solid transparent;
+            /* border: 1px solid transparent; */
         }
 
         border-radius: var(--border-radius);
         padding: 0.25em;
-        background-color: var(--color-bg);
+        background-color: var(--color-bg-tile);
         box-shadow: var(--shadow);
         /* border: 1px solid gainsboro; */
 
@@ -19,6 +19,8 @@
             border-radius: var(--border-radius);
             padding: 0.25em;
         }
+
+        min-width: 30vw;
     }
 
     .isToday {
@@ -41,6 +43,7 @@
         justify-self: center;
         display: grid;
         font-size: 0.8rem;
+        text-align: center;
 
         .league {
             color: var(--color-text-highlight);

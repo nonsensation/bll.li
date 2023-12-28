@@ -14,9 +14,10 @@
 
     --color-text: black;
     --color-text-highlight: crimson;
-    --color-bg-frame: rgb(220, 220, 220);
-    --color-bg: white;
-    --color-shadow: black;
+    --color-bg-frame: rgb(247, 247, 247);
+    --color-bg: rgb(255, 255, 255);
+    --color-bg-tile: rgb(255, 255, 255);
+    --color-shadow: rgb(160, 160, 160);
 
     --border-radius: 0.25rem;
     --gap: 0.5rem;
