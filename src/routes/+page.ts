@@ -68,15 +68,37 @@ async function cachedFetch<T>( loadEvent: LoadEvent, url: string, expirationTime
 {
     const { fetch } = loadEvent
 
-    const smUrl = getSmJsonUrl( url , true )
+    const smUrl = getSmJsonUrl( url, true )
 
     const response = await fetch( smUrl )
 
-    console.assert( response.ok , `response failed for smUrl: ${smUrl}` )
+    console.assert( response.ok, `response failed for smUrl: ${ smUrl }` )
 
-    const jsonData = await response.json() as T
+    const textData = await response.text()
 
-    return jsonData
+    try
+    {
+        const jsonData = JSON.parse( textData )
+
+        const typeData = jsonData as T
+
+        return typeData
+    }
+    catch( err )
+    {
+        if( err instanceof SyntaxError )
+        {
+            console.error( err )
+            console.error( "SyntaxError: " + textData )
+        }
+        else
+        {
+            console.error( err )
+            console.error( textData )
+        }
+    }
+
+    return {} as T
 }
 
 async function prepareGames(
