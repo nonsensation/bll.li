@@ -68,11 +68,17 @@ async function cachedFetch<T>( loadEvent: LoadEvent, url: string, expirationTime
 {
     const { fetch } = loadEvent
 
-    const smUrl = getSmJsonUrl( url, true )
+    // const smUrl = getSmJsonUrl( url, true )
+    const smUrl = url
 
     const response = await fetch( smUrl )
 
-    console.assert( response.ok, `response failed for smUrl: ${ smUrl }` )
+    if( !response.ok )
+    {
+        console.error( `response failed for smUrl: ${ smUrl }` )
+
+        return {} as T
+    }
 
     const textData = await response.text()
 
