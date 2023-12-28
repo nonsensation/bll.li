@@ -1,6 +1,3 @@
-// since there's no dynamic data here, we can prerender
-// it so that it gets served as a static asset in production
-export const prerender = true
 
 import { SM } from 'floorball-saisonmanager'
 import { LeagueId_Regio, LeagueId_u11_1, LeagueId_u11_2, LeagueId_u15, getSmJsonUrl, getSmUrl } from '$lib/Saisonmanger'
