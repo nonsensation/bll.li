@@ -1,40 +1,35 @@
 <style>
-	.app {
-		display: flex;
-		flex-direction: column;
+    .app {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
 
-		display: grid;
-		grid-template-columns: 1fr;
-		align-items: stretch;
-		justify-items: stretch;
+        color: var(--color-text);
+        background-color: var(--color-bg-frame);
+        padding: 1rem;
+    }
 
-		height: 100%;
+    main {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        /* max-height: 100vh; */
 
-		width: 100%;
-
-		background: var(--color-bg);
-		border-radius: var(--border-radius);
-		box-shadow: var(--shadow);
-		/* margin: 1.5rem; */
-	}
-
-	main {
-		display: grid;
-		grid-template-columns: 1fr;
-		align-items: stretch;
-		justify-items: stretch;
-
-		height: 100%;
-	}
-
+        background: var(--color-bg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        /* margin: 1rem; */
+    }
 </style>
 
 <div class="app">
-	<main>
-		<slot />
-	</main>
+    <main>
+        <slot />
+    </main>
 </div>
 
 <script>
-	import './styles.css';
+    import './styles.css';
 </script>

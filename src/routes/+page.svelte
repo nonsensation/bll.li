@@ -1,11 +1,11 @@
-<script lang="ts">
-</script>
+<style lang="postcss">
+</style>
 
 <svelte:head>
-	<title>Black Lions Landsberg</title>
-	<meta name="description" content="Black Lions Landsberg - Floorball Verein" />
-	<meta http-equiv="refresh" content="0; url=/ons~">
+    <title>Black Lions Landsberg</title>
+    <meta name="description" content="Black Lions Landsberg - Floorball Verein" />
+    <meta http-equiv="refresh" content="0; url=/ons~" />
 </svelte:head>
 
-<style>
-</style>
+<script lang="ts">
+</script>
