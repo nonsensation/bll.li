@@ -2,15 +2,18 @@
     .gamecard {
         font-family: 'Quantico';
 
-        position: relative;
-        display: grid;
-        grid-template-rows: auto 1fr;
         border-radius: var(--border-radius);
         border: 1px solid gainsboro;
 
         --bg: linear-gradient(180deg, #501b1b 0, #000000);
         --bg: url(https://www.fcbarcelona.com/resources/v2.82.2-5582/i/bg-elements/stripes-horizontal-fade.png);
         box-shadow: var(--shadow);
+    }
+
+    .content {
+        display: grid;
+        align-items: stretch;
+        height: 100%;
     }
 
     a {
@@ -183,10 +186,14 @@
     .isFinished {
         /* outline: 2px solid goldenrod; */
     }
+
+    .btn-gamecard {
+        height: 100%;
+    }
 </style>
 
 <div
-    id="{game.gameId.toString()}"
+    id={game.gameId.toString()}
     class="gamecard"
     class:isUpcoming={game.isUpcoming}
     class:isLive={game.isLive}
