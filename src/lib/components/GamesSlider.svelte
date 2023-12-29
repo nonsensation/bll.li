@@ -25,6 +25,7 @@
     ul {
         li {
             display: flex;
+            height: 100%;
         }
 
         /* writing-mode changes padding-right...*/
