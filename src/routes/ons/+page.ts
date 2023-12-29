@@ -10,6 +10,7 @@ const expirationTime = 60 * 60
 
 export async function load( loadEvent: LoadEvent )
 {
+    console.log("START")
     const upcomingGamesCount = 1
     const finishedGamesCount = 3
     const teamName = 'Black Lions Landsberg'
@@ -25,6 +26,8 @@ export async function load( loadEvent: LoadEvent )
         ...games_u11_2,
         ...games_u15,
     ].sort( gameCardSorter )
+
+    console.log( JSON.stringify( games ) )
 
     const liveGames = games.filter( ( g ) => g.isToday )
     const todayGames = games.filter( ( g ) => g.isToday )
@@ -151,7 +154,6 @@ async function prepareGames(
         // const imgDataLogoGuest = await getImage( loadEvent, game.home_team_logo )
 
         const gameCard = {
-            gameId: game.game_id,
             leagueId: league.id,
             leagueSlug: league.game_operation_slug,
             leagueName: league.name,
@@ -170,7 +172,7 @@ async function prepareGames(
             nameGuest: game.guest_team_name,
         } as GameCardInfo
 
-        // console.log( gameCard )
+        console.log( gameCard )
 
         gameCards.push( gameCard )
     }

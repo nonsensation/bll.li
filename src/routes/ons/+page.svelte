@@ -111,11 +111,8 @@
 
 <script lang="ts">
     import GamesSlider from '$lib/components/GamesSlider.svelte';
-    import { onMount } from 'svelte';
 
     // this gets renamed when I rename the route folder..
     //export let data../ons/$types.js;
     export let data;
-
-
 </script>

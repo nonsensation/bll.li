@@ -7,6 +7,7 @@
 
         color: var(--color-text);
         background-color: var(--color-bg-frame);
+        background-color: gainsboro;
         padding: 1rem;
     }
 
@@ -21,7 +22,7 @@
         border-radius: var(--border-radius);
         box-shadow: var(--shadow);
         /* margin: 1rem; */
-
+        /* background: white url('http://assets.iceable.com/img/noise-transparent.png') repeat 0 0; */
     }
 </style>
 
