@@ -357,6 +357,7 @@
                         class="logo"
                         decoding="async"
                         loading="lazy"
+                        in:fade
                     />
                     <div class="name">{game.nameGuest}</div>
                 </div>
@@ -369,6 +370,7 @@
     import type { GameCardInfo } from '$lib/types';
     import { SM } from 'floorball-saisonmanager';
     import moment from 'moment';
+    import { fade } from 'svelte/transition';
 
     export let game: GameCardInfo;
 
