@@ -8,13 +8,12 @@
         scroll-snap-align: center;
         scroll-snap-type: x mandatory;
 
-        max-width: 80vw;
         display: flex;
         flex-direction: row;
         list-style: none;
         gap: 1rem;
         overflow: scroll;
-        padding: 3rem;
+        padding: 1rem;
 
         border-radius: var(--border-radius);
         box-shadow: inset var(--shadow);

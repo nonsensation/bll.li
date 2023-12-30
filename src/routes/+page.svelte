@@ -20,21 +20,10 @@
         position: relative;
     }
 
-    .matches {
-        z-index: 2;
-        display: grid;
-        /* grid-auto-flow: column; */
-        gap: 2em;
-        padding: calc(2 * var(--gap));
-        overflow: scroll;
-        max-height: 60vh;
-        max-width: 60vh;
-        /* overflow-y: scroll; */
-        /* overflow-x: hidden; */
-        /* border-top: 0.2rem dashed lightgrey;
-        border-bottom: 0.2rem dashed lightgrey; */
-
-        /* backdrop-filter: blur(10px); */
+    .gamesSlider {
+        padding: 1rem;
+        width: 100%;
+        overflow-y: scroll;
     }
 
     .hline {
@@ -46,7 +35,7 @@
         text-align: center;
         font-weight: bold;
         font-size: 2rem;
-        padding: 2rem 0;
+        padding: 1rem 0;
         /* filter: drop-shadow(0 0 1rem var(--color-shadow)); */
 
         &.live {
@@ -105,7 +94,7 @@
     {#await data}
         <span>Loading Games...</span>
     {:then data}
-        <GamesSlider {...data} />
+        <div class="gamesSlider"><GamesSlider {...data} /></div>
     {/await}
 </div>
 
@@ -116,6 +105,4 @@
     // this gets renamed when I rename the route folder..
     //export let data../ons/$types.js;
     export let data;
-
-
 </script>

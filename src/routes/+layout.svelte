@@ -8,7 +8,7 @@
         color: var(--color-text);
         background-color: var(--color-bg-frame);
         background-color: gainsboro;
-        padding: 1rem;
+        /* padding: 1rem; */
     }
 
     main {

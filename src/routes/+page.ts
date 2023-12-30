@@ -11,7 +11,7 @@ const expirationTime = 60 * 60
 export async function load( loadEvent: LoadEvent )
 {
     const upcomingGamesCount = 1
-    const finishedGamesCount = 3
+    const finishedGamesCount = 1
     const teamName = 'Black Lions Landsberg'
 
     const games_regio = await prepareGames( loadEvent, LeagueId_Regio, upcomingGamesCount, finishedGamesCount, teamName )

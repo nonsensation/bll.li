@@ -1,5 +1,7 @@
 <style lang="postcss">
     .gamecard {
+        margin: 0.5rem;
+
         font-family: 'Quantico';
 
         border-radius: var(--border-radius);
@@ -7,28 +9,24 @@
 
         --bg: linear-gradient(180deg, #501b1b 0, #000000);
         --bg: url(https://www.fcbarcelona.com/resources/v2.82.2-5582/i/bg-elements/stripes-horizontal-fade.png);
+        --bg: url('$lib/bg-stripes-45.png');
         box-shadow: var(--shadow);
+
+        width: 100%;
+        width: 30rem;
+        max-width: 80vw;
+        min-width: 230px;
     }
 
     .content {
         display: grid;
+        grid-template-rows: 1fr 3fr;
         align-items: stretch;
         height: 100%;
     }
 
     a {
         border-radius: var(--border-radius);
-    }
-
-    .grid {
-        display: grid;
-        padding: 0.5rem;
-    }
-
-    .grid-col-3 {
-        grid-auto-flow: column;
-        grid-template-columns: 1fr 1fr 1fr;
-        align-items: center;
     }
 
     .grid-row-2 {
@@ -38,10 +36,10 @@
 
     header {
         display: grid;
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: auto auto 1fr;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 0.75rem;
+        gap: 0.25rem;
+        padding: 0.25rem 0.5rem;
         color: rgb(255, 255, 255);
         background-color: rgb(0, 0, 0);
         background-image: var(--bg);
@@ -52,7 +50,7 @@
         border-bottom-right-radius: 0;
 
         .day {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: bold;
             line-height: 50%;
         }
@@ -86,16 +84,18 @@
         .league {
             text-align: end;
             font-size: 80%;
-            width: 80%;
+            /* width: 80%; */
         }
     }
 
     .body {
         display: grid;
-        grid-auto-flow: row;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
+
         background-color: white;
         padding: 0.5rem;
+        /* height: auto; */
 
         /* background: white url('http://assets.iceable.com/img/noise-transparent.png') repeat 0 0; */
 
@@ -104,26 +104,26 @@
         .status-title {
             text-align: center;
             font-weight: bold;
-            font-size: 0.75rem;
-            line-height: 0.75rem;
+            font-size: 0.5rem;
+            line-height: 0.5rem;
         }
 
         .score-or-time {
-            padding: 1rem;
+            padding: 0;
             font-weight: bold;
-            font-size: 3.5rem;
+            font-size: 1.75rem;
             line-height: 90%;
 
             .live {
-                text-align: center;
-                font-size: 2rem;
+                font-size: 1rem;
                 line-height: 50%;
             }
 
             .score,
             .time,
             .live {
-                padding: 0.4rem;
+                text-align: center;
+                padding: 0.2rem;
             }
 
             .score,
@@ -154,8 +154,15 @@
         }
 
         .team {
+            display: grid;
+            place-items: center;
+            gap: 0;
+            width: 100%;
+
             .logo {
-                width: 10vw;
+                max-height: 20vh;
+                max-width: 10vw;
+                width: 75%;
                 height: auto;
                 object-fit: contain;
                 filter: drop-shadow(0 0 10px rgb(50, 50, 50));
@@ -163,9 +170,10 @@
 
             .name {
                 text-align: center;
-                text-transform: capitalize;
                 line-height: 90%;
-                font-weight: bold;
+                font-size: 75%;
+                /* font-weight: bold; */
+                /* display: none; */
             }
         }
     }
@@ -190,6 +198,108 @@
     .btn-gamecard {
         height: 100%;
     }
+
+    @media (min-width: 576px) {
+        header {
+            padding: 0.5rem 0.75rem;
+
+            .day {
+                font-size: 2.5rem;
+            }
+        }
+
+        .body {
+            padding: 0.5rem;
+
+            .league,
+            .matchday,
+            .status-title {
+                font-size: 0.75rem;
+                line-height: 0.75rem;
+            }
+
+            .score-or-time {
+                padding: 1rem;
+                font-size: 3rem;
+
+                .live {
+                    font-size: 2rem;
+                }
+
+                .score,
+                .time,
+                .live {
+                    padding: 0.4rem;
+                }
+            }
+
+            .team {
+                gap: 0.5rem;
+
+                .logo {
+                    width: 100%;
+                }
+            }
+        }
+
+        .full {
+            display: block;
+        }
+        .short {
+            display: none;
+        }
+    }
+
+    @media (max-height: 330px) {
+        header {
+            padding: 0.5rem 0.75rem;
+
+            .day {
+                font-size: 2.5rem;
+            }
+        }
+
+        .body {
+            padding: 0.2rem 0.5rem;
+
+            .league,
+            .matchday,
+            .status-title {
+                font-size: 0.75rem;
+                line-height: 0.75rem;
+            }
+
+            .score-or-time {
+                padding: 1rem;
+                font-size: 3rem;
+
+                .live {
+                    font-size: 2rem;
+                }
+
+                .score,
+                .time,
+                .live {
+                    padding: 0.4rem;
+                }
+            }
+
+            .team {
+                gap: 0.2rem;
+
+                .logo {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .full {
+        display: none;
+    }
+    .short {
+        display: block;
+    }
 </style>
 
 <div
@@ -205,49 +315,50 @@
             <header>
                 <span class="lhs day">{day}</span>
                 <span class="mid">
-                    <span class="weekday">{weekDay}</span>
-                    <span class="month">{month}</span>
+                    <span class="weekday full">{weekDay}</span>
+                    <span class="weekday short">{weekDayShort}</span>
+                    <span class="month full">{month}</span>
+                    <span class="month short">{monthShort}</span>
                 </span>
-                <span class="rhs league">{game.leagueName}</span>
+                <span class="rhs league full">{game.leagueName}</span>
+                <span class="rhs league short">{game.leagueSlug}</span>
             </header>
             <div class="body">
-                <div class="grid grid-col-3">
-                    <div class="team home">
-                        <img
-                            src={game.imgLogoHome}
-                            alt="Logo {game.imgLogoHome}"
-                            class="logo"
-                            decoding="async"
-                            loading="lazy"
-                        />
-                        <div class="name">{game.nameHome}</div>
-                    </div>
-                    <div class="score-or-time">
-                        <div class="matchday">{game.matchDay}. Spieltag</div>
-                        {#if game.isFinished}
-                            <div class="score">{game.scoreHome}&nbsp;-&nbsp;{game.scoreGuest}</div>
-                        {:else if game.isUpcoming}
-                            <div class="time">{game.matchTime}</div>
-                        {:else if game.isToday}
-                            <div class="time">{game.matchTime}</div>
-                            <div class="time live">Heute</div>
-                        {:else if game.isLive}
-                            <div class="score livescore">{game.scoreHome}&nbsp;-&nbsp;{game.scoreGuest}</div>
-                            <div class="time live">Live</div>
-                        {:else}
-                            <div>ERROR</div>
-                        {/if}
-                    </div>
-                    <div class="team guest">
-                        <img
-                            src={game.imgLogoGuest}
-                            alt="Logo {game.nameGuest}"
-                            class="logo"
-                            decoding="async"
-                            loading="lazy"
-                        />
-                        <div class="name">{game.nameGuest}</div>
-                    </div>
+                <div class="team home">
+                    <img
+                        src={game.imgLogoHome}
+                        alt="Logo {game.imgLogoHome}"
+                        class="logo"
+                        decoding="async"
+                        loading="lazy"
+                    />
+                    <div class="name">{game.nameHome}</div>
+                </div>
+                <div class="score-or-time">
+                    <div class="matchday">{game.matchDay}. Spieltag</div>
+                    {#if game.isFinished}
+                        <div class="score">{game.scoreHome}&nbsp;-&nbsp;{game.scoreGuest}</div>
+                    {:else if game.isUpcoming}
+                        <div class="time">{game.matchTime}</div>
+                    {:else if game.isToday}
+                        <div class="time">{game.matchTime}</div>
+                        <div class="time live">Heute</div>
+                    {:else if game.isLive}
+                        <div class="score livescore">{game.scoreHome}&nbsp;-&nbsp;{game.scoreGuest}</div>
+                        <div class="time live">Live</div>
+                    {:else}
+                        <div>ERROR</div>
+                    {/if}
+                </div>
+                <div class="team guest">
+                    <img
+                        src={game.imgLogoGuest}
+                        alt="Logo {game.nameGuest}"
+                        class="logo"
+                        decoding="async"
+                        loading="lazy"
+                    />
+                    <div class="name">{game.nameGuest}</div>
                 </div>
             </div>
         </div>
@@ -280,6 +391,12 @@
     const weekDay = weekDaysNames[date.getDay()];
     const month = monthNames[date.getMonth()];
     const day = date.getDate().toString().padStart(2, '0');
+
+    const weekDayShort = weekDay.slice(0, 2);
+    const monthShort = month.slice(0, 3);
+
+    console.log(weekDayShort);
+    console.log(monthShort);
 
     const urlMatchReport = SM.UrlBuilder.getMatchReportUrl(game.gameId, game.leagueId, game.leagueSlug);
     // const urlLogoHome = SM.UrlBuilder.getLogoUrl(matchResult.home_team_small_logo);
