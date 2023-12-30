@@ -156,7 +156,7 @@
         .team {
             display: grid;
             place-items: center;
-            gap: 0;
+            gap: 0.25rem;
             width: 100%;
 
             .logo {
@@ -165,7 +165,7 @@
                 width: 75%;
                 height: auto;
                 object-fit: contain;
-                filter: drop-shadow(0 0 10px rgb(50, 50, 50));
+                /* filter: drop-shadow(0 0 10px rgb(50, 50, 50)); */
             }
 
             .name {
