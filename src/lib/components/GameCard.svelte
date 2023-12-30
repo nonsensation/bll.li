@@ -160,8 +160,8 @@
             width: 100%;
 
             .logo {
-                max-height: 20vh;
-                max-width: 10vw;
+                /* max-height: 20vh;
+                max-width: 10vw; */
                 width: 75%;
                 height: auto;
                 object-fit: contain;
