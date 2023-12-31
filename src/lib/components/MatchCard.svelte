@@ -77,7 +77,7 @@
             </span>
         </div>
         <div class="self-center text-end text-ellipsis leading-4 max-h-[2.0rem] text-[0.8rem]">
-            <span class="full">{game.leagueName}</span>
+            <span class="full">{game.leagueShortName}</span>
             <span class="short">{game.leagueSlug}</span>
         </div>
     </header>

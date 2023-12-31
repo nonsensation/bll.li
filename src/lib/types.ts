@@ -7,6 +7,7 @@ export interface GameCardInfo
     leagueId: number
     leagueSlug: string
     leagueName: string
+    leagueShortName: string
 
     scoreHome: number
     scoreGuest: number

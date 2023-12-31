@@ -49,7 +49,7 @@
                 <main class="">
                     {#each data.upcomingGames as game}
                         {@const url = SM.UrlBuilder.getMatchReportUrl(game.gameId, game.leagueId, game.leagueSlug)}
-                        <a href={url} class=""><MatchCard {game} /></a>
+                        <a href={url} class="hover:no-underline text-black"><MatchCard {game} /></a>
                     {/each}
                 </main>
             </section>
@@ -67,7 +67,7 @@
                 <main class="grid gap-1.5">
                     {#each data.finishedGames as game}
                         {@const url = SM.UrlBuilder.getMatchReportUrl(game.gameId, game.leagueId, game.leagueSlug)}
-                        <a href={url} class=""><MatchCard {game} /></a>
+                        <a href={url} class="hover:no-underline text-black"><MatchCard {game} /></a>
                     {/each}
                 </main>
             </section>
