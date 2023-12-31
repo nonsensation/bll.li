@@ -4,12 +4,12 @@
         }
 
         main {
-                display: grid;
-                place-items: center;
+            display: grid;
+            place-items: center;
 
-                .gamecard {
-                }
+            .gamecard {
             }
+        }
     }
 
     @media (min-width: 576px) {
@@ -34,15 +34,22 @@
 {#await data}
     <span>Loading..</span>
 {:then data}
-    <article class="content">
-        <h2>Team: {data.team.name}</h2>
+    <article class="content grid grid-flow-row items-center gap-3.5 p-3.5">
+        <h2 class="title pb-3.5 text-center text-[2rem] font-bold underline">{data.team.name}</h2>
 
         {#if data.upcomingGames && data.upcomingGames.length > 0}
             <section>
-                <h3 class="title">Kommende Spiele</h3>
-                <main class="grid grid-cols-1 place-items-center">
+                <h3 class="title pb-3.5 text-center text-[1.5rem] font-bold">
+                    {#if data.upcomingGames.length > 1}
+                        Kommende Spiele
+                    {:else}
+                        Nächstes Spiel
+                    {/if}
+                </h3>
+                <main class="">
                     {#each data.upcomingGames as game}
-                        <div class="grid grid-cols-1 place-items-center"><MatchCard {game} /></div>
+                        {@const url = SM.UrlBuilder.getMatchReportUrl(game.gameId, game.leagueId, game.leagueSlug)}
+                        <a href={url} class=""><MatchCard {game} /></a>
                     {/each}
                 </main>
             </section>
@@ -50,10 +57,17 @@
 
         {#if data.finishedGames && data.finishedGames.length > 0}
             <section>
-                <h3 class="title">Vorherige Spiele</h3>
-                <main class="grid grid-cols-1 place-items-center">
+                <h3 class="title pb-3.5 text-center text-[1.5rem] font-bold">
+                    {#if data.finishedGames.length > 1}
+                        Vergangene Spiele
+                    {:else}
+                        Letztes Spiel
+                    {/if}
+                </h3>
+                <main class="grid gap-1.5">
                     {#each data.finishedGames as game}
-                        <div class="grid grid-cols-1 place-items-center"><MatchCard {game} /></div>
+                        {@const url = SM.UrlBuilder.getMatchReportUrl(game.gameId, game.leagueId, game.leagueSlug)}
+                        <a href={url} class=""><MatchCard {game} /></a>
                     {/each}
                 </main>
             </section>
@@ -64,6 +78,7 @@
 <script lang="ts">
     import type { TeamMatchInfo } from '$lib/Saisonmanger';
     import MatchCard from '$lib/components/MatchCard.svelte';
+    import { SM } from 'floorball-saisonmanager';
 
     export let data: TeamMatchInfo;
 </script>

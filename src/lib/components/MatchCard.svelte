@@ -53,7 +53,7 @@
 
 <div
     id={game.gameId.toString()}
-    class="matchcard grid w-[25rem] grid-rows-4 rounded border border-gray-400 shadow"
+    class="matchcard grid w-[20rem] grid-rows-4 rounded border border-gray-400 shadow"
     class:isUpcoming={game.isUpcoming}
     class:isLive={game.isLive}
     class:isToday={game.isToday}
@@ -62,10 +62,10 @@
     <header class="bg-stripes row-span-1 grid grid-cols-2 gap-1.5 rounded-t bg-black p-1.5 text-white">
         <div class="flex-cols-2 flex gap-1.5 justify-self-start">
             <span
-                class="p-r-1.5 self-center text-center font-extrabold leading-4 text-[2.75rem]"
+                class="p-r-1.5 self-center text-center leading-4 text-[2rem]"
                 >{day}</span
             >
-            <span class="m-0 grid grid-rows-2 justify-start gap-0.5 p-0 leading-4 uppercase">
+            <span class="grid grid-rows-2 justify-start leading-4 uppercase text-[0.7rem]">
                 <span class="self-end font-bold">
                     <span class="full">{weekDay}</span>
                     <span class="short">{weekDayShort}</span>
@@ -76,17 +76,17 @@
                 </span>
             </span>
         </div>
-        <div class="self-center text-end text-ellipsis leading-4 max-h-[2.5rem] text-[0.8rem]">
+        <div class="self-center text-end text-ellipsis leading-4 max-h-[2.0rem] text-[0.8rem]">
             <span class="full">{game.leagueName}</span>
             <span class="short">{game.leagueSlug}</span>
         </div>
     </header>
-    <main class="row-span-3 grid w-full grid-cols-3 content-stretch items-stretch gap-1.5 rounded-b p-1.5 text-center">
-        <div class="grid place-items-center gap-1.5">
+    <main class="row-span-3 grid w-full grid-cols-3 content-stretch items-stretch gap-3.5 rounded-b p-1.5 text-center">
+        <div class="grid place-items-center">
             <img
                 src={game.imgLogoHome}
                 alt="Logo {game.imgLogoHome}"
-                class="h-auto object-contain"
+                class="px-2.5 h-auto object-contain"
                 decoding="async"
                 loading="lazy"
                 transition:fade
@@ -108,16 +108,16 @@
                 <div class="live uppercase font-bold self-start">Live</div>
             {/if}
         </div>
-        <div class="grid place-items-center gap-1.5">
+        <div class="grid place-items-center">
             <img
                 src={game.imgLogoGuest}
                 alt="Logo {game.nameGuest}"
-                class="h-auto object-contain"
+                class="px-2.5 h-auto object-contain"
                 decoding="async"
                 loading="lazy"
                 transition:fade
             />
-            <div class="text-[0.7rem] leading-4">{game.nameGuest}</div>
+            <div class="text-[0.7rem] leading-4 self-start">{game.nameGuest}</div>
         </div>
     </main>
 </div>
