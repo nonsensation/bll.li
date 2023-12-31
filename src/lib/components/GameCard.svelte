@@ -2,6 +2,8 @@
     .gamecard {
         margin: 0.5rem;
 
+        user-select: none;
+
         font-family: 'Quantico';
 
         border-radius: var(--border-radius);
@@ -11,6 +13,8 @@
         --bg: url(https://www.fcbarcelona.com/resources/v2.82.2-5582/i/bg-elements/stripes-horizontal-fade.png);
         --bg: url('$lib/bg-stripes-45.png');
         box-shadow: var(--shadow);
+
+        background-color: transparent;
 
         width: 100%;
         width: 30rem;
@@ -23,10 +27,12 @@
         grid-template-rows: 1fr 3fr;
         align-items: stretch;
         height: 100%;
+        border-radius: var(--border-radius);
     }
 
     a {
         border-radius: var(--border-radius);
+        /* background-color: transparent; */
     }
 
     .grid-row-2 {
@@ -35,6 +41,7 @@
     }
 
     header {
+        z-index: 2;
         display: grid;
         grid-template-columns: auto auto 1fr;
         align-items: center;
@@ -94,6 +101,10 @@
         align-items: center;
 
         background-color: white;
+
+        border-bottom-left-radius: var(--border-radius);
+        border-bottom-right-radius: var(--border-radius);
+
         padding: 0.5rem;
         /* height: auto; */
 
@@ -199,6 +210,29 @@
         height: 100%;
     }
 
+    .full {
+        display: none;
+    }
+    .short {
+        display: block;
+    }
+
+    /* .full {
+        display: block;
+    }
+    .short {
+        display: none;
+    } */
+
+    @media (min-width: 380px) {
+        .full {
+            display: block;
+        }
+        .short {
+            display: none;
+        }
+    }
+
     @media (min-width: 576px) {
         header {
             padding: 0.5rem 0.75rem;
@@ -292,13 +326,6 @@
                 }
             }
         }
-    }
-
-    .full {
-        display: none;
-    }
-    .short {
-        display: block;
     }
 </style>
 

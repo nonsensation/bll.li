@@ -24,6 +24,7 @@
     --border-radius: 0.25rem;
     --gap: 0.5rem;
     --shadow: var(--color-shadow) 0 0 var(--gap);
+    --shadow: 0 0 var(--gap) var(--color-shadow);
 }
 
 [data-theme='light'] {
@@ -57,10 +58,11 @@ a {
     text-decoration: none;
 }
 
-a:hover {
+a:hover, a:focus {
     color: var(--color-text-highlight);
-    outline: 2px solid var(--color-text-highlight);
-    box-shadow: 0 0 0.75rem var(--color-text-highlight);
+    /* outline: 4px dashed var(--color-text-highlight); *//* outline doesnt use border-raisu..*/
+    box-shadow: 60px -16px teal;
+
     text-decoration: none;
 }
 a:visited {
