@@ -40,9 +40,20 @@
 }
 
 html {
-
+    width: 100%;
+    height: 100%;
 }
 
 body {
+    width: 100%;
+    height: 100%;
+}
 
+a {
+    color: var(--color-text-highlight);
+}
+
+a:hover, a:focus {
+    color: var(--color-text-highlight);
+    text-decoration: underline;
 }
