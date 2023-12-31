@@ -40,9 +40,9 @@
         {#if data.upcomingGames && data.upcomingGames.length > 0}
             <section>
                 <h3 class="title">Kommende Spiele</h3>
-                <main>
+                <main class="grid grid-cols-1 place-items-center">
                     {#each data.upcomingGames as game}
-                        <div class="gamecard"><GameCard {game} /></div>
+                        <div class="grid grid-cols-1 place-items-center"><MatchCard {game} /></div>
                     {/each}
                 </main>
             </section>
@@ -51,9 +51,9 @@
         {#if data.finishedGames && data.finishedGames.length > 0}
             <section>
                 <h3 class="title">Vorherige Spiele</h3>
-                <main>
+                <main class="grid grid-cols-1 place-items-center">
                     {#each data.finishedGames as game}
-                        <div class="gamecard"><GameCard {game} /></div>
+                        <div class="grid grid-cols-1 place-items-center"><MatchCard {game} /></div>
                     {/each}
                 </main>
             </section>
@@ -63,8 +63,7 @@
 
 <script lang="ts">
     import type { TeamMatchInfo } from '$lib/Saisonmanger';
-    import GameCard from '$lib/components/GameCard.svelte';
-    import { onMount } from 'svelte';
+    import MatchCard from '$lib/components/MatchCard.svelte';
 
     export let data: TeamMatchInfo;
 </script>
