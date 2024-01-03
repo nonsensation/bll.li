@@ -11,7 +11,7 @@
 
 <main class="">
     {#await data}
-    Lade Spiele
+        Lade Spiele
     {:then data}
         {#if data}
             <StickySection {...matchesSection}>
@@ -23,12 +23,15 @@
     {/await}
 
     <StickySection {...teamsSection}>
-        <div class="flex gap-4 justify-between text-[1.5rem] ">
-            {#each SeasonTeams as team }
-                <a href="/ons~{team.slug}" class="text-white font-bold p-4 border border-white rounded hover:bg-white hover:text-black">{team.name}</a>
+        <div class="flex flex-wrap justify-center gap-4 text-[1.5rem]">
+            {#each SeasonTeams as team}
+                <a
+                    href="/ons~{team.slug}"
+                    class="rounded border bg-[rgba(0,0,0,0.5)] border-white p-4 px-8 font-bold text-white hover:no-underline hover:bg-white hover:text-black"
+                    >{team.name}</a
+                >
             {/each}
         </div>
-
     </StickySection>
 
     {#each sections as section}
@@ -51,11 +54,11 @@
     };
 
     let teamsSection = {
-            img: 'https://www.kreisbote.de/assets/images/19/914/19914819-1629421876-20121118_vfl_kaufering_vs_black_lions_landsberg-saale_13-Qw73.jpg',
-            imgLowRes: '',
-            bgColor: 'black',
-            title: 'Teams',
-        }
+        img: 'https://www.kreisbote.de/assets/images/19/914/19914819-1629421876-20121118_vfl_kaufering_vs_black_lions_landsberg-saale_13-Qw73.jpg',
+        imgLowRes: '',
+        bgColor: 'black',
+        title: 'Teams',
+    };
 
     let sections = [
         {
