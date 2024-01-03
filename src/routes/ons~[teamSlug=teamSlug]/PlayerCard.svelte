@@ -4,7 +4,7 @@
         --timing: 0.3s;
     }
 
-    a {
+    .outer {
         width: calc(var(--card-height) * (9 / 16));
         height: var(--card-height);
         aspect-ratio: 9 / 16;
@@ -58,7 +58,7 @@
     }
 </style>
 
-<a href="/" target="_blank" class="flex h-full w-full items-center justify-center">
+<div class="outer flex h-full w-full items-center justify-center">
     <div class="card relative flex h-full w-full items-end justify-center">
         <div
             class="wrapper rounded absolute -z-10 w-full h-[70%] after:rounded after:absolute after:left-0 after:top-0 after:h-full after:w-full after:opacity-0"
@@ -66,9 +66,9 @@
             <img src={imgPoster} class="poster rounded h-full w-full object-cover" alt="" />
         </div>
         <img src={imgPopup} class="character absolute -z-10 w-full opacity-0" alt="" />
-        <div class="title w-full text-center text-[1.75rem] font-bold tracking-widest">{name}</div>
+        <a href="/" target="_blank" class="title w-full text-center text-[1.75rem] font-bold tracking-widest">{name}</a>
     </div>
-</a>
+</div>
 
 <script lang="ts">
     export let name: string;
