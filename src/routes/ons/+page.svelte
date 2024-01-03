@@ -47,14 +47,14 @@
     export let data;
 
     let matchesSection = {
-        img: 'https://www.kreisbote.de/assets/images/19/914/19914818-1287666944-20121118_vfl_kaufering_vs_black_lions_landsberg-saale_12-QA73.jpg',
+        img: 'https://media.gettyimages.com/id/1188808424/de/foto/neuchatel-switzerland-krupnova-eliska-celebrates-her-goal-with-teammates-during-the-bronze.webp?s=1024x1024&w=gi&k=20&c=VAAklyuhfsB1ebMGT3P-1DmxcdkQnUBarrYzvVKVHJc=',
         imgLowRes: '',
         bgColor: 'red',
         title: 'Spiele',
     };
 
     let teamsSection = {
-        img: 'https://www.kreisbote.de/assets/images/19/914/19914819-1629421876-20121118_vfl_kaufering_vs_black_lions_landsberg-saale_13-Qw73.jpg',
+        img: 'https://live.staticflickr.com/65535/53393848457_18d383eac4_h.jpg',
         imgLowRes: '',
         bgColor: 'black',
         title: 'Teams',
@@ -68,13 +68,13 @@
             title: 'News',
         },
         {
-            img: 'https://www.kreisbote.de/assets/images/19/914/19914816-1185979811-20121118_vfl_kaufering_vs_black_lions_landsberg-saale_10-NG73.jpg',
+            img: 'https://live.staticflickr.com/65535/52116272136_2b40d2e2a4_h.jpg',
             imgLowRes: '',
             bgColor: 'red',
             title: 'Kontakt',
         },
         {
-            img: 'https://www.kreisbote.de/assets/images/19/914/19914821-1486218390-20121118_vfl_kaufering_vs_black_lions_landsberg-saale_15-OE73.jpg',
+            img: 'https://live.staticflickr.com/65535/53393848457_18d383eac4_h.jpg',
             imgLowRes: '',
             bgColor: 'red',
             title: 'Training',

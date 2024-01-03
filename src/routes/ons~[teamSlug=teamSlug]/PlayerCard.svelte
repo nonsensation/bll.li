@@ -8,7 +8,6 @@
         width: calc(var(--card-height) * (9 / 16));
         height: var(--card-height);
         aspect-ratio: 9 / 16;
-        margin: -1rem;
     }
 
     .card {

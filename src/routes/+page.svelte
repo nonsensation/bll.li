@@ -10,7 +10,7 @@
     {#await data}
         <span>Loading Games...</span>
     {:then data}
-        <div class="gamesSlider"><GamesSlider {...data} /></div>
+        <div class="gamesSlider w-screen p-10 flex justify-center items-center"><GamesSlider {...data} /></div>
     {/await}
 </div>
 

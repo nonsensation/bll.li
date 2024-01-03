@@ -81,52 +81,56 @@
             </section>
         {/if}
     </article>
+
+    {#if !data.team.slug.startsWith('U')}
+        <h2 class="title pb-3.5 text-center text-[2rem] font-bold underline">Kader</h2>
+
+        <div
+            class="flex h-full w-full flex-col flex-wrap content-center items-center justify-center gap-0 gap-x-10 p-10"
+        >
+            <h3>Goalies</h3>
+
+            <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
+                {#each [...Array(3)] as i}
+                    <PlayerCard {...playerInfo}></PlayerCard>
+                {/each}
+            </div>
+
+            <h3>Defense</h3>
+
+            <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
+                {#each [...Array(7)] as i}
+                    <PlayerCard {...playerInfo}></PlayerCard>
+                {/each}
+            </div>
+
+            <h3>Center</h3>
+
+            <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
+                {#each [...Array(3)] as i}
+                    <PlayerCard {...playerInfo}></PlayerCard>
+                {/each}
+            </div>
+
+            <h3>Offensiv</h3>
+
+            <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
+                {#each [...Array(7)] as i}
+                    <PlayerCard {...playerInfo}></PlayerCard>
+                {/each}
+            </div>
+
+            <h3>Trainer</h3>
+
+            <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
+                {#each [...Array(1)] as i}
+                    <PlayerCard {...playerInfo}></PlayerCard>
+                {/each}
+            </div>
+        </div>
+    {/if}
+
 {/await}
-
-<h2 class="title pb-3.5 text-center text-[2rem] font-bold underline">Kader</h2>
-
-
-<div class="flex h-full w-full flex-col flex-wrap content-center items-center justify-center  gap-0 gap-x-10  p-10">
-    <h3>Goalies</h3>
-
-    <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
-        {#each [...Array(3)] as i}
-            <PlayerCard {...playerInfo}></PlayerCard>
-        {/each}
-    </div>
-
-    <h3>Defense</h3>
-
-    <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
-        {#each [...Array(7)] as i}
-            <PlayerCard {...playerInfo}></PlayerCard>
-        {/each}
-    </div>
-
-    <h3>Center</h3>
-
-    <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
-        {#each [...Array(3)] as i}
-            <PlayerCard {...playerInfo}></PlayerCard>
-        {/each}
-    </div>
-
-    <h3>Offensiv</h3>
-
-    <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
-        {#each [...Array(7)] as i}
-            <PlayerCard {...playerInfo}></PlayerCard>
-        {/each}
-    </div>
-
-    <h3>Trainer</h3>
-
-    <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
-        {#each [...Array(1)] as i}
-            <PlayerCard {...playerInfo}></PlayerCard>
-        {/each}
-    </div>
-</div>
 
 <script lang="ts">
     import type { TeamMatchInfo } from '$lib/Saisonmanger';
