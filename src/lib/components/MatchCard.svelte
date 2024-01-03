@@ -53,7 +53,7 @@
 
 <div
     id={game.gameId.toString()}
-    class="matchcard grid w-[20rem] grid-rows-4 rounded border border-gray-400 shadow"
+    class="matchcard grid w-[20rem] grid-rows-4 rounded shadow snap-center snap-proximity bg-white"
     class:isUpcoming={game.isUpcoming}
     class:isLive={game.isLive}
     class:isToday={game.isToday}

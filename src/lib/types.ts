@@ -27,14 +27,3 @@ export interface GameCardInfo
     imgLogoHome: string
     imgLogoGuest: string
 }
-
-export interface GameCardv1
-{
-    league: SM.League
-    matchResult: SM.MatchResult
-    isUpcoming: boolean
-    isToday: boolean
-    isFinished: boolean
-    imgDataLogoHome?: string
-    imgDataLogoGuest?: string
-}

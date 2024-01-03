@@ -15,7 +15,7 @@ export const TeamRegio: TeamInfo =
     cupLeagueId: -1,
     rankingLeagueId: -1,
     slug: 'Regio',
-    name: 'Herren - Regionalmannschaft',
+    name: 'Herren',
     leagueName: 'Herren Regionalliga',
 }
 

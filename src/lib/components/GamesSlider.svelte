@@ -11,7 +11,9 @@
     }
 </style>
 
-<ul class="flex w-full list-none flex-row gap-3.5 overflow-x-scroll px-4 py-2.5 bg-transparent max-w-[80vw]">
+<ul
+    class="mx-4 flex w-full list-none flex-row gap-3.5 overflow-x-scroll rounded bg-[rgba(122,122,122,0.5)] px-4 py-2.5"
+>
     {#if finishedGames.length > 0}
         <!-- <li>
             <a href="/" class="">Vergangene Spiele</a>

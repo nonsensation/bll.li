@@ -3,6 +3,7 @@ import type { GameCardInfo } from './types';
 import type { LoadEvent } from '@sveltejs/kit';
 import { UrlBuilder } from 'floorball-saisonmanager/lib/Saisonmanager/Api';
 import type { TeamInfo } from '$lib/config/TeamInfo';
+import type MatchCard from './components/MatchCard.svelte';
 
 export const LeagueId_Regio = 1396; // Regio
 export const LeagueId_u11_1 = 1412; // U11 St. 2
@@ -36,12 +37,15 @@ export function getSmImageUrl(url: string, useProxiedCache: boolean = true): str
 
 export const TEAMNAME = 'Black Lions Landsberg'; // filter out team by name in SM
 
-export interface TeamMatchInfo {
-    team: TeamInfo;
+export interface MatchInfo {
     liveGames: GameCardInfo[];
     upcomingGames: GameCardInfo[];
     finishedGames: GameCardInfo[];
     todayGames: GameCardInfo[];
+}
+
+export interface TeamMatchInfo extends MatchInfo {
+    team: TeamInfo;
 }
 
 export class Sm {
@@ -56,8 +60,12 @@ export class Sm {
         this.teamName = teamName;
     }
 
-    getGameCards = async (team: TeamInfo): Promise<TeamMatchInfo> => {
-        let matches: GameCardInfo[] = await this.prepareGames(team);
+    getGameCardsForTeams = async (teams: TeamInfo[]): Promise<MatchInfo> => {
+        let matches: GameCardInfo[] = [];
+
+        for (const team of teams) {
+            matches = matches.concat(await this.prepareGames(team));
+        }
 
         matches = matches.sort(this.gameCardSorter);
 
@@ -71,11 +79,29 @@ export class Sm {
             upcomingGames,
             finishedGames,
             todayGames,
+        } as MatchInfo;
+    };
+
+    getGameCardsForTeam = async (team: TeamInfo): Promise<TeamMatchInfo> => {
+        let matches: GameCardInfo[] = await this.prepareGames(team);
+
+        matches = matches.sort(this.gameCardSorter);
+
+        const liveGames = matches.filter((g) => g.isToday);
+        const todayGames = matches.filter((g) => g.isToday);
+        const upcomingGames = matches.filter((g) => g.isUpcoming);
+        const finishedGames = matches.filter((g) => !g.isUpcoming).toReversed();
+
+        return {
+            team,
+            liveGames,
+            upcomingGames,
+            finishedGames,
+            todayGames,
         } as TeamMatchInfo;
     };
 
-    prepareGames = async (team: TeamInfo): Promise<GameCardInfo[]> =>
-    {
+    prepareGames = async (team: TeamInfo): Promise<GameCardInfo[]> => {
         const leagueIds = [team.leagueId, team.cupLeagueId, team.rankingLeagueId].filter((leagueId) => leagueId > 0);
         const currentDateStr = new Date().toISOString().split('T')[0]; // 2023-12-27T09:57:34.671Z
 

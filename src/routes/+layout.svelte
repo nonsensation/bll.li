@@ -1,4 +1,10 @@
 <style lang="postcss">
+    header {
+        --bg: url('$lib/bg-stripes-45.png');
+
+        background-image: var(--bg);
+        background-size: 100% 100%;
+    }
 </style>
 
 <div class="flex grid-rows-3 flex-col content-stretch">
@@ -7,7 +13,7 @@
             <ul class="flex flex-col sm:flex-row text-center w-full justify-between">
                 <li class="grid gap-4 items-center">
                     <a
-                        href="/"
+                        href="/ons"
                         title="Startseite"
                         class="text-white">
                         Startseite
@@ -28,11 +34,11 @@
         </nav>
     </header>
 
-    <main class="max-w-100 grid flex-grow justify-center p-3.5">
+    <main class="max-w-100 grid flex-grow justify-center">
         <slot />
     </main>
 
-    <footer class="row-auto"></footer>
+    <footer class="row-auto h-svh"></footer>
 </div>
 
 <script lang="ts">

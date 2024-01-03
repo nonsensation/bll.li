@@ -1,7 +1,6 @@
 
 import { Sm, type TeamMatchInfo } from '$lib/Saisonmanger'
 import { SeasonTeams, getTeamBySlug } from '$lib/config/TeamInfo'
-import type { GameCardInfo } from '$lib/types'
 import { error, type LoadEvent } from '@sveltejs/kit'
 
 
@@ -28,7 +27,7 @@ export async function load( loadEvent: LoadEvent )
     sm.upcomingGamesCount = 1
     sm.finishedGamesCount = 1
 
-    const teamMatchInfo: TeamMatchInfo = await sm.getGameCards( team )
+    const teamMatchInfo: TeamMatchInfo = await sm.getGameCardsForTeam( team )
 
     teamMatchInfo.team = team
 
