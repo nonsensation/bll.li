@@ -9,13 +9,13 @@
     <meta name="description" content="Black Lions Landsberg - Floorball Verein" />
 </svelte:head>
 
-<main class="">
+<main class="select-none">
     {#await data}
         Lade Spiele
     {:then data}
         {#if data}
             <StickySection {...matchesSection}>
-                <GamesSlider {...data} />
+                <div class="w-screen border-y-2 border-white"><GamesSlider {...data} /></div>
             </StickySection>
         {:else}
             <StickySection {...matchesSection}></StickySection>
@@ -27,7 +27,7 @@
             {#each SeasonTeams as team}
                 <a
                     href="/ons~{team.slug}"
-                    class="rounded border bg-[rgba(0,0,0,0.5)] border-white p-4 px-8 font-bold text-white hover:no-underline hover:bg-white hover:text-black"
+                    class="rounded border border-white bg-[rgba(0,0,0,0.5)] p-4 px-8 font-bold text-white hover:bg-white hover:text-black hover:no-underline"
                     >{team.name}</a
                 >
             {/each}
@@ -51,6 +51,7 @@
         imgLowRes: '',
         bgColor: 'red',
         title: 'Spiele',
+        sticky: true,
     };
 
     let teamsSection = {
@@ -58,6 +59,7 @@
         imgLowRes: '',
         bgColor: 'black',
         title: 'Teams',
+        sticky: true,
     };
 
     let sections = [
@@ -66,18 +68,21 @@
             imgLowRes: '',
             bgColor: 'black',
             title: 'News',
+            sticky: true,
         },
         {
             img: 'https://live.staticflickr.com/65535/52116272136_2b40d2e2a4_h.jpg',
             imgLowRes: '',
             bgColor: 'red',
             title: 'Kontakt',
+            sticky: true,
         },
         {
             img: 'https://live.staticflickr.com/65535/53393848457_18d383eac4_h.jpg',
             imgLowRes: '',
             bgColor: 'red',
             title: 'Training',
+            sticky: true,
         },
     ];
 </script>

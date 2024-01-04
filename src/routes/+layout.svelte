@@ -8,7 +8,7 @@
 </style>
 
 <div class="flex grid-rows-3 flex-col content-stretch">
-    <header class="row-auto w-full  bg-black text-white font-bold">
+    <header class="row-auto bg-black text-white font-bold">
         <nav class="mx-auto flex flex-wrap items-center justify-between p-4 w-full">
             <ul class="flex flex-col sm:flex-row text-center w-full justify-between">
                 <li class="grid gap-4 items-center">
@@ -38,7 +38,7 @@
         <slot />
     </main>
 
-    <footer class="row-auto h-svh"></footer>
+    <footer class="row-auto h-svh bg-slate-500"></footer>
 </div>
 
 <script lang="ts">

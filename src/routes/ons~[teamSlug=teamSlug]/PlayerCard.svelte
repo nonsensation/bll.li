@@ -66,7 +66,10 @@
             <img src={imgPoster} class="poster h-full w-full rounded object-cover" alt="" />
         </div>
         <img src={imgPopup} class="character absolute -z-10 w-full opacity-0" alt="" />
-        <a href="/" target="_blank" class="title w-full text-center text-[1.75rem] justify-center font-bold tracking-widest"
+        <a
+            href="/"
+            target="_blank"
+            class="title w-full justify-center pb-2 text-center text-[1.5rem] font-bold leading-6 tracking-widest"
             >{name}</a
         >
     </div>

@@ -92,15 +92,15 @@
 
             <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
                 {#each [...Array(3)] as i}
-                    <PlayerCard {...playerInfo}></PlayerCard>
+                    <PlayerCard {...playerInfo1}></PlayerCard>
                 {/each}
             </div>
 
-            <h3>Defense</h3>
+            <h3>Defensive</h3>
 
             <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
                 {#each [...Array(7)] as i}
-                    <PlayerCard {...playerInfo}></PlayerCard>
+                    <PlayerCard {...playerInfo2}></PlayerCard>
                 {/each}
             </div>
 
@@ -108,15 +108,15 @@
 
             <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
                 {#each [...Array(3)] as i}
-                    <PlayerCard {...playerInfo}></PlayerCard>
+                    <PlayerCard {...playerInfo1}></PlayerCard>
                 {/each}
             </div>
 
-            <h3>Offensiv</h3>
+            <h3>Offensive</h3>
 
             <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
                 {#each [...Array(7)] as i}
-                    <PlayerCard {...playerInfo}></PlayerCard>
+                    <PlayerCard {...playerInfo2}></PlayerCard>
                 {/each}
             </div>
 
@@ -124,7 +124,7 @@
 
             <div class="flex flex-wrap content-evenly items-center justify-center gap-x-20">
                 {#each [...Array(1)] as i}
-                    <PlayerCard {...playerInfo}></PlayerCard>
+                    <PlayerCard {...playerInfo1}></PlayerCard>
                 {/each}
             </div>
         </div>
@@ -140,13 +140,22 @@
 
     export let data: TeamMatchInfo;
 
-    import imgPoster from './poster.png';
-    import imgPopup from './popup.png';
+    import imgPoster1 from './poster.png';
+    import imgPopup1 from './popup.png';
+    import imgPoster2 from './poster2.jpg';
+    import imgPopup2 from './popup2.png';
 
-    const playerInfo = {
+    const playerInfo1 = {
         name: 'Kim Nilsson',
-        imgPoster,
-        imgPopup,
+        imgPoster: imgPoster1,
+        imgPopup: imgPopup1,
+        position: 'Center',
+    };
+
+    const playerInfo2 = {
+        name: 'Alexander Galante Carlström',
+        imgPoster: imgPoster2,
+        imgPopup: imgPopup2,
         position: 'Offense',
     };
 </script>
