@@ -42,7 +42,7 @@
 	slotFooter="border-t border-primary-500 bg-surface-500/10 shadow"
 	slotSidebarLeft="md:border-r-0 md:border-primary-500 bg-surface-500/10 w-0 md:w-52 shadow"
 >
-	<svelte:fragment slot="pageHeader">
+	<svelte:fragment slot="header">
 		<div class="">
 			<AppBar background="bg-surface-500/10" padding="px-4 py-2">
 				<svelte:fragment slot="lead">
@@ -69,32 +69,29 @@
 				</svelte:fragment>
 			</AppBar>
 		</div>
-		<div class="border-b border-surface-100 dark:border-surface-800">
-			<BreadNav></BreadNav>
-		</div>
 	</svelte:fragment>
 
 	<svelte:fragment slot="sidebarLeft">
 		<Navigation />
 	</svelte:fragment>
 
-	<!-- <svelte:fragment slot="pageHeader">
+	<svelte:fragment slot="pageHeader">
 		<div class="border-b border-surface-100 dark:border-surface-800">
 			<BreadNav></BreadNav>
 		</div>
-	</svelte:fragment> -->
+	</svelte:fragment>
 
 	<div class="container p-10 mx-auto w-full">
 		<slot />
 	</div>
 
-	<!-- <svelte:fragment slot="pageFooter">
+	<svelte:fragment slot="pageFooter">
 		<BreadNav></BreadNav>
-	</svelte:fragment> -->
+	</svelte:fragment>
 
-	<!-- <svelte:fragment slot="footer">
+	<svelte:fragment slot="footer">
 		<BreadNav></BreadNav>
-	</svelte:fragment> -->
+	</svelte:fragment>
 </AppShell>
 
 <style>
