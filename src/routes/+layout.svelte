@@ -4,7 +4,7 @@
 	import BreadNav from '$lib/components/BreadNav.svelte';
 </script>
 
-<div class="layout flex flex-col items-stretch gap-4 w-full h-screen bg-red-white dark:bg-black text-black dark:text-white">
+<div class="layout flex flex-col items-stretch gap-4 w-full h-full min-h-screen bg-red-white dark:bg-black text-black dark:text-white">
 	<header class="flex">
 		<Navigation />
 	</header>
@@ -20,7 +20,7 @@
 		</div>
 	</main>
 	<footer class="flex">
-		<Navigation />
+		<!-- <Navigation /> -->
 	</footer>
 </div>
 

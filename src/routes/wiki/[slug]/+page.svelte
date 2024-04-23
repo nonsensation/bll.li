@@ -1,28 +1,5 @@
 <style lang="postcss">
-    article {
-        max-inline-size: var(--size-content-3);
-        margin-inline: auto;
-    }
 
-    h1 {
-        text-transform: capitalize;
-    }
-
-    h1 + p {
-        margin-top: var(--size-2);
-        color: var(--text-2);
-    }
-
-    .tags {
-        display: flex;
-        gap: var(--size-3);
-        margin-top: var(--size-7);
-    }
-
-    .tags > * {
-        padding: var(--size-2) var(--size-3);
-        border-radius: var(--radius-round);
-    }
 </style>
 
 <svelte:head>
@@ -31,13 +8,17 @@
     <meta property="og:title" content={data.meta.title} />
 </svelte:head>
 
-<article>
-    <hgroup>
-        <h1>{data.meta.title}</h1>
-        <p>Published at {formatDate(data.meta.date)}</p>
+<article class="">
+    <hgroup class="">
+        <h1 class="text-xl font-extrabold text-gray-900 dark:text-white md:text-2xl lg:text-5xl">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r to-primary-700 from-primary-900">
+                {data.meta.title}
+            </span>
+        </h1>
+        <!-- <p>Published at {formatDate(data.meta.date)}</p> -->
     </hgroup>
 
-    <div class="tags">
+    <div class="tags m-4 text-center">
         {#each data.meta.categories as category}
             <a href="/wiki/tags/{category}">
                 <Badge color="dark">&num;{category}</Badge>

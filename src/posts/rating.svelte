@@ -47,7 +47,7 @@
 			<dl class="my-0">
 				<dt class="mt-2 text-sm font-medium text-gray-500">{label}</dt>
 				<dd class="flex items-center my-0 ps-0">
-					<div class="w-full bg-surface-200 rounded h-2.5 dark:bg-surface-700 me-2">
+					<div class="w-full bg-gray-200 rounded h-2.5 dark:bg-gray-700 me-2">
 						<div class={barColor} style="width: {rating * 10}%" />
 					</div>
 					<span class="text-sm font-medium text-gray-500">{rating}</span>
@@ -60,7 +60,7 @@
 			<dl class="my-0">
 				<dt class="mt-2 text-sm font-medium text-gray-500">{label}</dt>
 				<dd class="flex items-center my-0 ps-0">
-					<div class="w-full bg-surface-200 rounded h-2.5 dark:bg-surface-700 me-2">
+					<div class="w-full bg-gray-200 rounded h-2.5 dark:bg-gray-700 me-2">
 						<div class={barColor} style="width: {rating * 10}%" />
 					</div>
 					<span class="text-sm font-medium text-gray-500 ">{rating}</span>

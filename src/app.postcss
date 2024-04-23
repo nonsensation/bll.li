@@ -3,6 +3,20 @@
 @tailwind utilities;
 @tailwind variants;
 
+:root {
+    /* all: unset; */
+
+    h1 {
+        @apply text-3xl text-center border-double border-b-4;
+      }
+      h2 {
+        @apply text-2xl underline font-bold;
+      }
+      h3 {
+        @apply text-xl font-semibold;
+      }
+}
+
 html,
 body {
 
@@ -22,3 +36,4 @@ body {
 .dark .striped {
     background-image: linear-gradient(10deg, #05000c 50%,  #360417 100%);
 }
+
