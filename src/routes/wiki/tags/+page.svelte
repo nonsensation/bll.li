@@ -5,9 +5,9 @@
 </script>
 
 <div class="tags">
-	{#each data.uniqueCategories as category}
-		<a href="/wiki/categories/{category}">
-			<Badge color="dark">&num;{category}</Badge>
+	{#each data.uniqueTags as tag}
+		<a href="/wiki/tags/{tag}">
+			<Badge color="dark">&num;{tag}</Badge>
 		</a>
 	{/each}
 </div>

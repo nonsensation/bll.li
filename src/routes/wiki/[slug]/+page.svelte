@@ -39,7 +39,7 @@
 
     <div class="tags">
         {#each data.meta.categories as category}
-            <a href="/wiki/categories/{category}">
+            <a href="/wiki/tags/{category}">
                 <Badge color="dark">&num;{category}</Badge>
             </a>
         {/each}
