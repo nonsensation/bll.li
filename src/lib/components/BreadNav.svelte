@@ -21,8 +21,8 @@
 </script>
 
 <Breadcrumb
-	aria-label="Solid background breadcrumb example"
-	class="px-4 py-2"
+	aria-label="Breadcrumbs"
+	class=""
 > 
 	{#each crumbs as c, i}
 		{#if i == crumbs.length - 1}

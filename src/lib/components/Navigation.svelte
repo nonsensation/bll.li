@@ -1,18 +1,32 @@
 <script lang="ts">
-	import { getDrawerStore } from '@skeletonlabs/skeleton';
-
-    const drawerStore = getDrawerStore();
-
-	function drawerClose(): void {
-		drawerStore.close();
-	}
+	import { page } from '$app/stores';
+	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, DarkMode } from 'flowbite-svelte';
+	import BreadNav from './BreadNav.svelte';
+	$: activeUrl = $page.url.pathname;
+	let activeClass =
+		'font-bold text-white bg-primary-700 md:bg-transparent md:text-primary-700 md:dark:text-white dark:bg-primary-600 md:dark:bg-transparent';
+	let nonActiveClass =
+		'font-semibold text-gray-700 hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-primary-700 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent';
 </script>
 
-<nav class="list-nav p-4">
-	<ul>
-		<li><a href="/" on:click={drawerClose}>Start</a></li>
-		<li><a href="/teams" on:click={drawerClose}>Teams</a></li>
-		<li><a href="/wiki" on:click={drawerClose}>Wiki</a></li>
-		<li><a href="/info" on:click={drawerClose}>Info</a></li>
-	</ul>
-</nav>
+<Navbar class="border-b-2 border-primary-500 bg-white dark:bg-black striped">
+	<NavBrand href="/">
+		<img src="/favicon.png" class="me-3 h-12 sm:h-16" alt="Logo" />
+		<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+			Black Lions Landsberg
+		</span>
+	</NavBrand>
+
+	<NavHamburger />
+	<NavUl {activeUrl} {activeClass} {nonActiveClass}>
+		<NavLi href="/">Start</NavLi>
+		<NavLi href="/teams">Teams</NavLi>
+		<NavLi href="/wiki">Wiki</NavLi>
+		<NavLi href="/info">Info</NavLi>
+	</NavUl>
+	<DarkMode />
+</Navbar>
+
+<style>
+
+</style>
