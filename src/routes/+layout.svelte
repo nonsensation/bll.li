@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
+	import '../markdown.css';
 	import Navigation from '$lib/components/Navigation.svelte';
 	import BreadNav from '$lib/components/BreadNav.svelte';
 </script>

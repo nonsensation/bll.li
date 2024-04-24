@@ -16,7 +16,7 @@ published: true
 ---
 
 <script>
-  import Rating from './rating.svelte'
+  import Rating from '$lib/md-components/rating.svelte'
 </script>
 
 ## Schwedenkreisel
@@ -35,8 +35,6 @@ Sobald Spieler B den Pass gespielt hat, läuft dieser ebenfalls auf seiner Seite
 		{ label: 'Schuss 🏌️‍♀️', rating: 2 },
 		{ label: 'Laufen 🏃‍♀️', rating: 3 },
 		{ label: 'Pass 🏒', rating: 5 },
-	]}
-	ratings2={[
 		{ label: 'Angriff', rating: 2 },
 		{ label: 'Goalie 🥅', rating: 4 },
 	]}

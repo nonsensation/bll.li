@@ -2,11 +2,11 @@
 	export let ratings: { label: string; rating: number }[] = [];
 	export let ratings2: { label: string; rating: number }[] = [];
 	export let headerLabel: {
-		desc1: string;
-		desc2: string;
-		desc3: string;
-		link: { label: string; url: string };
-	};
+		desc1?: string;
+		desc2?: string;
+		desc3?: string;
+		link?: { label: string; url: string };
+	} = {};
 	export let desc1Class: string =
 		'bg-primary-100 w-8 text-primary-800 text-sm font-semibold inline-flex items-center p-1.5 rounded dark:bg-primary-200 dark:text-primary-800';
 	export let desc2Class: string = 'ms-2 w-24 font-medium text-gray-900 dark:text-white';
@@ -41,31 +41,17 @@
 	<slot name="globalText" />
 {/if}
 
-<div class="gap-8 sm:grid sm:grid-cols-2">
-	<div>
+<div class="flex flex-wrap">
 		{#each ratings as { label, rating }}
-			<dl>
-				<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</dt>
-				<dd class="flex items-center mb-3">
+			<dl class="px-4 w-full md:w-1/2 lg:w-1/3 xl:w-1/4">
+				<dt class="mt-4 text-sm font-medium text-gray-500">{label}</dt>
+				<dd class="w-full flex items-center my-0 ps-0">
 					<div class="w-full bg-gray-200 rounded h-2.5 dark:bg-gray-700 me-2">
 						<div class={barColor} style="width: {rating * 10}%" />
 					</div>
-					<span class="text-sm font-medium text-gray-500 dark:text-gray-400">{rating}</span>
+					<span class="text-sm font-medium text-gray-500">{rating}</span>
 				</dd>
 			</dl>
 		{/each}
-	</div>
-	<div>
-		{#each ratings2 as { label, rating }}
-			<dl>
-				<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</dt>
-				<dd class="flex items-center mb-3">
-					<div class="w-full bg-gray-200 rounded h-2.5 dark:bg-gray-700 me-2">
-						<div class={barColor} style="width: {rating * 10}%" />
-					</div>
-					<span class="text-sm font-medium text-gray-500 dark:text-gray-400">{rating}</span>
-				</dd>
-			</dl>
-		{/each}
-	</div>
+
 </div>

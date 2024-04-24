@@ -21,7 +21,7 @@
 		<NavHamburger name={"Menu"} />
 		<NavUl {activeUrl} {activeClass} {nonActiveClass}>
 			<NavLi href="/">Start</NavLi>
-			<NavLi href="/teams">Teams</NavLi>
+			<NavLi href="/ons">Teams</NavLi>
 			<NavLi href="/wiki">Wiki</NavLi>
 			<NavLi href="/info">Info</NavLi>
 			<NavLi><DarkMode btnClass="" /></NavLi>

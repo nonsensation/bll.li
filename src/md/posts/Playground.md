@@ -18,8 +18,8 @@ function greet(name: string) {
 ### Custom Components
 
 <script>
-  import Counter from './counter.svelte'
-  import Rating from './rating.svelte'
+  import Counter from '$lib/md-components/counter.svelte'
+  import Rating from '$lib/md-components/rating.svelte'
 </script>
 
 #### Counter
@@ -48,8 +48,6 @@ Example:
 		{ label: 'Laufen', rating: 8 },
 		{ label: 'Technik', rating: 8 },
 		{ label: 'Pass', rating: 5 },
-	]}
-	ratings2={[
 		{ label: 'Angriff', rating: 8 },
 		{ label: 'Verteidigung', rating: 7 },
 		{ label: 'Goalie', rating: 8 },
