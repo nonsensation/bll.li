@@ -41,6 +41,6 @@ async function getMarkdown(category: 'posts' | 'tactic' | 'exersice' | 'rules') 
 
 export async function GET() {
 	const posts = await getMarkdown('posts');
-	console.dir(posts);
+	
 	return json(posts);
 }

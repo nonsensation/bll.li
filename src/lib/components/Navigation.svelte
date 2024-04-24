@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, DarkMode } from 'flowbite-svelte';
-	import BreadNav from './BreadNav.svelte';
+	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, DarkMode, Dropdown, DropdownItem } from 'flowbite-svelte';
 	$: activeUrl = $page.url.pathname;
 	let activeClass =
 		'p-4 font-bold text-white bg-primary-700 md:bg-transparent md:text-primary-700 md:dark:text-white dark:bg-primary-600 md:dark:bg-transparent';
@@ -21,7 +20,12 @@
 		<NavHamburger name={"Menu"} />
 		<NavUl {activeUrl} {activeClass} {nonActiveClass}>
 			<NavLi href="/">Start</NavLi>
-			<NavLi href="/ons">Teams</NavLi>
+			<NavLi>Teams</NavLi>
+			<Dropdown>
+				<DropdownItem href="/ons~Regio">Herren - Regio</DropdownItem>
+				<DropdownItem href="/ons~U15">Jugend - U15</DropdownItem>
+				<DropdownItem href="/ons~U11">Jugend - U11</DropdownItem>
+			  </Dropdown>
 			<NavLi href="/wiki">Wiki</NavLi>
 			<NavLi href="/info">Info</NavLi>
 			<NavLi><DarkMode btnClass="" /></NavLi>

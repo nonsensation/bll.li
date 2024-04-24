@@ -6,9 +6,5 @@ export async function load({ fetch , params }) {
 
 	const posts = allPosts.filter( p => p.categories.indexOf( params.tag ) !== -1 );
 
-	console.dir( allPosts );
-	console.dir( posts );
-	console.dir( params );
-
 	return { posts }
 }
