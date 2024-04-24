@@ -18,7 +18,7 @@
 			</span>
 		</NavBrand>
 
-		<NavHamburger name={"Menu"} />
+		<!-- <NavHamburger name={"Menu"} /> -->
 		<NavUl {activeUrl} {activeClass} {nonActiveClass}>
 			<NavLi href="/">Start</NavLi>
 			<NavLi href="/teams">Teams</NavLi>
