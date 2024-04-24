@@ -30,6 +30,8 @@ Spieler A wechselt zu Position von Spieler B, wo der vorangegangene Pass herkam 
 
 Sobald Spieler B den Pass gespielt hat, läuft dieser ebenfalls auf seiner Seite der Bande entlang zur Mittellinie und bekommt ebenfalls aus der gegenüberliegenden Ecke einen Pass gespielt.
 
+![Schwedenkreisel](/Schwedenkreisel.gif)
+
 <Rating
 	ratings={[
 		{ label: 'Schuss 🏌️‍♀️', rating: 2 },
