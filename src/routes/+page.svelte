@@ -10,7 +10,7 @@
 	<title>{config.title}</title>
 </svelte:head>
 
-<div class="container h-full mx-auto gap-8 flex flex-col">
+<div class="h-full mx-auto gap-8 flex flex-col">
 	<section>
 		<ul class="posts grid gap-2">
 			{#each data.posts as post}
