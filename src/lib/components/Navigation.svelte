@@ -14,7 +14,7 @@
 </script>
 
 <Navbar
-	class="border-b-2 text-black dark:text-white border-primary-500 dark:border-primary-500 bg-white dark:bg-black"
+	class="max-w-screen-xl text-black dark:text-white bg-white dark:bg-black"
 >
 	<NavBrand href="/">
 		<img src="/favicon.png" class="me-3 h-12 sm:h-16" alt="Logo" />
