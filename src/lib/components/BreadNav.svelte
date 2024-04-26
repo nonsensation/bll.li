@@ -23,14 +23,11 @@
 		{#each crumbs as c, i}
 			{#if i == 0}
 				<a href={c.href} class="flex gap-2">
-					<!-- <img
-						src="/icons/home.svg"
+					<img
+						src="/favicon.png"
 						alt=""
 						class="text-black dark:text-white w-[1.25rem] h-full object-fill"
-					/> -->
-					<svg class="text-black dark:text-white">
-						<use href="/icons/home.svg#img"></use>
-					</svg>
+					/>
 				</a>
 				<span class="">/</span>
 			{:else if i == crumbs.length - 1}
