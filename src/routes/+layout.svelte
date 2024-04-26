@@ -52,7 +52,7 @@
 			class="flex flex-col items-center md:flex-row md:justify-between w-full max-w-screen-xl px-[5%]"
 		>
 			<ul class="flex gap-4 items-center">
-				<li><DarkMode></DarkMode></li>
+				<li><DarkMode size="lg"></DarkMode></li>
 				<li><a href="/">Start</a></li>
 				<li><a href="/wiki">Wiki</a></li>
 				<li><a href="/info">Info</a></li>
