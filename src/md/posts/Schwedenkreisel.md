@@ -17,6 +17,7 @@ published: true
 
 <script>
   import Rating from '$lib/md-components/rating.svelte'
+  import BoardImg from '$lib/md-components/BoardImg.svelte'
 </script>
 
 ## Schwedenkreisel
@@ -30,7 +31,7 @@ Spieler A wechselt zu Position von Spieler B, wo der vorangegangene Pass herkam 
 
 Sobald Spieler B den Pass gespielt hat, läuft dieser ebenfalls auf seiner Seite der Bande entlang zur Mittellinie und bekommt ebenfalls aus der gegenüberliegenden Ecke einen Pass gespielt.
 
-![Schwedenkreisel](/Schwedenkreisel.gif)
+<BoardImg src="/Schwedenkreisel.gif" --hue="155deg"/>
 
 <Rating
 	ratings={[
