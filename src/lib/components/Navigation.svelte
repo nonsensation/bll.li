@@ -8,15 +8,14 @@
 		'p-4 font-semibold text-gray-700 hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-primary-700 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent';
 </script>
 
-<Navbar let:NavContainer class="border-b-2 text-black dark:text-white border-primary-500 dark:border-primary-500 bg-white dark:bg-black">
-	<NavContainer class="">
+
+<Navbar  class="border-b-2 text-black dark:text-white border-primary-500 dark:border-primary-500 bg-white dark:bg-black">
 		<NavBrand href="/">
 			<img src="/favicon.png" class="me-3 h-12 sm:h-16" alt="Logo" />
 			<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
 				Black Lions Landsberg
 			</span>
 		</NavBrand>
-
 		<NavHamburger name={"Menu"} />
 		<NavUl {activeUrl} {activeClass} {nonActiveClass}>
 			<NavLi href="/">Start</NavLi>
@@ -30,7 +29,6 @@
 			<NavLi href="/info">Info</NavLi>
 			<NavLi><DarkMode btnClass="" /></NavLi>
 		</NavUl>
-	</NavContainer>
 </Navbar>
 
 
