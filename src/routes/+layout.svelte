@@ -6,8 +6,8 @@
 	import { NavBrand, NavHamburger, NavLi, NavUl, Navbar } from 'flowbite-svelte';
 </script>
 
-<div class="layout flex flex-col items-stretch gap-4 w-full h-full min-h-screen bg-red-white dark:bg-black text-black dark:text-white">
-	<header class="flex">
+<div class="container layout flex flex-col items-stretch gap-4 w-full h-full min-h-screen bg-red-white dark:bg-black text-black dark:text-white">
+	<header class="">
 		<Navigation />
 	</header>
 	<main class="flex flex-col flex-grow w-full justify-start items-center gap-4 px-[5%]">
