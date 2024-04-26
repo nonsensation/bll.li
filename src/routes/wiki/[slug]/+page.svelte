@@ -20,7 +20,7 @@
 		<!-- <p>Published at {formatDate(data.meta.date)}</p> -->
 	</hgroup>
 
-	<div class="flex tags m-4 text-center gap-2 justify-center text-sm font-light">
+	<div class="flex tags flex-wrap m-4 text-center gap-2 justify-center text-sm font-light">
 		{#each data.meta.categories as category}
 			<a
 				href="/wiki/tags/{category}"
