@@ -22,7 +22,7 @@
 			Black Lions Landsberg
 		</span>
 	</NavBrand>
-	<NavHamburger />
+	<NavHamburger name={""} />
 	<NavUl>
 		<NavLi href="/">Start</NavLi>
 		<NavLi href="/wiki">Wiki</NavLi>
