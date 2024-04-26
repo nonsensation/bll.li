@@ -6,7 +6,7 @@ export async function load({ fetch }) {
 
 	const allTags = posts.reduce((tags, post) => {
 		post.categories.forEach(tag => {
-			tags.add(tag);
+			tags.add(decodeURI(tag));
 		});
 		return tags;
 	}, new Set());

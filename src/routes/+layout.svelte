@@ -1,25 +1,20 @@
 <script lang="ts">
 	import '../app.postcss';
-	import '../markdown.css';
 	import BreadNav from '$lib/components/BreadNav.svelte';
 	import DarkMode from '$lib/components/DarkMode.svelte';
-
-	function toggleDarkMode() {
-		window.document.body.classList.toggle('dark-mode');
-	}
 </script>
 
 <div
-	class="layout grid gap-2 w-full h-full min-h-screen justify-stretch bg-white dark:bg-black text-black dark:text-white"
+	class="layout grid gap-2 w-full h-full min-h-screen justify-stretch bg-sf text-txt"
 >
-	<header class="w-full flex justify-center border-b-2 border-primary-600">
+	<header class="w-full flex justify-center border-b-2 border-prim">
 		<div
 			class="flex flex-col items-center md:flex-row md:justify-between w-full max-w-screen-xl px-[5%]"
 		>
 			<a class="flex" href="/">
 				<img src="/favicon.png" class="m-2 h-12 sm:h-16" alt="Logo" />
 				<span
-					class="hidden md:block self-center whitespace-nowrap text-xl font-semibold text-black dark:text-white"
+					class="hidden md:block self-center whitespace-nowrap text-xl font-semibold"
 				>
 					Black Lions Landsberg
 				</span>
@@ -48,17 +43,15 @@
 		</div>
 	</main>
 
-	<!-- max-w-screen-xl px-[5%] -->
-
-	<footer class="border-t-2 border-primary-600">
+	<footer class="border-t-2 border-prim">
 		<div
 			class="flex flex-col items-center md:flex-row md:justify-between w-full max-w-screen-xl px-[5%]"
 		>
 			<ul class="flex gap-4 items-center">
 				<li><DarkMode size="lg"></DarkMode></li>
-				<li><a href="/">Start</a></li>
-				<li><a href="/wiki">Wiki</a></li>
-				<li><a href="/info">Info</a></li>
+				<li><a class="hover:underline hover:text-prim" href="/">Start</a></li>
+				<li><a class="hover:underline hover:text-prim" href="/wiki">Wiki</a></li>
+				<li><a class="hover:underline hover:text-prim" href="/info">Info</a></li>
 			</ul>
 		</div>
 	</footer>

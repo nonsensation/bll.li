@@ -3,15 +3,15 @@ title: Schwedenkreisel
 description: "Übung: Schwedenkreisel"
 date: '2024-4-19'
 categories:
-  - Übung 🏃‍♀️
+  - Übung 🏃‍♀
   - Taktik 🏆
   - Goalie 🥅
   - Pass 🏒
-  - Schuss 🏌️‍♀️
-  - Laufen 🏃‍♀️
+  - Schuss 🏌
+  - Laufen 🏃‍♀
   - Spiel 🧠
 tags:
-  - Schuss 🏌️‍♀️
+  - Schuss 🏌
 published: true
 ---
 

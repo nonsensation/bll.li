@@ -11,7 +11,7 @@
 		crumbs = tokens.map((t) => {
 			tokenPath += '/' + t;
 			t = t.charAt(0).toUpperCase() + t.slice(1);
-			return { label: t, href: tokenPath };
+			return { label: decodeURI(t), href: tokenPath };
 		});
 
 		crumbs.unshift({ label: 'Start', href: '/' });

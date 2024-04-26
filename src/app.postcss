@@ -1,5 +1,12 @@
 
-@import url(https://fonts.googleapis.com/css?family=Vollkorn:400,400italic,700,700italic&subset=latin);
+/* @import url(https://fonts.googleapis.com/css?family=Vollkorn:400,400italic,700,700italic&subset=latin);
+@import url(https://fonts.googleapis.com/css?family=Quantico:400,400italic,700,700italic&subset=latin);
+@import url(https://fonts.googleapis.com/css?family=Quicksand:400,400italic,700,700italic&subset=latin);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic&subset=latin);
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,400italic,700,700italic&subset=latin);
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,400italic,700,700italic&subset=latin);
+@import url(https://fonts.googleapis.com/css?family=Inconsolata:400,400italic,700,700italic&subset=latin);
+@import url(https://fonts.googleapis.com/css?family=Ubuntu:400,400italic,700,700italic&subset=latin); */
 
 
 @tailwind base;
@@ -8,25 +15,61 @@
 @tailwind variants;
 
 
-:root {
-    /* all: unset; */
-
-    font: 1.3em "Vollkorn", Palatino, Times;
-
-    h1 {
-        @apply text-3xl text-center border-double border-b-4;
-      }
-      h2 {
-        @apply text-2xl underline font-bold;
-      }
-      h3 {
-        @apply text-xl font-semibold;
-      }
+@font-face{
+  font-family: 'Exo2';
+  src: url('/fonts/Exo_2/Exo2-VariableFont_wght.ttf') format('truetype');
 }
 
-html,
-body {
+@font-face{
+  font-family: 'Quicksand';
+  src: url('/fonts/Quicksand/Quicksand-VariableFont_wght.ttf') format('truetype');
+}
 
+@font-face{
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face{
+  font-family: 'Quantico';
+  src: url('/fonts/Quantico/Quantico-Regular.ttf') format('truetype');
+}
+
+@font-face{
+  font-family: 'SourceCodePro';
+  src: url('/fonts/Source_Code_Pro/SourceCodePro-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face{
+  font-family: 'UbuntuMono';
+  src: url('/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf') format('truetype');
+}
+
+:root {
+    all: unset;
+
+    font-family: "Quicksand";
+
+    font-size: 1.25rem;
+    font-weight: normal;
+  }
+
+:root {
+  --color-primary: crimson;
+  --color-secondary: rgb(128, 0, 107);
+  --color-text: black;
+  --color-text-secondary: #222222;
+  --color-surface: white;
+  --color-surface-secondary: #dddddd;
+}
+
+[data-theme="dark"],.dark {
+  --color-primary: crimson;
+  --color-secondary: rgb(117, 0, 128);
+  --color-text: white;
+  --color-text-secondary: #dddddd;
+  --color-surface: black;
+  --color-surface-secondary: #222222;
 }
 
 

@@ -1,6 +1,5 @@
 <script lang="ts">
 	export let ratings: { label: string; rating: number }[] = [];
-	export let ratings2: { label: string; rating: number }[] = [];
 	export let headerLabel: {
 		desc1?: string;
 		desc2?: string;
@@ -8,13 +7,13 @@
 		link?: { label: string; url: string };
 	} = {};
 	export let desc1Class: string =
-		'bg-primary-100 w-8 text-primary-800 text-sm font-semibold inline-flex items-center p-1.5 rounded dark:bg-primary-200 dark:text-primary-800';
-	export let desc2Class: string = 'ms-2 w-24 font-medium text-gray-900 dark:text-white';
-	export let desc3spanClass: string = 'mx-2 w-1 h-1 bg-gray-900 rounded-full dark:bg-gray-500';
-	export let desc3pClass: string = 'text-sm  w-24 font-medium text-gray-500 dark:text-gray-400';
+		'bg-psf w-8 text-prim text-sm font-semibold inline-flex items-center p-1.5 rounded';
+	export let desc2Class: string = 'ms-2 w-24 font-medium text-sf2';
+	export let desc3spanClass: string = 'mx-2 w-1 h-1 bg-sf2 rounded-full';
+	export let desc3pClass: string = 'text-sm  w-24 font-medium text-gray-500';
 	export let linkClass: string =
-		'ms-auto w-32 text-sm font-medium text-primary-600 hover:underline dark:text-primary-500';
-	export let barColor: string = 'bg-primary-600 h-2.5 rounded dark:bg-primary-500';
+		'ms-auto w-32 text-sm font-medium text-prim hover:underline';
+	export let barColor: string = 'bg-prim h-2.5 rounded';
 </script>
 
 <div class="flex items-center mb-5">
@@ -44,12 +43,12 @@
 <div class="flex flex-wrap">
 		{#each ratings as { label, rating }}
 			<dl class="px-4 w-full md:w-1/2 lg:w-1/3 xl:w-1/4">
-				<dt class="mt-4 text-sm font-medium text-gray-500">{label}</dt>
+				<dt class="mt-4 text-sm font-medium text-txt2">{label}</dt>
 				<dd class="w-full flex items-center my-0 ps-0">
-					<div class="w-full bg-gray-200 rounded h-2.5 dark:bg-gray-700 me-2">
+					<div class="w-full rounded h-2.5 bg-sf2 me-2">
 						<div class={barColor} style="width: {rating * 10}%" />
 					</div>
-					<span class="text-sm font-medium text-gray-500">{rating}</span>
+					<span class="text-sm font-medium text-txt2">{rating}</span>
 				</dd>
 			</dl>
 		{/each}

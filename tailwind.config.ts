@@ -7,12 +7,18 @@ export default {
 	darkMode: 'selector',
 	content: [
 		'./src/**/*.{html,js,svelte,ts}',
-		'./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}',
 	],
 	theme: {
 		extend: {
 			colors: {
 			  // flowbite-svelte
+			  prim: 'var(--color-primary,crimson)',
+			  prim2: 'var(--color-secondary,teal)',
+			  sf: 'var(--color-surface,white)',
+			  sf2: 'var(--color-surface-secondary,#dddddd)',
+			  txt: 'var(--color-text,#dddddd)',
+			  txt2: 'var(--color-text-secondary,#dddddd)',
+
 			  primary: {
 				50: '#ffdbe2',
 				100: '#ffcfd8',
@@ -24,12 +30,16 @@ export default {
 				700: '#bf0a2f',
 				800: '#990825',
 				900: '#7d061e',
-			  }
+			  },
+			  surface: {
+				light: '#ffffff',
+				dark: '#000000',
+			  },
 			}
 		},
 	},
 	plugins: [
-		require('flowbite/plugin'),
+		// require('flowbite/plugin'),
 		forms,
 		typography,
 	],
