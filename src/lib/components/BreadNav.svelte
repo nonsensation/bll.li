@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { Breadcrumb, BreadcrumbItem } from 'flowbite-svelte';
-
 	import { page } from '$app/stores';
 
 	let crumbs: Array<{ label: string; href: string }> = [];
@@ -20,16 +18,27 @@
 	}
 </script>
 
-<Breadcrumb
-	aria-label="Breadcrumbs"
-	class=""
-> 
-	{#each crumbs as c, i}
-		{#if i == crumbs.length - 1}
-			<BreadcrumbItem home={i==0}>{c.label}</BreadcrumbItem>
-		{:else}
-			<BreadcrumbItem home={i==0} href={c.href}>{c.label}</BreadcrumbItem>
-		{/if}
-	{/each}
-
-</Breadcrumb>
+{#if crumbs.length > 1}
+	<div aria-label="Breadcrumbs" class="flex gap-2 items-center leading-5">
+		{#each crumbs as c, i}
+			{#if i == 0}
+				<a href={c.href} class="flex gap-2">
+					<!-- <img
+						src="/icons/home.svg"
+						alt=""
+						class="text-black dark:text-white w-[1.25rem] h-full object-fill"
+					/> -->
+					<svg class="text-black dark:text-white">
+						<use href="/icons/home.svg#img"></use>
+					</svg>
+				</a>
+				<span class="">/</span>
+			{:else if i == crumbs.length - 1}
+				<span class="">{c.label}</span>
+			{:else}
+				<a href={c.href}>{c.label}</a>
+				<span class="">/</span>
+			{/if}
+		{/each}
+	</div>
+{/if}

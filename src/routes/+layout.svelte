@@ -1,9 +1,12 @@
 <script lang="ts">
 	import '../app.postcss';
 	import '../markdown.css';
-	import Navigation from '$lib/components/Navigation.svelte';
 	import BreadNav from '$lib/components/BreadNav.svelte';
-	import { DarkMode, NavBrand, NavHamburger, NavLi, NavUl, Navbar } from 'flowbite-svelte';
+	import DarkMode from '$lib/components/DarkMode.svelte';
+
+	function toggleDarkMode() {
+		window.document.body.classList.toggle('dark-mode');
+	}
 </script>
 
 <div

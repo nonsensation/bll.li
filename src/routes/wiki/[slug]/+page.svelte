@@ -21,7 +21,7 @@
     <div class="tags m-4 text-center">
         {#each data.meta.categories as category}
             <a href="/wiki/tags/{category}">
-                <Badge color="dark">&num;{category}</Badge>
+                <div class="dark">&num;{category}</div>
             </a>
         {/each}
     </div>
@@ -33,7 +33,6 @@
 
 <script lang="ts">
     import { formatDate } from '$lib/utils';
-	import { Badge } from 'flowbite-svelte';
 
     export let data;
 </script>
