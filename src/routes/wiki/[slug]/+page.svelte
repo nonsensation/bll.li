@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Tags from "$lib/components/Tags.svelte";
+
 	export let data;
 </script>
 
@@ -9,24 +11,17 @@
 </svelte:head>
 
 <article class="">
-	<!-- <hgroup class="">
+	<hgroup class="">
 		<h1 class="my-16 font-black text-3xl text-center border-double border-b-4">
 			<span class="text-transparent bg-clip-text bg-gradient-to-r to-prim from-prim2">
 				{data.meta.title}
 			</span>
 		</h1>
-	</hgroup> -->
+	</hgroup>
 
-	<div class="flex tags flex-wrap m-4 text-center gap-2 justify-center text-sm font-light">
-		{#each data.meta.categories as category}
-			<a
-				href="/wiki/tags/{category}"
-				class="category border rounded px-1 pt-[0.2rem] pb-[0.1rem] leading-4 hover:border-prim"
-			>
-				<div class="dark">&num;{category}</div>
-			</a>
-		{/each}
-	</div>
+
+	<Tags categories={data.meta.categories} />
+
 	<div class="">
 		<svelte:component this={data.content} />
 	</div>
