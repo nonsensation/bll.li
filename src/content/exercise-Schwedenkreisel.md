@@ -1,12 +1,12 @@
 ---
-slug: Schwedenkreisel
-title: Schwedenkreisel
+slug: 'Schwedenkreisel'
+title: 'Schwedenkreisel'
 description: "Aufwärmübung: Schwedenkreisel"
 date: '2024-4-19'
 category: 'exercise'
 tags:
-  - Schuss 🏌
-  - Einschießen 🏌
+  - 'Schuss 🏌'
+  - 'Einschießen 🏌'
 published: true
 ---
 

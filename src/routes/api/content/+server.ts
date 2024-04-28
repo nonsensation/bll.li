@@ -11,10 +11,15 @@ function getMarkdown() {
 
 		if (file && typeof file === 'object' && 'metadata' in file) {
 			let meta = file.metadata as Post;
+			const filename = path.split('/').at(-1)?.replace('.md', '')!
 
-			if (meta && !meta.slug) meta.slug = path.split('/').at(-1)?.replace('.md', '')!;
+			if (meta && !meta.slug) meta.slug = filename;
 
-			const post = { ...new Post(), ...meta, path };
+			const importPath = path.replace('/src/content/', '').replace('.md', '');
+
+			console.log(importPath)
+
+			const post = { ...new Post(), ...meta, path: importPath };
 
 			posts.push(post);
 		}

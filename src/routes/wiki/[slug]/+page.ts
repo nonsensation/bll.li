@@ -6,7 +6,7 @@ export async function load({ fetch, params }) {
 		const response = await fetch(`/api/content?slug=${params.slug}`)
 		const posts: Post[] = await response.json()
 		const post = posts[0]
-		const content = await import(/* @vite-ignore */post.path);
+		const content = await import(`./../../../content/${post.path}.md`);
 
 		return {
 			content: content.default,
