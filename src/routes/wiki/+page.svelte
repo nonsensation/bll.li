@@ -1,4 +1,7 @@
 <script lang="ts">
+    import Tags from "$lib/components/Tags.svelte";
+
+    export let data;
 </script>
 
-<a href="/wiki/tags">Kategorien & Tags</a>
+<Tags tags={data.tags}></Tags>

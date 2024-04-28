@@ -1,17 +1,12 @@
 ---
+slug: Schwedenkreisel
 title: Schwedenkreisel
-description: "Übung: Schwedenkreisel"
+description: "Aufwärmübung: Schwedenkreisel"
 date: '2024-4-19'
-categories:
-  - Übung 🏃‍♀
-  - Taktik 🏆
-  - Goalie 🥅
-  - Pass 🏒
-  - Schuss 🏌
-  - Laufen 🏃‍♀
-  - Spiel 🧠
+category: 'exercise'
 tags:
   - Schuss 🏌
+  - Einschießen 🏌
 published: true
 ---
 

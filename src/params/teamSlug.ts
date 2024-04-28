@@ -1,16 +1,13 @@
 /** @type {import('@sveltejs/kit').ParamMatcher} */
 
-import { getTeamBySlug } from "$lib/config/TeamInfo"
+import { getTeamBySlug } from '$lib/config/TeamInfo';
 
-export function match( param )
-{
-    const team = getTeamBySlug( param )
+export function match(param) {
+	const team = getTeamBySlug(param);
 
-    if( !team )
-    {
-        return false
-    }
+	if (!team) {
+		return false;
+	}
 
-    return true
+	return true;
 }
-

@@ -20,7 +20,7 @@
 	</hgroup>
 
 
-	<Tags categories={data.meta.categories} />
+	<Tags tags={data.meta.tags} />
 
 	<div class="">
 		<svelte:component this={data.content} />

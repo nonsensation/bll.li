@@ -1,11 +1,11 @@
 import type { Post } from '$lib/types'
 
 export async function load({ fetch }) {
-	const response = await fetch('/api/posts')
+	const response = await fetch('/api/content?all')
 	const posts: Post[] = await response.json()
 
 	const allTags = posts.reduce((tags, post) => {
-		post.categories.forEach(tag => {
+		post.tags.forEach(tag => {
 			tags.add(decodeURI(tag));
 		});
 		return tags;

@@ -1,10 +1,12 @@
 ---
+slug: Playground
 title: Playground
 description: Playground.
 date: '2023-4-14'
-categories:
-  - dev
+category: post
 published: true
+tags:
+	- lol
 ---
 
 ## Playground
