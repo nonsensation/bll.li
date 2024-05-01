@@ -4,7 +4,7 @@ export class Post {
 	path: string = ''
 	title: string = ''
 	slug: string = ''
-	description: string = ''
+	description?: string = ''
 	date: string = ''
 	tags: string[] = []
 	published: boolean = false

@@ -16,11 +16,11 @@ function getMarkdown() {
 			if (meta && !meta.slug) meta.slug = filename;
 
 			const importPath = path.replace('/src/content/', '').replace('.md', '');
-
-			console.log(importPath)
-
 			const post = { ...new Post(), ...meta, path: importPath };
 
+			if( !post.published )
+				continue;
+			
 			posts.push(post);
 		}
 	}
@@ -28,6 +28,7 @@ function getMarkdown() {
 	posts = posts.sort(
 		(first, second) => new Date(second.date).getTime() - new Date(first.date).getTime()
 	);
+
 
 	return posts;
 }

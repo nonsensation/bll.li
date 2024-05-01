@@ -1,12 +1,7 @@
+<Tags tags={data.tags} />
+
 <script lang="ts">
+    import Tags from '$lib/components/Tags.svelte';
 
-	export let data;
+    export let data;
 </script>
-
-<div class="tags">
-	{#each data.uniqueTags as tag}
-		<a href="/wiki/tags/{tag}">
-			<div color="dark">&num;{tag}</div>
-		</a>
-	{/each}
-</div>

@@ -7,7 +7,7 @@ category: 'exercise'
 tags:
   - 'Schuss 🏌'
   - 'Einschießen 🏌'
-published: true
+published: false
 ---
 
 <script>

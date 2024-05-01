@@ -10,7 +10,7 @@ export async function load({ fetch, params }) {
 
 		return {
 			content: content.default,
-			meta: content.metadata
+			meta: content.metadata as Post,
 		};
 	} catch (e) {
 		error(404, `Upps, die Seite '${params.slug}' ist leider nicht zu finden..`);

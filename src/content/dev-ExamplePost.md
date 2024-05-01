@@ -6,7 +6,7 @@ date: '2024-4-19'
 tags:
   - TODO handle null cats
 category: lol
-published: true
+published: false
 ---
 
 ## Static Page
