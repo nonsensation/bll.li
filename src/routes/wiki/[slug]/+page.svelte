@@ -18,17 +18,19 @@
     }
 
     :global(.md h4) {
-        margin-top: 0.5em;
+        margin-block: 1em;
         @apply text-lg font-semibold;
     }
 
     :global(.md h5) {
-        margin-top: 0.5em;
+        margin-block: 1em;
+
         @apply text-base font-semibold;
     }
 
     :global(.md h6) {
-        margin-top: 0.5em;
+        margin-block: 1em;
+
         @apply text-base font-normal;
     }
 
