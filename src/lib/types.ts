@@ -1,6 +1,8 @@
 export type Category = 'post' | 'exercise' | 'tactic' | 'wiki' | 'abc'
+export type Layout = '' | 'exercise'
 
 export class Post {
+	layout: Layout = ''
 	path: string = ''
 	title: string = ''
 	slug: string = ''

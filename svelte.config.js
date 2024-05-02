@@ -13,7 +13,8 @@ import rehypeSlug from 'rehype-slug'
 const mdsvexOptions = {
 	extensions: ['.md'],
 	layout: {
-		_: './src/mdsvex.svelte'
+		exercise: './src/lib/mdsvex/layouts/exercise.svelte',
+		_: './src/lib/mdsvex/layouts/default.svelte',
 	},
 	highlight: {
 		highlighter: async (code, lang = 'text') => {

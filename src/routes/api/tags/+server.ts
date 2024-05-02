@@ -1,7 +1,6 @@
 
 import { json } from '@sveltejs/kit';
 import { Post } from '$lib/types';
-import type { publicDecrypt } from 'crypto'
 
 export async function GET({ fetch }) {
 
@@ -14,7 +13,6 @@ export async function GET({ fetch }) {
             post.tags
                 .filter( tag => tag !== null )
                 .forEach( tag => {
-                    console.log(tag)
                     tags.add( decodeURI( tag ) );
                 } );
             return tags;

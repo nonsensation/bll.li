@@ -5,13 +5,12 @@ description: 'Floorball-ABC'
 date: '2024-4-19'
 category: abc
 tags:
-  - Schuss 🏌
+	-
 published: true
-layout: post
 ---
 
 <script>
-  import Rating from '$lib/md-components/rating.svelte'
+  import {Rating} from '$lib/mdsvex/components'
 </script>
 
 <fieldset>

@@ -20,8 +20,7 @@ function greet(name: string) {
 ### Custom Components
 
 <script>
-  import Counter from '$lib/md-components/counter.svelte'
-  import Rating from '$lib/md-components/rating.svelte'
+  import {Rating,Counter} from  '$lib/mdsvex/components'
 </script>
 
 #### Counter

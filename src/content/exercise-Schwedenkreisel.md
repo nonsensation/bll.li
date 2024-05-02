@@ -11,8 +11,7 @@ published: false
 ---
 
 <script>
-  import Rating from '$lib/md-components/rating.svelte'
-  import BoardImg from '$lib/md-components/BoardImg.svelte'
+  import {Rating,BoardImg} from '$lib/mdsvex/components'
 </script>
 
 ## Schwedenkreisel

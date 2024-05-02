@@ -13,6 +13,6 @@ export async function load({ fetch, params }) {
 			meta: content.metadata as Post,
 		};
 	} catch (e) {
-		error(404, `Upps, die Seite '${params.slug}' ist leider nicht zu finden..`);
+		error(404, `Upps, die Seite '${params.slug}' ist leider nicht zu finden.. (${e})`);
 	}
 }

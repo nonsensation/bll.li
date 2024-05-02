@@ -10,7 +10,7 @@
     // See: https://github.com/pngwn/MDsveX/discussions/549
 
 	import { page } from '$app/stores';
-    import LINK from '../icons/LINK.svelte';
+    import LINK from '$lib/components/icons/LINK.svelte';
 
     let data: HTMLElement;
     let id: string;
