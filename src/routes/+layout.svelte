@@ -21,20 +21,20 @@
 			</a>
 
 			<ul class="flex gap-4 items-center">
-				<li><DarkMode></DarkMode></li>
-				<li><a href="/">Start</a></li>
-				<li><a href="/wiki">Wiki</a></li>
-				<li><a href="/info">Info</a></li>
+				<li class="list-none"><DarkMode></DarkMode></li>
+				<li class="list-none"><a class="text-txt font-bold hover:text-prim" href="/">Start</a></li>
+				<li class="list-none"><a class="text-txt font-bold hover:text-prim" href="/wiki">Wiki</a></li>
+				<li class="list-none"><a class="text-txt font-bold hover:text-prim" href="/info">Info</a></li>
 			</ul>
 		</div>
 	</header>
 
-	<main class="w-full flex justify-center overflow-hidden">
+	<main class="w-full flex justify-center">
 		<div class="w-full max-w-screen-xl px-[5%] flex flex-col gap-2">
 			<div class="page-header">
 				<BreadNav />
 			</div>
-			<div class="page-content flex-grow">
+			<div class="page-content flex-grow w-full">
 				<slot />
 			</div>
 			<div class="page-footer">
@@ -44,21 +44,16 @@
 	</main>
 
 	<footer class="border-t-2 border-prim">
-		<div
-			class="flex flex-col items-center md:flex-row md:justify-between w-full max-w-screen-xl px-[5%]"
-		>
-			<ul class="flex gap-4 items-center">
-				<li><DarkMode size="lg"></DarkMode></li>
-				<li><a class="hover:underline hover:text-prim" href="/">Start</a></li>
-				<li><a class="hover:underline hover:text-prim" href="/wiki">Wiki</a></li>
-				<li><a class="hover:underline hover:text-prim" href="/info">Info</a></li>
-			</ul>
-		</div>
+
 	</footer>
 </div>
 
 <style>
 	.layout {
 		grid-template-rows: auto 1fr auto;
+	}
+
+	.page-content {
+		flex: 1 1 0;
 	}
 </style>

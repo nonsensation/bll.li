@@ -1,6 +1,8 @@
-<style></style>
+<style>
 
-<h2 bind:this={data} {id}>
+</style>
+
+<h2 bind:this={data} {id} class="text-xl font-bold py-4 underline">
     <slot /><button on:click={() => navigator.clipboard.writeText(window.location.href.replace(/#.*$/, '') + '#' + id)}>
         <LINK href={$page.url.pathname + "#" + encodeURI( id )} />
     </button>

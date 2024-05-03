@@ -46,7 +46,7 @@
 }
 
 :root {
-    all: unset;
+    /* all: unset; */
 
     font-family: "Quicksand";
 
@@ -73,6 +73,30 @@
 }
 
 
+
+
+pre, :not(pre) > code {
+  font-family: 'Consolas' monospace;
+
+  @apply my-4 text-txt bg-sf rounded px-[0.3em] py-[0.1em] text-[90%] border border-sf2;
+}
+
+pre {
+  @apply p-2 text-txt2 leading-4 w-full ;
+  /* overflow-x: auto; */
+  white-space: pre-wrap;
+  /* display: block; */
+}
+
+
+
+
+
+
+
+
+
+
 .striped {
     --bg: url('$lib/assets/bg-stripes-45.png');
 
@@ -88,7 +112,7 @@
 }
 
 
-
+/* ABC */
 fieldset {
   margin-block: 2rem;
   border: 1px solid var(--color-surface-secondary);
@@ -97,16 +121,14 @@ fieldset {
   legend {
     margin-left: 1rem;
     padding-inline: 0.5rem;
-    /* font-weight: bold; */
+    font-weight: bold;
     font-size: 80%;
-    /* border: 1px solid var(--color-surface-secondary);
-    border-radius: 0.5rem; */
+    border: 1px solid var(--color-surface-secondary);
+    border-radius: 0.5rem;
   }
 
-  display: flex;
-  flex-direction: column;
-  /* gap: 1rem; */
-
+  /* display: flex; */
+  /* flex-direction: column; */
 
   details {
     border-radius: 4px;
@@ -116,7 +138,7 @@ fieldset {
       margin: -0.5em -0.5em 0;
       padding: 0.5em;
       cursor: pointer;
-      /* font-weight: bold; */
+      font-weight: bold;
       user-select: none;
 
       &:hover {
@@ -125,8 +147,7 @@ fieldset {
     }
 
     &:not(open) summary:hover {
-      /* background-color: var(--color-surface-secondary); 
-      border-radius: 4px;*/
+      background-color: var(--color-surface-secondary); 
     }
 
     &[open] {
@@ -144,3 +165,58 @@ fieldset {
     }
   }
 }
+
+ul {
+  list-style-type: disc;
+  padding-inline-start: 1em;
+}
+
+h2 {
+  margin-block: 1em;
+  @apply text-2xl font-bold;
+}
+
+h3 {
+  margin-block: 1em;
+  @apply text-xl font-semibold;
+}
+
+h4 {
+  margin-block: 1em;
+  @apply text-lg font-semibold;
+}
+
+h5 {
+  margin-block: 1em;
+
+  @apply text-base font-semibold;
+}
+
+h6 {
+  margin-block: 1em;
+
+  @apply text-base font-normal;
+}
+
+p {
+  margin-top: 0;
+  hyphens: auto;
+  text-align: justify;
+  line-height: 150%;
+  margin-block: 0.5em;
+  letter-spacing: 120%;
+}
+
+a {
+  @apply text-prim
+}
+
+a:hover {
+  @apply underline
+}
+
+ul li {
+  @apply list-disc ml-4 pl-2
+}
+
+
