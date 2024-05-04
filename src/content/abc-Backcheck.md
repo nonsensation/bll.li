@@ -4,8 +4,6 @@ title: "Defensivtaktik: Backchecking"
 description: 'Defensivtaktik: Backchecking'
 date: '2024-05-03'
 category: abc
-tags:
-	-
 published: true
 ---
 

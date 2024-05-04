@@ -1,22 +1,30 @@
 <style>
+    details[disabled] summary,
+    details.disabled summary {
+        pointer-events: none; /* prevents click events */
+        user-select: none; /* prevents text selection */
+        color: var(--color-surface-secondary);
+    }
 </style>
 
 <!-- min-w-0 see: https://stackoverflow.com/a/29559974/11341498 -->
-<!-- <fieldset class="min-w-0 w-[50%]"> -->
-    <!-- <legend>Begriffe</legend> -->
+<fieldset class="min-w-0">
+    <legend>Begriffe</legend>
 
     {#each uppercaseAlphabet as letter}
-        <!-- <details id={letter} open class=""> -->
-            <!-- <summary>{letter}</summary> -->
+        <details id={letter} class="" class:disabled={data.posts.filter((t) => t.slug.startsWith(letter)).length == 0}>
+            <summary>{letter}</summary>
             <!-- {#each terms.filter((t) => t.startsWith(letter)) as term} -->
-            {#each data.posts.filter((t) => t.slug.startsWith(letter)) as term, idx}
-                <h4 class="" id={encodeURI(term.slug)}>{term.slug}</h4>
-                <p>{data.posts[idx].description}</p>
-                <svelte:component this={data.contents[idx]} />
+            {#each data.posts.filter((t) => t.slug.startsWith(letter)) as post, idx}
+                <a href="/wiki/{post.slug}">
+                    <h4 class="" id={encodeURI(post.slug)}>{post.slug}</h4>
+                    <p>{post.description}</p>
+                </a>
+                <!-- <svelte:component this={data.contents[idx]} /> -->
             {/each}
-        <!-- </details> -->
+        </details>
     {/each}
-<!-- </fieldset> -->
+</fieldset>
 
 <script lang="ts">
     export let data;
