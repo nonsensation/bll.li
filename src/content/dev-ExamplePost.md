@@ -6,7 +6,15 @@ date: '2024-4-19'
 tags:
   - TODO handle null cats
 category: lol
-published: false
+published: true
 ---
 
-## Static Page
+<script>
+  import {YT} from  '$lib/mdsvex/components'
+</script>
+
+## YT-Videos
+
+<YT id="h3GauavBPtE"/>
+
+LOL

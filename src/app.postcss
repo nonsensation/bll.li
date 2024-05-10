@@ -49,6 +49,8 @@
     /* all: unset; */
 
     font-family: "Quicksand";
+    font-family: "Montserrat";
+    /* font-family: Roboto,Arial,Helvetica,sans-serif; */
 
     font-size: 100%;
     font-weight: normal;
@@ -207,12 +209,15 @@ p {
   letter-spacing: 120%;
 }
 
-a {
-  @apply text-prim
+
+.md {
+  a {
+    @apply text-prim hover:underline;
+  }
 }
 
 a:hover {
-  @apply underline
+  @apply text-prim;
 }
 
 ul li {
