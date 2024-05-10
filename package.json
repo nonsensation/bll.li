@@ -44,7 +44,6 @@
   "dependencies": {
     "@floating-ui/dom": "1.6.3",
     "floorball-saisonmanager": "github:nonsensation/floorball-saisonmanager",
-    "floorball-saisonmanager-static": "github:nonsensation/floorball-saisonmanager-static",
     "highlight.js": "11.9.0",
     "rehype-slug": "^6.0.0",
     "remark-toc": "^9.0.0",

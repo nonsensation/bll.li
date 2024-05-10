@@ -17,7 +17,6 @@ published: true
 
 ## PDF
 
-Pause vor Verl\u00c3\u00a4ngerung
 
 - [Team Tactics: Teaching Team Tactics in Floorball - Instruction and Drills](http://www.floorball.org/materiaalit/teamtactics_www.pdf) (_floorball.org_)
 - [The Floorball Book - Formations and Tactics](http://www.htg.tartu.ee/~siim/saalihoki/Tactics) (_htg.tartu.ee/~siim/saalihoki_)

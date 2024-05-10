@@ -1,10 +1,15 @@
 
 import { SM } from 'floorball-saisonmanager'
 
+
 export async function load({ fetch }) {
 
-    const response = await fetch('/Saisonmanager/api/v2/leagues.json')
-    const leagues = await response.json() as SM.LeaguePreview[]
+
+    // const response = await fetch('$SM/api/v2/leagues.json?url')
+    // const leagues = await response.json() as SM.LeaguePreview[]
+
+    const response = await import('$SM/api/v2/leagues.json');
+    const leagues = response.default as SM.LeaguePreview[]
 
     leagues.sort((lhs, rhs) => {
         const seasonComparison = parseInt(rhs.season) - parseInt(lhs.season);

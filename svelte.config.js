@@ -6,7 +6,7 @@ import { mdsvex, escapeSvelte } from 'mdsvex'
 // import remarkUnwrapImages from 'remark-unwrap-images'
 // import remarkToc from 'remark-toc'
 // import rehypeSlug from 'rehype-slug'
-
+import path from 'path';
 
 
 /** @type {import('mdsvex').MdsvexOptions} */
@@ -69,6 +69,10 @@ const config = {
 		// If your environment is not supported or you settled on a specific environment, switch out the adapter.
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter(),
-	}
+		alias: {
+			'$SM': path.resolve('node_modules/floorball-saisonmanager/static') ,
+		}
+	},
+	
 }
 export default config
