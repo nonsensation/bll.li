@@ -44,9 +44,11 @@ async function getData<T>( event : ServerLoadEvent , apiUrl : string  ) : Promis
     try
     {
         // remove .json file extension for vite-import
-        const parsed = path.parse( apiUrl )
-        const apiName = path.join( parsed.dir , parsed.name )
-        const imported = await import( `./$SM/api/v2/${apiName}.json` )
+        // const parsed = path.parse( apiUrl )
+        // const apiName = path.join( parsed.dir , parsed.name )
+        // const imported = await import( `./$SM/api/v2/${apiName}.json` )
+
+        const imported = await import( /* @vite-ignore */ `/floorball-saisonmanager-data/api/v2/${apiUrl}` )
         
         return await imported.default
     }
