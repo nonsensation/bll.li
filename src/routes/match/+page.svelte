@@ -20,25 +20,48 @@
 {:then game}
     {#if game && visible}
         <div transition:fade class="timeline w-full">
-            <div class="events">
-                <div class="header sticky top-0 grid grid-cols-3 border-b rounded py-4 mb-4 bg-sf *:flex *:place-content-center">
+            <div class="events flex flex-col gap-y-4 mb-32">
+                <div
+                    class="header sticky top-0 grid grid-cols-3 border-b border-b-prim rounded py-4 mb-4 bg-sf *:flex *:place-content-center *:flex-col *:items-center"
+                >
                     <div class="home">
-                        <img src="/favicon.png" alt="" class="max-h-32 max-w-full" />
+                        <img src="/favicon.png" alt="" class="h-[15vw] max-h-32 max-w-full" />
+                        <div class="name">{game.home_team_name}</div>
                     </div>
-                    <div class="score flex-col items-center">
+                    <div class="score">
                         <div class="score">8-2</div>
                         <div class="score">8-2</div>
                         <div class="score">8-2</div>
                         <div class="score">8-2</div>
                     </div>
                     <div class="guest">
-                        <img src="/favicon.png" alt="" class="max-h-32 max-w-full" />
+                        <img src="/favicon.png" alt="" class="h-[15vw] max-h-32 max-w-full" />
+                        <div class="name">{game.guest_team_name}</div>
                     </div>
                 </div>
                 {#each game.events as event}
                     {@const { min, sec } = extractTime(event.time)}
                     {@const team = event.event_team}
+                    {@const displayGoals = event.event_type == SM.EventType.Goal}
+                    {@const displayNumber =
+                        event.event_type == SM.EventType.Goal && event.goal_type != SM.GoalType.Owngoal}
+
                     <div class="event *:row-start-1 *:border-b *:border-sf2 *:p-2">
+                        <div class="col-[middle] *:grid *:grid-cols-[1fr,auto,1fr]">
+                            <div class="time text-txt2">
+                                <span class="min place-self-end">{min}</span>
+                                <span class="">:</span>
+                                <span class="sec">{sec}</span>
+                            </div>
+                            {#if displayGoals}
+                                <div class="goals font-bold text-3xl border-sf2 rounded-xl text-center">
+                                    <span class="">{event.home_goals}</span>
+                                    <span class="">-</span>
+                                    <span class="">{event.guest_goals}</span>
+                                </div>
+                            {/if}
+                        </div>
+
                         {#if event.event_type == SM.EventType.Goal}
                             <div class="col-[{team}-status]">
                                 {#if event.goal_type}
@@ -54,24 +77,25 @@
                                 {/if}
                             </div>
 
-                            <div class="col-[{team}-player]">
-                                {event.number}
-                            </div>
-                            <div class="col-[{team}-logo]">
-                                <img src="/favicon.png" alt="" class="md:hidden" />
-                            </div>
+                            {#if displayNumber}
+                                {@const p = getPlayerByNumber(game, team, event.number)}
+                                <div class="col-[{team}-player] ">
+                                    <div class="">
+                                        <div class="">#{event.number} {p.player_firstname} {p.player_name}</div>
+                                        {#if event.assist}
+                                            {@const a = getPlayerByNumber(game, team, event.assist)}
+                                            <div class="text-txt2 text-sm">
+                                                #{event.assist}
+                                                {a.player_firstname}
+                                                {a.player_name}
+                                            </div>
+                                        {/if}
+                                    </div>
+                                </div>
+                            {/if}
 
-                            <div class="col-[middle] *:grid *:grid-cols-[1fr,auto,1fr]">
-                                <div class="time text-txt2">
-                                    <span class="min place-self-end">{min}</span>
-                                    <span class="">:</span>
-                                    <span class="sec">{sec}</span>
-                                </div>
-                                <div class="goals font-bold text-3xl border-sf2 rounded-xl text-center">
-                                    <span class="">{event.home_goals}</span>
-                                    <span class="">-</span>
-                                    <span class="">{event.guest_goals}</span>
-                                </div>
+                            <div class="col-[{team}-logo]">
+                                <img src="/favicon.png" alt="" class="" />
                             </div>
                         {:else if event.event_type == SM.EventType.Penalty}
                             <div class="col-[{team}-status]">Strafe</div>
@@ -141,6 +165,15 @@
         players.sort((p1, p2) => p1.trikot_number - p2.trikot_number);
 
         return players;
+    }
+
+    function getPlayerByNumber(game: SM.MatchReport, team: string, num: number) {
+        const teamPlayers: SM.Player[] = game.players[team];
+
+        console.dir(teamPlayers);
+        console.dir(num);
+
+        return teamPlayers.filter( p => p.trikot_number == num)[0];
     }
 
     function extractTime(time: string) {
