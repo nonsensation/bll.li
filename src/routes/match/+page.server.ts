@@ -67,13 +67,15 @@ async function getData<T>( event : ServerLoadEvent , apiUrl : string  ) : Promis
         }
 
         const liveApi = 'https://saisonmanager.de/api/v2'
-        const response = await event.fetch( path.normalize( `${liveApi}/${apiUrl}` ) , {
-                // signal: AbortSignal.timeout( 5000 ) ,
-            } )
+        const smUrl = path.normalize( `${liveApi}/${apiUrl}` )
+        const response = await event.fetch( smUrl )//,
+            //  {
+            //     // signal: AbortSignal.timeout( 5000 ) ,
+            // } )
     
         if( !response.ok )
         {
-            error( 404 , 'saisonmanager.de api not ok' )
+            error( 404 , 'saisonmanager.de api not ok - tried: ' + smUrl )
         }
     
         return await response.json() as T
