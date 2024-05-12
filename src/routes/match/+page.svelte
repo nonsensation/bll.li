@@ -2,14 +2,25 @@
     .event {
         display: grid;
         grid-template-columns:
-            [home-logo] 5em
-            [home-player] 1fr
-            [home-status] 5em
             [middle] 7ch
-            [guest-status] 5em
-            [guest-player] 1fr
-            [guest-logo] 5em;
+            [status home_status guest_status] 1fr
+            [player home_player guest_player] 3fr
+            [logo home_logo guest_logo] 3em;
     }
+    
+    @media (min-width: 768px) {
+        .event {
+            display: grid;
+            grid-template-columns:
+                [home_logo] 5em
+                [home_player] 3fr
+                [home_status] 1fr
+                [middle] 5em
+                [guest_status] 1fr
+                [guest_player] 3fr
+                [guest_logo] 5em;
+        }
+    } 
 </style>
 
 {#await data.game}
@@ -29,10 +40,7 @@
                         <div class="name">{game.home_team_name}</div>
                     </div>
                     <div class="score">
-                        <div class="score">8-2</div>
-                        <div class="score">8-2</div>
-                        <div class="score">8-2</div>
-                        <div class="score">8-2</div>
+                        <div class="score">{game.home_team_name} - {game.home_team_name}</div>
                     </div>
                     <div class="guest">
                         <img src="/favicon.png" alt="" class="h-[15vw] max-h-32 max-w-full" />
@@ -44,9 +52,14 @@
                     {@const team = event.event_team}
                     {@const displayGoals = event.event_type == SM.EventType.Goal}
                     {@const displayNumber =
-                        event.event_type == SM.EventType.Goal && event.goal_type != SM.GoalType.Owngoal}
+                        (event.event_type == SM.EventType.Goal && event.goal_type != SM.GoalType.Owngoal) ||
+                        event.event_type == SM.EventType.Penalty}
+                    {@const displayLogo =
+                        displayNumber ||
+                        event.event_type == SM.EventType.Timeout ||
+                        (event.event_type == SM.EventType.Goal && event.goal_type == SM.GoalType.Owngoal)}
 
-                    <div class="event *:row-start-1 *:border-b *:border-sf2 *:p-2">
+                    <div class="event *:row-start-1 *:border-b *:border-sf2 *:p-2 hover:bg-sf3 rounded-xl">
                         <div class="col-[middle] *:grid *:grid-cols-[1fr,auto,1fr]">
                             <div class="time text-txt2">
                                 <span class="min place-self-end">{min}</span>
@@ -54,7 +67,7 @@
                                 <span class="sec">{sec}</span>
                             </div>
                             {#if displayGoals}
-                                <div class="goals font-bold text-3xl border-sf2 rounded-xl text-center">
+                                <div class="goals font-bold text-xl sm:text-3xl border-sf2 rounded-xl text-center">
                                     <span class="">{event.home_goals}</span>
                                     <span class="">-</span>
                                     <span class="">{event.guest_goals}</span>
@@ -62,47 +75,59 @@
                             {/if}
                         </div>
 
-                        {#if event.event_type == SM.EventType.Goal}
-                            <div class="col-[{team}-status]">
-                                {#if event.goal_type}
-                                    {#if event.goal_type == SM.GoalType.Owngoal}
-                                        <FLOORBALL /> Eigentor
-                                    {:else if event.goal_type == SM.GoalType.Regular}
-                                        <FLOORBALL /> Tor
-                                    {:else if event.goal_type == 'penalty_shot'}
-                                        <FLOORBALL /> Penalty
-                                    {:else}
-                                        ???
-                                    {/if}
-                                {/if}
-                            </div>
-
-                            {#if displayNumber}
-                                {@const p = getPlayerByNumber(game, team, event.number)}
-                                <div class="col-[{team}-player] ">
-                                    <div class="">
-                                        <div class="">#{event.number} {p.player_firstname} {p.player_name}</div>
-                                        {#if event.assist}
-                                            {@const a = getPlayerByNumber(game, team, event.assist)}
-                                            <div class="text-txt2 text-sm">
-                                                #{event.assist}
-                                                {a.player_firstname}
-                                                {a.player_name}
-                                            </div>
+                        <div class="col-[{team}_status] *:flex *:items-center *:justify-stretch *:flex-col text-center">
+                            {#if event.event_type == SM.EventType.Goal}
+                                <div class="">
+                                    {#if event.goal_type}
+                                        {#if event.goal_type == SM.GoalType.Owngoal}
+                                            <FLOORBALL /> Eigentor
+                                        {:else if event.goal_type == SM.GoalType.Regular}
+                                            <FLOORBALL /> Tor
+                                        {:else if event.goal_type == 'penalty_shot'}
+                                            <FLOORBALL /> Penalty
+                                        {:else}
+                                            ???
                                         {/if}
+                                    {/if}
+                                </div>
+                            {:else if event.event_type == SM.EventType.Penalty}
+                                <div class="">
+                                    <div class="">Strafe {event.penalty_type_string}</div>
+                                    <div class="text-txt2 text-sm">
+                                        {event.penalty_reason_string}
                                     </div>
                                 </div>
+                            {:else if event.event_type == SM.EventType.Timeout}
+                                <div class="">
+                                    <TIMEOUT />
+                                    <div class="">Auszeit</div>
+                                </div>
+                            {:else}
+                                <div class=""><div class="">???</div></div>
                             {/if}
+                        </div>
 
-                            <div class="col-[{team}-logo]">
-                                <img src="/favicon.png" alt="" class="" />
+                        <div class="col-[{team}_player]">
+                            {#if displayNumber}
+                                {@const p = getPlayerByNumber(game, team, event.number)}
+                                <div class="">
+                                    <div class="">#{event.number} {p.player_firstname} {p.player_name}</div>
+                                    {#if event.assist}
+                                        {@const a = getPlayerByNumber(game, team, event.assist)}
+                                        <div class="text-txt2 text-sm">
+                                            #{event.assist}
+                                            {a.player_firstname}
+                                            {a.player_name}
+                                        </div>
+                                    {/if}
+                                </div>
+                            {/if}
+                        </div>
+
+                        {#if displayLogo}
+                            <div class="col-[{team}_logo]">
+                                <img src="/favicon.png" alt="" class="w-[3em] md:w-[4em]" />
                             </div>
-                        {:else if event.event_type == SM.EventType.Penalty}
-                            <div class="col-[{team}-status]">Strafe</div>
-                        {:else if event.event_type == SM.EventType.Timeout}
-                            <div class="col-[{team}-status]">Auszeit</div>
-                        {:else}
-                            <div class="col-[{team}-status]">???</div>
                         {/if}
                     </div>
                 {/each}
@@ -153,6 +178,7 @@
     import TRIKOT from '$lib/components/icons/TRIKOT.svelte';
     import CAPTAIN from '$lib/components/icons/CAPTAIN.svelte';
     import HELMET from '$lib/components/icons/GOAL.svelte';
+    import TIMEOUT from '$lib/components/icons/GOAL.svelte';
 
     import { fade } from 'svelte/transition';
     import { SM } from 'floorball-saisonmanager';
@@ -173,7 +199,7 @@
         console.dir(teamPlayers);
         console.dir(num);
 
-        return teamPlayers.filter( p => p.trikot_number == num)[0];
+        return teamPlayers.filter((p) => p.trikot_number == num)[0];
     }
 
     function extractTime(time: string) {
