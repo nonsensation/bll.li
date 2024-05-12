@@ -8,7 +8,7 @@ export async function load({ fetch }) {
     // const response = await fetch('$SM/api/v2/leagues.json?url')
     // const leagues = await response.json() as SM.LeaguePreview[]
 
-    const response = await import( /* @vite-ignore */ `/floorball-saisonmanager-data/api/v2/leagues.json` )
+    const response = await import( /* @vite-ignore */ '/floorball-saisonmanager-data/data/api/v2/leagues.json' )
     const leagues = response.default as SM.LeaguePreview[]
 
     leagues.sort((lhs, rhs) => {

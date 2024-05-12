@@ -48,7 +48,7 @@ async function getData<T>( event : ServerLoadEvent , apiUrl : string  ) : Promis
         // const apiName = path.join( parsed.dir , parsed.name )
         // const imported = await import( `./$SM/api/v2/${apiName}.json` )
 
-        const imported = await import( /* @vite-ignore */ `/floorball-saisonmanager-data/api/v2/${apiUrl}` )
+        const imported = await import( /* @vite-ignore */ `/floorball-saisonmanager-data/data/api/v2/${apiUrl}` )
         
         return await imported.default
     }
