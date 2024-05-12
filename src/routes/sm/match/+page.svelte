@@ -53,6 +53,12 @@
         grid-column: guest_logo;
     }
 
+    @media (max-height: 1024px) {
+        .header {
+            position:relative;
+        }
+    }
+
     .ingame {
         @apply text-prim;
     }
