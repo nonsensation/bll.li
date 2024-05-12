@@ -13,7 +13,7 @@ importers:
         version: 1.6.3
       floorball-saisonmanager:
         specifier: github:nonsensation/floorball-saisonmanager
-        version: https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/fc58965323ada9f073a83191012a24a30e02bc3d
+        version: https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/f8d14348368b7a33b45afb57ee081f6ac9b3b487
       highlight.js:
         specifier: 11.9.0
         version: 11.9.0
@@ -108,6 +108,9 @@ importers:
       vite:
         specifier: ^5.0.3
         version: 5.2.11(@types/node@20.12.7)
+      vite-plugin-static-copy:
+        specifier: ^1.0.4
+        version: 1.0.4(vite@5.2.11(@types/node@20.12.7))
       vite-plugin-tailwind-purgecss:
         specifier: 0.3.1
         version: 0.3.1(tailwindcss@3.4.3)(vite@5.2.11(@types/node@20.12.7))
@@ -959,8 +962,8 @@ packages:
   flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
 
-  floorball-saisonmanager@https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/fc58965323ada9f073a83191012a24a30e02bc3d:
-    resolution: {tarball: https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/fc58965323ada9f073a83191012a24a30e02bc3d}
+  floorball-saisonmanager@https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/f8d14348368b7a33b45afb57ee081f6ac9b3b487:
+    resolution: {tarball: https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/f8d14348368b7a33b45afb57ee081f6ac9b3b487}
     version: 0.1.2
 
   flowbite-svelte@0.46.1:
@@ -978,6 +981,10 @@ packages:
 
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
+
+  fs-extra@11.2.0:
+    resolution: {integrity: sha512-PmDi3uwK5nFuXh7XDTlVnS17xJS7vW36is2+w3xcv8SVxiB4NyATf4ctkVY5bkSjX0Y4nbvZCq1/EjtEyr9ktw==}
+    engines: {node: '>=14.14'}
 
   fs-minipass@2.1.0:
     resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
@@ -1139,6 +1146,9 @@ packages:
 
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
+
+  jsonfile@6.1.0:
+    resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -1818,6 +1828,10 @@ packages:
   unist-util-visit@5.0.0:
     resolution: {integrity: sha512-MR04uvD+07cwl/yhVuVWAtw+3GOR/knlL55Nd/wAdblk27GCVt3lqpTivy/tkJcZoNPzTwS1Y+KMojlLDhoTzg==}
 
+  universalify@2.0.1:
+    resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
+    engines: {node: '>= 10.0.0'}
+
   update-browserslist-db@1.0.15:
     resolution: {integrity: sha512-K9HWH62x3/EalU1U6sjSZiylm9C8tgq2mSvshZpqc7QE69RaA2qjhkW2HlNA0tFpEbtyFz7HTqbSdN4MSwUodA==}
     hasBin: true
@@ -1832,6 +1846,12 @@ packages:
 
   vfile-message@2.0.4:
     resolution: {integrity: sha512-DjssxRGkMvifUOJre00juHoP9DPWuzjxKuMDrhNbk2TdaYYBNMStsNhEOt3idrtI12VQYM/1+iM0KOzXi4pxwQ==}
+
+  vite-plugin-static-copy@1.0.4:
+    resolution: {integrity: sha512-UtyOttgoeotSCwmBugsEZCZJZcIpjE9NGO7jlZ9OeedYpBueBdspD8waRZrjE+yQLH6qGNU2CvYB2FILviCQjg==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      vite: ^5.0.0
 
   vite-plugin-tailwind-purgecss@0.3.1:
     resolution: {integrity: sha512-woA+hT2vq2IDpJvc9zw/gMTKL4vINepiqsVvBm4AIZKGIUw7njXc2XiayuIo59wrasMQ7PGJxe6kiGpycGx1cg==}
@@ -2778,7 +2798,7 @@ snapshots:
 
   flatted@3.3.1: {}
 
-  floorball-saisonmanager@https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/fc58965323ada9f073a83191012a24a30e02bc3d: {}
+  floorball-saisonmanager@https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/f8d14348368b7a33b45afb57ee081f6ac9b3b487: {}
 
   flowbite-svelte@0.46.1(svelte@4.2.16):
     dependencies:
@@ -2799,6 +2819,12 @@ snapshots:
       signal-exit: 4.1.0
 
   fraction.js@4.3.7: {}
+
+  fs-extra@11.2.0:
+    dependencies:
+      graceful-fs: 4.2.11
+      jsonfile: 6.1.0
+      universalify: 2.0.1
 
   fs-minipass@2.1.0:
     dependencies:
@@ -2961,6 +2987,12 @@ snapshots:
   json-schema-traverse@0.4.1: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
+
+  jsonfile@6.1.0:
+    dependencies:
+      universalify: 2.0.1
+    optionalDependencies:
+      graceful-fs: 4.2.11
 
   keyv@4.5.4:
     dependencies:
@@ -3637,6 +3669,8 @@ snapshots:
       unist-util-is: 6.0.0
       unist-util-visit-parents: 6.0.1
 
+  universalify@2.0.1: {}
+
   update-browserslist-db@1.0.15(browserslist@4.23.0):
     dependencies:
       browserslist: 4.23.0
@@ -3653,6 +3687,14 @@ snapshots:
     dependencies:
       '@types/unist': 2.0.10
       unist-util-stringify-position: 2.0.3
+
+  vite-plugin-static-copy@1.0.4(vite@5.2.11(@types/node@20.12.7)):
+    dependencies:
+      chokidar: 3.6.0
+      fast-glob: 3.3.2
+      fs-extra: 11.2.0
+      picocolors: 1.0.0
+      vite: 5.2.11(@types/node@20.12.7)
 
   vite-plugin-tailwind-purgecss@0.3.1(tailwindcss@3.4.3)(vite@5.2.11(@types/node@20.12.7)):
     dependencies:
