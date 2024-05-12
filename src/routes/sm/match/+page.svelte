@@ -102,7 +102,7 @@
                     <div class="flex flex-col justify-between items-between w-full">
                         <div
                             class="sc score font-bold grid grid-cols-3 text-center"
-                            class:ingame={game.game_status === GameState.Ingame}
+                            class:ingame={game.game_status === SM.GameState.Ingame}
                             class:paused={game.ingame_status.startsWith('pause')}
                         >
                             <div class="">{game.result?.home_goals ?? 0}</div>
@@ -311,7 +311,6 @@
 
     import { fade } from 'svelte/transition';
     import { SM } from 'floorball-saisonmanager';
-    import { GameState, IngameState } from 'floorball-saisonmanager/lib/Saisonmanager/Game';
 
     export let data;
 
