@@ -57,7 +57,7 @@
     >
 </p>
 
-{#await data.groupedLeagues}
+<!-- {#await data.groupedLeagues}
     <div class="kk">LADE LEAGUES</div>
 {:then groups}
     <div class="flex flex-col gap-2">
@@ -78,8 +78,8 @@
     </div>
 {:catch error}
     <div class="err">ERROR: {error}</div>
-{/await}
+{/await} -->
 
 <script lang="ts">
-    export let data;
+    // export let data;
 </script>
