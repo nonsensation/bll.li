@@ -21,6 +21,17 @@
                 [guest_logo] 5em;
         }
     } 
+
+    .col-home-logo { grid-column: home_logo; }
+    .col-home-player { grid-column: home_player; }
+    .col-home-status { grid-column: home_status; }
+    .col-middle { grid-column: middle; }
+    .col-logo { grid-column: logo; }
+    .col-status { grid-column: status; }
+    .col-player { grid-column: player; }
+    .col-guest-status { grid-column: guest_status; }
+    .col-guest-player { grid-column: guest_player; }
+    .col-guest-logo { grid-column: guest_logo; }
 </style>
 
 {#await data.game}
@@ -60,7 +71,7 @@
                         (event.event_type == SM.EventType.Goal && event.goal_type == SM.GoalType.Owngoal)}
 
                     <div class="event *:row-start-1 *:border-b *:border-sf2 *:p-2 hover:bg-sf3 rounded-xl">
-                        <div class="col-[middle] *:grid *:grid-cols-[1fr,auto,1fr]">
+                        <div class="col-middle *:grid *:grid-cols-[1fr,auto,1fr]">
                             <div class="time text-txt2">
                                 <span class="min place-self-end">{min}</span>
                                 <span class="">:</span>
@@ -75,7 +86,7 @@
                             {/if}
                         </div>
 
-                        <div class="col-[{team}_status] *:flex *:items-center *:justify-stretch *:flex-col text-center">
+                        <div class="col-{team}-status *:flex *:items-center *:justify-stretch *:flex-col text-center">
                             {#if event.event_type == SM.EventType.Goal}
                                 <div class="">
                                     {#if event.goal_type}
@@ -107,7 +118,7 @@
                             {/if}
                         </div>
 
-                        <div class="col-[{team}_player]">
+                        <div class="col-{team}-player">
                             {#if displayNumber}
                                 {@const p = getPlayerByNumber(game, team, event.number)}
                                 <div class="">
@@ -125,7 +136,7 @@
                         </div>
 
                         {#if displayLogo}
-                            <div class="col-[{team}_logo]">
+                            <div class="col-{team}-logo ">
                                 <img src="/favicon.png" alt="" class="w-[3em] md:w-[4em]" />
                             </div>
                         {/if}
