@@ -80,6 +80,6 @@ async function getData<T>( event : ServerLoadEvent , apiUrl : string  ) : Promis
     }
     catch( err )
     {
-        error( 404 , "saisonmanager.de api fail" )
+        error( 404 , "saisonmanager.de api fail: " + JSON.stringify(err) )
     }
 }
