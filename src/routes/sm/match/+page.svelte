@@ -7,7 +7,7 @@
             [player home_player guest_player] 3fr
             [logo home_logo guest_logo] 3em;
     }
-    
+
     @media (min-width: 768px) {
         .event {
             display: grid;
@@ -20,18 +20,38 @@
                 [guest_player] 3fr
                 [guest_logo] 5em;
         }
-    } 
+    }
 
-    .col-home-logo { grid-column: home_logo; }
-    .col-home-player { grid-column: home_player; }
-    .col-home-status { grid-column: home_status; }
-    .col-middle { grid-column: middle; }
-    .col-logo { grid-column: logo; }
-    .col-status { grid-column: status; }
-    .col-player { grid-column: player; }
-    .col-guest-status { grid-column: guest_status; }
-    .col-guest-player { grid-column: guest_player; }
-    .col-guest-logo { grid-column: guest_logo; }
+    .col-home-logo {
+        grid-column: home_logo;
+    }
+    .col-home-player {
+        grid-column: home_player;
+    }
+    .col-home-status {
+        grid-column: home_status;
+    }
+    .col-middle {
+        grid-column: middle;
+    }
+    .col-logo {
+        grid-column: logo;
+    }
+    .col-status {
+        grid-column: status;
+    }
+    .col-player {
+        grid-column: player;
+    }
+    .col-guest-status {
+        grid-column: guest_status;
+    }
+    .col-guest-player {
+        grid-column: guest_player;
+    }
+    .col-guest-logo {
+        grid-column: guest_logo;
+    }
 </style>
 
 {#await data.game}
@@ -42,19 +62,27 @@
 {:then game}
     {#if game && visible}
         <div transition:fade class="timeline w-full">
-            <div class="events flex flex-col gap-y-4 mb-32">
+            <div class="events flex flex-col gap-y-4 mb-8">
                 <div
                     class="header sticky top-0 grid grid-cols-3 border-b border-b-prim rounded py-4 mb-4 bg-sf *:flex *:place-content-center *:flex-col *:items-center"
                 >
                     <div class="home">
-                        <img src="/favicon.png" alt="" class="h-[15vw] max-h-32 max-w-full" />
+                        <img
+                            src="https://saisonmanager.de/{game.home_team_logo}"
+                            alt=""
+                            class="h-[15vw] max-h-32 max-w-full"
+                        />
                         <div class="name">{game.home_team_name}</div>
                     </div>
                     <div class="score">
-                        <div class="score">{game.home_team_name} - {game.home_team_name}</div>
+                        <div class="score">{game.home_team_name} - {game.guest_team_name}</div>
                     </div>
                     <div class="guest">
-                        <img src="/favicon.png" alt="" class="h-[15vw] max-h-32 max-w-full" />
+                        <img
+                            src="https://saisonmanager.de/{game.guest_team_logo}"
+                            alt=""
+                            class="h-[15vw] max-h-32 max-w-full"
+                        />
                         <div class="name">{game.guest_team_name}</div>
                     </div>
                 </div>
@@ -63,8 +91,9 @@
                     {@const team = event.event_team}
                     {@const displayGoals = event.event_type == SM.EventType.Goal}
                     {@const displayNumber =
-                        (event.event_type == SM.EventType.Goal && event.goal_type != SM.GoalType.Owngoal) ||
-                        event.event_type == SM.EventType.Penalty}
+                        event.number &&
+                        ((event.event_type == SM.EventType.Goal && event.goal_type != SM.GoalType.Owngoal) ||
+                            event.event_type == SM.EventType.Penalty)}
                     {@const displayLogo =
                         displayNumber ||
                         event.event_type == SM.EventType.Timeout ||
@@ -119,7 +148,7 @@
                         </div>
 
                         <div class="col-{team}-player">
-                            {#if displayNumber}
+                            {#if displayNumber && event.number}
                                 {@const p = getPlayerByNumber(game, team, event.number)}
                                 <div class="">
                                     <div class="">#{event.number} {p.player_firstname} {p.player_name}</div>
@@ -136,8 +165,12 @@
                         </div>
 
                         {#if displayLogo}
-                            <div class="col-{team}-logo ">
-                                <img src="/favicon.png" alt="" class="w-[3em] md:w-[4em]" />
+                            <div class="col-{team}-logo">
+                                <img
+                                    src="https://saisonmanager.de/{game[team + '_team_logo']}"
+                                    alt=""
+                                    class="w-[3em] md:w-[4em]"
+                                />
                             </div>
                         {/if}
                     </div>
@@ -145,12 +178,15 @@
             </div>
             <!-- events -->
 
-            <div class="teams grid grid-cols-1 md:grid-cols-2 gap-16">
+            <div class="teams grid grid-cols-1 md:grid-cols-2 gap-8 py-8">
+                <h2 class="roster col-span-full mt-0 pt-0">Aufstellung</h2>
                 {#each ['home', 'guest'] as team}
                     <div class="team team-{team}">
+                        <h3 class="teamname">{game[team + '_team_name']}</h3>
                         {#each sortPlayers(game.players[team]) as p}
+                            {@const { goals, assists, penaltiesString } = getScorer(game, team, p.trikot_number)}
                             <div
-                                class="player grid grid-cols-[2em,1fr,auto,auto] gap-2 px-4 py-1 border justify-center items-center border-transparent hover:border-l-prim hover:border-r-prim border-b-sf2"
+                                class="player grid grid-cols-[2em,1fr,4em,2em] gap-2 px-2 py-1 border justify-center items-center border-transparent hover:border-l-prim hover:border-r-prim border-b-sf2"
                             >
                                 <div
                                     class="h-full font-bold border-r border-prim place-self-end self-center px-4"
@@ -166,7 +202,24 @@
                                         (C)
                                     {/if}
                                 </div>
-                                <div class="name text-txt2 text-sm leading-3">
+                                <div class="name text-txt2 text-xs leading-3 flex flex-col">
+                                    {#if goals}
+                                        <div class="goals flex gap-2" title="Tore">
+                                            <div class="text-[50%]"><GOAL /></div>
+                                            {goals}
+                                        </div>
+                                    {/if}
+                                    {#if assists}
+                                        <div class="assists flex gap-2" title="Vorlagen">
+                                            <div class="text-[50%]"><FLOORBALL /></div>
+                                            {assists}
+                                        </div>
+                                    {/if}
+                                    {#if penaltiesString}
+                                        <div class="penalties" title="Strafen">{penaltiesString}</div>
+                                    {/if}
+                                </div>
+                                <div class="name text-txt2 text-sm leading-3 text-center">
                                     {#if p.goalkeeper}
                                         Tor
                                     {:else}
@@ -188,7 +241,7 @@
     import FLOORBALL from '$lib/components/icons/FLOORBALL2.svelte';
     import TRIKOT from '$lib/components/icons/TRIKOT.svelte';
     import CAPTAIN from '$lib/components/icons/CAPTAIN.svelte';
-    import HELMET from '$lib/components/icons/GOAL.svelte';
+    import GOAL from '$lib/components/icons/GOAL.svelte';
     import TIMEOUT from '$lib/components/icons/GOAL.svelte';
 
     import { fade } from 'svelte/transition';
@@ -204,11 +257,8 @@
         return players;
     }
 
-    function getPlayerByNumber(game: SM.MatchReport, team: string, num: number) {
+    function getPlayerByNumber(game: SM.Game, team: string, num: number) {
         const teamPlayers: SM.Player[] = game.players[team];
-
-        console.dir(teamPlayers);
-        console.dir(num);
 
         return teamPlayers.filter((p) => p.trikot_number == num)[0];
     }
@@ -225,6 +275,32 @@
         return {
             min,
             sec,
+        };
+    }
+
+    function getLogo() {
+        'https://saisonmanagercdn.blob.core.windows.net/smlive/wiuzh0rzfkfwj539tetfderb3t9p?sp=r&sv=2018-11-09&se=2024-05-12T11%3A16%3A52Z&rscd=inline%3B+filename%3D%22184-fbcmuenchen.png%22%3B+filename*%3DUTF-8%27%27184-fbcmuenchen.png&rsct=image%2Fpng&sr=b&sig=WFP1oT9p79wNNu4Af%2BNdX31l2ObsIfQk9bYRMe5IjYM%3D';
+    }
+
+    function getScorer(game: SM.Game, team: string, trikotNumber: number) {
+        const teamEvents = game.events.filter((e) => e.event_team == team);
+        const numberEvents = teamEvents.filter((e) => (e.number ?? -1) == trikotNumber);
+
+        const penaltiesString = numberEvents
+            .filter((e) => e.event_type == SM.EventType.Penalty)
+            .filter((e) => (e.number ?? -1) == trikotNumber)
+            .map((e) => e.penalty_type_string ?? '')
+            .join(' , ');
+
+        const goals = numberEvents.filter((e) => e.event_type == SM.EventType.Goal).length;
+        const assists = teamEvents
+            .filter((e) => e.event_type == SM.EventType.Goal)
+            .filter((e) => e.assist && e.assist == trikotNumber).length;
+
+        return {
+            goals,
+            assists,
+            penaltiesString,
         };
     }
 </script>

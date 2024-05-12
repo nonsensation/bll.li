@@ -1,7 +1,6 @@
 
 
 import { SM } from 'floorball-saisonmanager'
-import type { PageLoadEvent } from '../$types.js'
 import { error, type ServerLoadEvent } from '@sveltejs/kit'
 import path from 'path'
 
@@ -30,7 +29,7 @@ export async function load( event )
     try {
         return {
             gameId ,
-            game: getData<SM.MatchReport>( event , `games/${gameId}.json` ) ,
+            game: getData<SM.Game>( event , `games/${gameId}.json` ) ,
         }
     }
     catch( err )
