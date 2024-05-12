@@ -52,6 +52,31 @@
     .col-guest-logo {
         grid-column: guest_logo;
     }
+
+    .ingame {
+        @apply text-prim;
+    }
+    .paused {
+        @apply text-prim;
+    }
+
+    .score {
+        font-size: min(15vw, 1000%);
+        line-height: 75%;
+    }
+    .sc {
+        font-family: 'Quantico';
+    }
+
+    .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+        50% {
+            opacity: 0.5;
+        }
+    }
 </style>
 
 {#await data.game}
@@ -64,7 +89,7 @@
         <div transition:fade class="timeline w-full">
             <div class="events flex flex-col gap-y-4 mb-8">
                 <div
-                    class="header sticky top-0 grid grid-cols-3 border-b border-b-prim rounded py-4 mb-4 bg-sf *:flex *:place-content-center *:flex-col *:items-center"
+                    class="header sticky top-0 grid grid-cols-3 border-b border-b-prim py-4 mb-4 bg-sf *:flex *:place-content-center *:flex-col *:items-center"
                 >
                     <div class="home">
                         <img
@@ -72,10 +97,26 @@
                             alt=""
                             class="h-[15vw] max-h-32 max-w-full"
                         />
-                        <div class="name">{game.home_team_name}</div>
+                        <div class="name font-bold pt-4 text-center">{game.home_team_name}</div>
                     </div>
-                    <div class="score">
-                        <div class="score">{game.home_team_name} - {game.guest_team_name}</div>
+                    <div class="flex flex-col justify-between items-between w-full">
+                        <div
+                            class="sc score font-bold grid grid-cols-3 text-center"
+                            class:ingame={game.game_status === GameState.Ingame}
+                            class:paused={game.ingame_status.startsWith('pause')}
+                        >
+                            <div class="">{game.result?.home_goals ?? 0}</div>
+                            <div class="animate-pulse">:</div>
+                            <div class="">{game.result?.guest_goals ?? 0}</div>
+                        </div>
+                        <div class="period font-bold pt-4 md:text-base text-xs">{game.current_period_title?.title}</div>
+                        <div class="gap-4 pt-4 text-txt2 hidden sm:flex md:text-base text-xs sc">
+                            {#each [0, 1, 2] as p}
+                                <div class="">
+                                    {game.result?.home_goals_period[p] ?? 0} : {game.result?.guest_goals_period[p] ?? 0}
+                                </div>
+                            {/each}
+                        </div>
                     </div>
                     <div class="guest">
                         <img
@@ -83,10 +124,30 @@
                             alt=""
                             class="h-[15vw] max-h-32 max-w-full"
                         />
-                        <div class="name">{game.guest_team_name}</div>
+                        <div class="name font-bold pt-4 text-center">{game.guest_team_name}</div>
                     </div>
                 </div>
-                {#each game.events as event}
+                <div class="info grid-cols-3 gird justify-center border-b py-8">
+                    <div class="maps"></div>
+                    <div class="media">
+                        {#if game.live_stream_link}
+                            <div class="live_stream_link">
+                                <a
+                                    href={game.live_stream_link}
+                                    title="Livestream"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <GOAL /> Livestream
+                                </a>
+                            </div>
+                        {:else if game.vod_link}
+                            <div class="vod_link"></div>
+                        {/if}
+                    </div>
+                </div>
+                <h2 class="grid-cols-3">Spielverlauf</h2>
+                {#each game.events.slice().reverse() as event, eventIdx}
                     {@const { min, sec } = extractTime(event.time)}
                     {@const team = event.event_team}
                     {@const displayGoals = event.event_type == SM.EventType.Goal}
@@ -99,15 +160,15 @@
                         event.event_type == SM.EventType.Timeout ||
                         (event.event_type == SM.EventType.Goal && event.goal_type == SM.GoalType.Owngoal)}
 
-                    <div class="event *:row-start-1 *:border-b *:border-sf2 *:p-2 hover:bg-sf3 rounded-xl">
-                        <div class="col-middle *:grid *:grid-cols-[1fr,auto,1fr]">
+                    <div class="event *:row-start-1 *:border-b *:border-sf2 *:p-2 hover:bg-sf3">
+                        <div class="sc col-middle *:grid *:grid-cols-[1fr,auto,1fr]">
                             <div class="time text-txt2">
                                 <span class="min place-self-end">{min}</span>
                                 <span class="">:</span>
                                 <span class="sec">{sec}</span>
                             </div>
                             {#if displayGoals}
-                                <div class="goals font-bold text-xl sm:text-3xl border-sf2 rounded-xl text-center">
+                                <div class="goals font-bold text-xl sm:text-3xl border-sf2 text-center">
                                     <span class="">{event.home_goals}</span>
                                     <span class="">-</span>
                                     <span class="">{event.guest_goals}</span>
@@ -132,7 +193,7 @@
                                 </div>
                             {:else if event.event_type == SM.EventType.Penalty}
                                 <div class="">
-                                    <div class="">Strafe {event.penalty_type_string}</div>
+                                    <div class="">Strafe <span class="font-bold">{event.penalty_type_string}</span></div>
                                     <div class="text-txt2 text-sm">
                                         {event.penalty_reason_string}
                                     </div>
@@ -151,13 +212,17 @@
                             {#if displayNumber && event.number}
                                 {@const p = getPlayerByNumber(game, team, event.number)}
                                 <div class="">
-                                    <div class="">#{event.number} {p.player_firstname} {p.player_name}</div>
+                                    <div class="">
+                                        {p.player_firstname}
+                                        {p.player_name}
+                                        <span class="sc text-txt2">#{event.number}</span>
+                                    </div>
                                     {#if event.assist}
                                         {@const a = getPlayerByNumber(game, team, event.assist)}
                                         <div class="text-txt2 text-sm">
-                                            #{event.assist}
                                             {a.player_firstname}
                                             {a.player_name}
+                                            <span class="sc">#{event.assist}</span>
                                         </div>
                                     {/if}
                                 </div>
@@ -189,7 +254,7 @@
                                 class="player grid grid-cols-[2em,1fr,4em,2em] gap-2 px-2 py-1 border justify-center items-center border-transparent hover:border-l-prim hover:border-r-prim border-b-sf2"
                             >
                                 <div
-                                    class="h-full font-bold border-r border-prim place-self-end self-center px-4"
+                                    class="sc h-full font-bold border-r border-prim place-self-end self-center px-4"
                                     class:captain={p.captain}
                                     class:goalkeeper={p.goalkeeper}
                                 >
@@ -246,6 +311,7 @@
 
     import { fade } from 'svelte/transition';
     import { SM } from 'floorball-saisonmanager';
+    import { GameState, IngameState } from 'floorball-saisonmanager/lib/Saisonmanager/Game';
 
     export let data;
 
