@@ -97,7 +97,7 @@
                             alt=""
                             class="h-[15vw] max-h-32 max-w-full"
                         />
-                        <div class="name font-bold pt-4 text-center">{game.home_team_name}</div>
+                        <div class="name sm:font-bold pt-4 text-center text-sm">{game.home_team_name}</div>
                     </div>
                     <div class="flex flex-col justify-between items-between w-full">
                         <div
@@ -106,7 +106,7 @@
                             class:paused={game.ingame_status.startsWith('pause')}
                         >
                             <div class="">{game.result?.home_goals ?? 0}</div>
-                            <div class="animate-pulse">:</div>
+                            <div class="" class:animate-pulse={game.game_status === SM.GameState.Ingame}>:</div>
                             <div class="">{game.result?.guest_goals ?? 0}</div>
                         </div>
                         <div class="period font-bold pt-4 md:text-base text-xs">{game.current_period_title?.title}</div>
@@ -124,7 +124,7 @@
                             alt=""
                             class="h-[15vw] max-h-32 max-w-full"
                         />
-                        <div class="name font-bold pt-4 text-center">{game.guest_team_name}</div>
+                        <div class="name sm:font-bold pt-4 text-center text-sm">{game.guest_team_name}</div>
                     </div>
                 </div>
                 <div class="info grid-cols-3 gird justify-center border-b py-8">
@@ -176,7 +176,7 @@
                             {/if}
                         </div>
 
-                        <div class="col-{team}-status *:flex *:items-center *:justify-stretch *:flex-col text-center">
+                        <div class="col-{team}-status *:text-sm md:*:text-base *:flex *:items-center *:justify-stretch *:flex-col text-center">
                             {#if event.event_type == SM.EventType.Goal}
                                 <div class="">
                                     {#if event.goal_type}
@@ -194,7 +194,7 @@
                             {:else if event.event_type == SM.EventType.Penalty}
                                 <div class="">
                                     <div class="">Strafe <span class="font-bold">{event.penalty_type_string}</span></div>
-                                    <div class="text-txt2 text-sm">
+                                    <div class="text-txt2 text-xs md:text-sm">
                                         {event.penalty_reason_string}
                                     </div>
                                 </div>
