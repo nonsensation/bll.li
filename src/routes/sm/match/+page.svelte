@@ -377,35 +377,35 @@
                 >
                     <div class="">
                         <div class="">Liga</div>
-                        <div class="font-bold">{game.league_name ?? '-'}</div>
+                        <div class="font-bold text-right">{game.league_name ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Spielnummer</div>
-                        <div class="font-bold">{game.game_number ?? '-'}</div>
+                        <div class="font-bold text-right">{game.game_number ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Datum</div>
-                        <div class="font-bold">{game.date ?? '-'}</div>
+                        <div class="font-bold text-right">{game.date ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Austragungshalle</div>
-                        <div class="font-bold">{game.arena_name ?? '-'}</div>
+                        <div class="font-bold text-right">{game.arena_name ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Austragungsort</div>
-                        <div class="font-bold">{game.arena_address ?? '-'}</div>
+                        <div class="font-bold text-right">{game.arena_address ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Spielbeginn</div>
-                        <div class="font-bold">{game.actual_start_time ?? game.start_time ?? '-'}</div>
+                        <div class="font-bold text-right">{game.actual_start_time ?? game.start_time ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Zuschauerzahl</div>
-                        <div class="font-bold">{game.audience ?? '-'}</div>
+                        <div class="font-bold text-right">{game.audience ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Schiedsrichter</div>
-                        <div class="font-bold">{game.nominated_referees ?? '-'}</div>
+                        <div class="font-bold text-right">{game.nominated_referees ?? '-'}</div>
                     </div>
                 </div>
             </div>
