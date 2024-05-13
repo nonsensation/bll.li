@@ -2,10 +2,10 @@
     .event {
         display: grid;
         grid-template-columns:
-            [middle] 7ch
+            [middle] 6em
             [status home_status guest_status] 1fr
-            [player home_player guest_player] 3fr
-            [logo home_logo guest_logo] 3em;
+            [player home_player guest_player] 2fr
+            [logo home_logo guest_logo] 5em;
     }
 
     @media (min-width: 768px) {
@@ -13,11 +13,11 @@
             display: grid;
             grid-template-columns:
                 [home_logo] 5em
-                [home_player] 3fr
+                [home_player] 2fr
                 [home_status] 1fr
-                [middle] 5em
+                [middle] 6em
                 [guest_status] 1fr
-                [guest_player] 3fr
+                [guest_player] 2fr
                 [guest_logo] 5em;
         }
     }
@@ -53,9 +53,9 @@
         grid-column: guest_logo;
     }
 
-    @media (max-height: 1024px) {
+    @media (max-height: 768px) {
         .header {
-            position:relative;
+            position: relative;
         }
     }
 
@@ -78,10 +78,20 @@
         animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 
+    .even {
+    }
+
     @keyframes pulse {
         50% {
             opacity: 0.5;
         }
+    }
+
+    .min::after {
+        /* content: "'"; */
+    }
+    .sec::after {
+        /* content: "''"; */
     }
 </style>
 
@@ -92,8 +102,8 @@
     <div class="" transition:fade on:introstart={() => (visible = false)} on:outroend={() => (visible = true)}></div>
 {:then game}
     {#if game && visible}
-        <div transition:fade class="timeline w-full">
-            <div class="events flex flex-col gap-y-4 mb-8">
+        <div transition:fade class="timeline w-full flex flex-col gap-8 py-8">
+            <div class="events flex flex-col mb-8">
                 <div
                     class="header sticky top-0 grid grid-cols-3 border-b border-b-prim py-4 mb-4 bg-sf *:flex *:place-content-center *:flex-col *:items-center"
                 >
@@ -112,14 +122,25 @@
                             class:paused={game.ingame_status.startsWith('pause')}
                         >
                             <div class="">{game.result?.home_goals ?? 0}</div>
-                            <div class="" class:animate-pulse={game.game_status === SM.GameState.Ingame}>:</div>
+                            <div class="" class:animate-pulse={game.game_status === SM.GameState.Ingame}>
+                                {scoreSep}
+                            </div>
                             <div class="">{game.result?.guest_goals ?? 0}</div>
                         </div>
-                        <div class="period font-bold pt-4 md:text-base text-xs">{game.current_period_title?.title}</div>
+                        <div class="period font-bold pt-4 md:text-base text-xs">
+                            {#if !game.ended}
+                                {game.current_period_title?.title}
+                            {:else if game.result?.postfix?.long && game.result?.postfix?.short}
+                                <span class="hidden md:inline">{game.result?.postfix?.long}</span>
+                                <span class="md:hidden">{game.result?.postfix?.short}</span>
+                            {/if}
+                        </div>
                         <div class="gap-4 pt-4 text-txt2 hidden sm:flex md:text-base text-xs sc">
-                            {#each [0, 1, 2] as p}
+                            {#each range(game.result?.overtime ?? false ? 4 : 3) as p}
                                 <div class="">
-                                    {game.result?.home_goals_period[p] ?? 0} : {game.result?.guest_goals_period[p] ?? 0}
+                                    {game.result?.home_goals_period[p] ?? 0}
+                                    {scoreSep}
+                                    {game.result?.guest_goals_period[p] ?? 0}
                                 </div>
                             {/each}
                         </div>
@@ -133,8 +154,25 @@
                         <div class="name sm:font-bold pt-4 text-center text-sm">{game.guest_team_name}</div>
                     </div>
                 </div>
-                <div class="info grid-cols-3 gird justify-center border-b py-8">
-                    <div class="maps"></div>
+                <div class="info flex flex-col items-center border-b py-8">
+                    <div class="maps">
+                        {#if !game.ended}
+                            <div class="live_stream_link">
+                                <a
+                                    href="https://www.google.de/maps/search/{encodeURI(
+                                        game.arena_address + ', ' + game.arena_name,
+                                    )}"
+                                    title="Google Maps: {game.arena_name}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <GOAL />
+                                    <span class="">{game.arena_name}</span>
+                                    <span class="">({game.arena_address})</span>
+                                </a>
+                            </div>
+                        {/if}
+                    </div>
                     <div class="media">
                         {#if game.live_stream_link}
                             <div class="live_stream_link">
@@ -153,58 +191,75 @@
                     </div>
                 </div>
                 <h2 class="grid-cols-3">Spielverlauf</h2>
-                {#each game.events.slice().reverse() as event, eventIdx}
-                    {@const { min, sec } = extractTime(event.time)}
-                    {@const team = event.event_team}
-                    {@const displayGoals = event.event_type == SM.EventType.Goal}
+                {#each game.events as e, idx}
+                    {@const { min, sec } = extractTime(e.time)}
+                    {@const team = e.event_team}
+                    {@const displayGoals = e.event_type == SM.EventType.Goal}
                     {@const displayNumber =
-                        event.number &&
-                        ((event.event_type == SM.EventType.Goal && event.goal_type != SM.GoalType.Owngoal) ||
-                            event.event_type == SM.EventType.Penalty)}
+                        e.number &&
+                        ((e.event_type == SM.EventType.Goal && e.goal_type != SM.GoalType.Owngoal) ||
+                            e.event_type == SM.EventType.Penalty)}
                     {@const displayLogo =
                         displayNumber ||
-                        event.event_type == SM.EventType.Timeout ||
-                        (event.event_type == SM.EventType.Goal && event.goal_type == SM.GoalType.Owngoal)}
+                        e.event_type == SM.EventType.Timeout ||
+                        (e.event_type == SM.EventType.Goal && e.goal_type == SM.GoalType.Owngoal)}
 
-                    <div class="event *:row-start-1 *:border-b *:border-sf2 *:p-2 hover:bg-sf3">
+                    {#if checkPeriod(e.period)}
+                        {@const title = getPeriodTitle(game, e)}
+                        <h3 class="w-full text-txt2 font-normal md:text-center py-8">{title}</h3>
+                    {/if}
+
+                    <div
+                        class:even={idx % 2 === 0}
+                        class="event bg-sf3 *:row-start-1 *:border-b-2 *:border-sf2 *:p-2 sm:*:py-4 border-transparent border-r hover:border-prim border-l"
+                    >
                         <div class="sc col-middle *:grid *:grid-cols-[1fr,auto,1fr]">
                             <div class="time text-txt2">
                                 <span class="min place-self-end">{min}</span>
-                                <span class="">:</span>
+                                <span class="">{timeSep}</span>
                                 <span class="sec">{sec}</span>
                             </div>
                             {#if displayGoals}
-                                <div class="goals font-bold text-xl sm:text-3xl border-sf2 text-center">
-                                    <span class="">{event.home_goals}</span>
-                                    <span class="">-</span>
-                                    <span class="">{event.guest_goals}</span>
+                                <div class="goals font-bold text-xl sm:text-3xl text-center">
+                                    <span class="">{e.home_goals}</span>
+                                    <span class="">{scoreSep}</span>
+                                    <span class="">{e.guest_goals}</span>
+                                </div>
+                            {:else}
+                                <div class="hidden">
+                                    <div class=""></div>
+                                    <!-- <FLOORBALL /> -->
+                                    <div class=""></div>
+                                    <div class=""></div>
                                 </div>
                             {/if}
                         </div>
 
-                        <div class="col-{team}-status *:text-sm md:*:text-base *:flex *:items-center *:justify-stretch *:flex-col text-center">
-                            {#if event.event_type == SM.EventType.Goal}
+                        <div
+                            class="col-{team}-status *:text-sm md:*:text-base *:flex *:items-center *:justify-stretch *:flex-col text-center"
+                        >
+                            {#if e.event_type == SM.EventType.Goal}
                                 <div class="">
-                                    {#if event.goal_type}
-                                        {#if event.goal_type == SM.GoalType.Owngoal}
+                                    {#if e.goal_type}
+                                        {#if e.goal_type == SM.GoalType.Owngoal}
                                             <FLOORBALL /> Eigentor
-                                        {:else if event.goal_type == SM.GoalType.Regular}
+                                        {:else if e.goal_type == SM.GoalType.Regular}
                                             <FLOORBALL /> Tor
-                                        {:else if event.goal_type == 'penalty_shot'}
+                                        {:else if e.goal_type == 'penalty_shot'}
                                             <FLOORBALL /> Penalty
                                         {:else}
                                             ???
                                         {/if}
                                     {/if}
                                 </div>
-                            {:else if event.event_type == SM.EventType.Penalty}
+                            {:else if e.event_type == SM.EventType.Penalty}
                                 <div class="">
-                                    <div class="">Strafe <span class="font-bold">{event.penalty_type_string}</span></div>
+                                    <div class="">Strafe <span class="font-bold">{e.penalty_type_string}</span></div>
                                     <div class="text-txt2 text-xs md:text-sm">
-                                        {event.penalty_reason_string}
+                                        {e.penalty_reason_string}
                                     </div>
                                 </div>
-                            {:else if event.event_type == SM.EventType.Timeout}
+                            {:else if e.event_type == SM.EventType.Timeout}
                                 <div class="">
                                     <TIMEOUT />
                                     <div class="">Auszeit</div>
@@ -215,20 +270,20 @@
                         </div>
 
                         <div class="col-{team}-player">
-                            {#if displayNumber && event.number}
-                                {@const p = getPlayerByNumber(game, team, event.number)}
+                            {#if displayNumber && e.number}
+                                {@const p = getPlayerByNumber(game, team, e.number)}
                                 <div class="">
                                     <div class="">
                                         {p.player_firstname}
                                         {p.player_name}
-                                        <span class="sc text-txt2">#{event.number}</span>
+                                        <span class="sc text-txt2">#{e.number}</span>
                                     </div>
-                                    {#if event.assist}
-                                        {@const a = getPlayerByNumber(game, team, event.assist)}
+                                    {#if e.assist}
+                                        {@const a = getPlayerByNumber(game, team, e.assist)}
                                         <div class="text-txt2 text-sm">
                                             {a.player_firstname}
                                             {a.player_name}
-                                            <span class="sc">#{event.assist}</span>
+                                            <span class="sc">#{e.assist}</span>
                                         </div>
                                     {/if}
                                 </div>
@@ -249,7 +304,8 @@
             </div>
             <!-- events -->
 
-            <div class="teams grid grid-cols-1 md:grid-cols-2 gap-8 py-8">
+            <!-- player roster -->
+            <div class="teams grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <h2 class="roster col-span-full mt-0 pt-0">Aufstellung</h2>
                 {#each ['home', 'guest'] as team}
                     <div class="team team-{team}">
@@ -302,6 +358,47 @@
                     </div>
                 {/each}
             </div>
+            <!-- player roster -->
+
+            <!-- info -->
+            <div class="info">
+                <h3>Spielinfos</h3>
+                <div class="grid *:border-b *:border-sf2 lg:grid-cols-2 gap-2 lg:gap-x-8 *:flex *:flex-nowrap *:justify-between">
+                    <div class="">
+                        <div class="">Liga</div>
+                        <div class="font-bold">{game.league_name ?? "-"}</div>
+                    </div>
+                    <div class="">
+                        <div class="">Spielnummer</div>
+                        <div class="font-bold">{game.game_number ?? "-"}</div>
+                    </div>
+                    <div class="">
+                        <div class="">Datum</div>
+                        <div class="font-bold">{game.date ?? "-"}</div>
+                    </div>
+                    <div class="">
+                        <div class="">Austragungshalle</div>
+                        <div class="font-bold">{game.arena_name ?? "-"}</div>
+                    </div>
+                    <div class="">
+                        <div class="">Austragungsort</div>
+                        <div class="font-bold">{game.arena_address ?? "-"}</div>
+                    </div>
+                    <div class="">
+                        <div class="">Spielbeginn</div>
+                        <div class="font-bold">{game.start_time ?? "-"}</div>
+                    </div>
+                    <div class="">
+                        <div class="">Zuschauerzahl</div>
+                        <div class="font-bold">{game.audience ?? "-"}</div>
+                    </div>
+                    <div class="">
+                        <div class="">Schiedsrichter</div>
+                        <div class="font-bold">{game.nominated_referees ?? "-"}</div>
+                    </div>
+                </div>
+            </div>
+            <!-- info -->
         </div>
     {/if}
 {:catch error}
@@ -320,7 +417,45 @@
 
     export let data;
 
+    $: {
+        data?.game?.then((g) => g);
+    }
+
+    const timeSep = ':';
+    const scoreSep = '-';
+
     let visible = false;
+    let lastPeriod = -1;
+
+    function checkPeriod(period: number) {
+        const isCurrentPeriod = period != lastPeriod;
+
+        lastPeriod = period;
+
+        return isCurrentPeriod;
+    }
+
+    function getPeriodTitle(game: SM.Game, e: SM.Event) {
+        // do this in checkPeriod() or some strange bug where it
+        // only updates/runs it at consistent random times
+        // when using {#if e.period != lastPeriod}
+        //
+        // with {#if checkPeriod(e.period)} it works..
+        //
+        // See: https://github.com/sveltejs/svelte/issues/11572
+        //
+        //// lastPeriod = e.period;
+
+        if (game.period_titles) {
+            for (const period of game.period_titles) {
+                if (period.period === e.period) {
+                    return period.title;
+                }
+            }
+        }
+
+        return e.period + '. Drittel';
+    }
 
     function sortPlayers(players: SM.Player[]) {
         players.sort((p1, p2) => p1.trikot_number - p2.trikot_number);
@@ -374,4 +509,12 @@
             penaltiesString,
         };
     }
+
+    const range = (stop: number, start: number = 0, step: number = 1) =>
+        Array.from(
+            {
+                length: (stop - 1 - start) / step + 1,
+            },
+            (_, i) => start + i * step,
+        );
 </script>
