@@ -156,8 +156,8 @@
                 </div>
                 <div class="info flex flex-col items-center border-b py-8">
                     <div class="maps">
-                        {#if !game.ended}
-                            <div class="live_stream_link">
+                        {#if !game.ended && game.arena_name && game.arena_address}
+                            <div class="maps arena">
                                 <a
                                     href="https://www.google.de/maps/search/{encodeURI(
                                         game.arena_address + ', ' + game.arena_name,
@@ -186,7 +186,16 @@
                                 </a>
                             </div>
                         {:else if game.vod_link}
-                            <div class="vod_link"></div>
+                            <div class="vod_link">
+                                <a
+                                    href={game.vod_link}
+                                    title="Video"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <GOAL /> Video
+                                </a>
+                            </div>
                         {/if}
                     </div>
                 </div>
@@ -363,38 +372,40 @@
             <!-- info -->
             <div class="info">
                 <h3>Spielinfos</h3>
-                <div class="grid *:border-b *:border-sf2 lg:grid-cols-2 gap-2 lg:gap-x-8 *:flex *:flex-nowrap *:justify-between">
+                <div
+                    class="grid *:border-b *:border-sf2 lg:grid-cols-2 gap-2 lg:gap-x-8 *:flex *:flex-nowrap *:justify-between"
+                >
                     <div class="">
                         <div class="">Liga</div>
-                        <div class="font-bold">{game.league_name ?? "-"}</div>
+                        <div class="font-bold">{game.league_name ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Spielnummer</div>
-                        <div class="font-bold">{game.game_number ?? "-"}</div>
+                        <div class="font-bold">{game.game_number ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Datum</div>
-                        <div class="font-bold">{game.date ?? "-"}</div>
+                        <div class="font-bold">{game.date ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Austragungshalle</div>
-                        <div class="font-bold">{game.arena_name ?? "-"}</div>
+                        <div class="font-bold">{game.arena_name ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Austragungsort</div>
-                        <div class="font-bold">{game.arena_address ?? "-"}</div>
+                        <div class="font-bold">{game.arena_address ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Spielbeginn</div>
-                        <div class="font-bold">{game.start_time ?? "-"}</div>
+                        <div class="font-bold">{game.actual_start_time ?? game.start_time ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Zuschauerzahl</div>
-                        <div class="font-bold">{game.audience ?? "-"}</div>
+                        <div class="font-bold">{game.audience ?? '-'}</div>
                     </div>
                     <div class="">
                         <div class="">Schiedsrichter</div>
-                        <div class="font-bold">{game.nominated_referees ?? "-"}</div>
+                        <div class="font-bold">{game.nominated_referees ?? '-'}</div>
                     </div>
                 </div>
             </div>
