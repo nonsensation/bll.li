@@ -166,7 +166,7 @@
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    <GOAL />
+                                    <Icon icon="GOAL" />
                                     <span class="">{game.arena_name}</span>
                                     <span class="">({game.arena_address})</span>
                                 </a>
@@ -182,18 +182,13 @@
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    <GOAL /> Livestream
+                                    <Icon icon="GOAL" /> Livestream
                                 </a>
                             </div>
                         {:else if game.vod_link}
                             <div class="vod_link">
-                                <a
-                                    href={game.vod_link}
-                                    title="Video"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <GOAL /> Video
+                                <a href={game.vod_link} title="Video" target="_blank" rel="noopener noreferrer">
+                                    <Icon icon="GOAL" /> Video
                                 </a>
                             </div>
                         {/if}
@@ -251,11 +246,11 @@
                                 <div class="">
                                     {#if e.goal_type}
                                         {#if e.goal_type == SM.GoalType.Owngoal}
-                                            <FLOORBALL /> Eigentor
+                                            <Icon icon="FLOORBALL" /> Eigentor
                                         {:else if e.goal_type == SM.GoalType.Regular}
-                                            <FLOORBALL /> Tor
+                                            <Icon icon="FLOORBALL" /> Tor
                                         {:else if e.goal_type == 'penalty_shot'}
-                                            <FLOORBALL /> Penalty
+                                            <Icon icon="FLOORBALL" /> Penalty
                                         {:else}
                                             ???
                                         {/if}
@@ -270,7 +265,7 @@
                                 </div>
                             {:else if e.event_type == SM.EventType.Timeout}
                                 <div class="">
-                                    <TIMEOUT />
+                                    <Icon icon="TIMEOUT" />
                                     <div class="">Auszeit</div>
                                 </div>
                             {:else}
@@ -341,13 +336,13 @@
                                 <div class="name text-txt2 text-xs leading-3 flex flex-col">
                                     {#if goals}
                                         <div class="goals flex gap-2" title="Tore">
-                                            <div class="text-[50%]"><GOAL /></div>
+                                            <div class="text-[50%]"><Icon icon="GOAL" /></div>
                                             {goals}
                                         </div>
                                     {/if}
                                     {#if assists}
                                         <div class="assists flex gap-2" title="Vorlagen">
-                                            <div class="text-[50%]"><FLOORBALL /></div>
+                                            <div class="text-[50%]"><Icon icon="FLOORBALL" /></div>
                                             {assists}
                                         </div>
                                     {/if}
@@ -417,11 +412,7 @@
 {/await}
 
 <script lang="ts">
-    import FLOORBALL from '$lib/components/icons/FLOORBALL2.svelte';
-    import TRIKOT from '$lib/components/icons/TRIKOT.svelte';
-    import CAPTAIN from '$lib/assets/icons/floorball/CAPTAIN.svg';
-    import GOAL from '$lib/components/icons/GOAL.svelte';
-    import TIMEOUT from '$lib/components/icons/GOAL.svelte';
+    import Icon from '$lib/components/Icon.svelte';
 
     import { fade } from 'svelte/transition';
     import { SM } from 'floorball-saisonmanager';

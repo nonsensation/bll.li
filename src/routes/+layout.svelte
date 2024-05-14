@@ -1,6 +1,11 @@
 <style>
     .layout {
-        grid-template-rows: auto 1fr auto;
+        grid-template-rows:
+            [primary-nav] auto
+            [main] 1fr
+            [footer] auto;
+
+        /* grid-template-columns: [full-start] 5% [main-start] auto [main-end] 5% [full-end]; */
     }
 
     .page-content {
