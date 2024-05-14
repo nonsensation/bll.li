@@ -53,7 +53,7 @@
         grid-column: guest_logo;
     }
 
-    @media (max-height: 768px) {
+    @media (max-height: 600px) {
         .header {
             position: relative;
         }
@@ -166,7 +166,7 @@
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    <Icon icon="GOAL" />
+                                    <Icon icon="VIDEO" />
                                     <span class="">{game.arena_name}</span>
                                     <span class="">({game.arena_address})</span>
                                 </a>
@@ -182,13 +182,13 @@
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    <Icon icon="GOAL" /> Livestream
+                                    <Icon icon="VIDEO" /> Livestream
                                 </a>
                             </div>
                         {:else if game.vod_link}
                             <div class="vod_link">
                                 <a href={game.vod_link} title="Video" target="_blank" rel="noopener noreferrer">
-                                    <Icon icon="GOAL" /> Video
+                                    <Icon icon="VIDEO" /> Video
                                 </a>
                             </div>
                         {/if}
@@ -217,24 +217,21 @@
                         class:even={idx % 2 === 0}
                         class="event bg-sf3 *:row-start-1 *:border-b-2 *:border-sf2 *:p-2 sm:*:py-4 border-transparent border-r hover:border-prim border-l"
                     >
-                        <div class="sc col-middle *:grid *:grid-cols-[1fr,auto,1fr]">
-                            <div class="time text-txt2">
+                        <div class="sc col-middle">
+                            <div class="grid grid-cols-[1fr,auto,1fr] time text-txt2">
                                 <span class="min place-self-end">{min}</span>
                                 <span class="">{timeSep}</span>
                                 <span class="sec">{sec}</span>
                             </div>
                             {#if displayGoals}
-                                <div class="goals font-bold text-xl sm:text-3xl text-center">
+                                <div class="goals font-bold text-xl sm:text-3xl text-center grid grid-cols-[1fr,auto,1fr]">
                                     <span class="">{e.home_goals}</span>
                                     <span class="">{scoreSep}</span>
                                     <span class="">{e.guest_goals}</span>
                                 </div>
                             {:else}
-                                <div class="hidden">
-                                    <div class=""></div>
-                                    <!-- <FLOORBALL /> -->
-                                    <div class=""></div>
-                                    <div class=""></div>
+                                <div class="w-full flex justify-center">
+                                    <Icon icon="WHISTLE" class="w-8" />
                                 </div>
                             {/if}
                         </div>
@@ -244,16 +241,20 @@
                         >
                             {#if e.event_type == SM.EventType.Goal}
                                 <div class="">
-                                    {#if e.goal_type}
+                                    {#if e.goal_type && e.goal_type_string}
                                         {#if e.goal_type == SM.GoalType.Owngoal}
-                                            <Icon icon="FLOORBALL" /> Eigentor
+                                            <Icon icon="FLOORBALL2" /> {e.goal_type_string}
                                         {:else if e.goal_type == SM.GoalType.Regular}
-                                            <Icon icon="FLOORBALL" /> Tor
+                                            <Icon icon="FLOORBALL2" /> {e.goal_type_string}
                                         {:else if e.goal_type == 'penalty_shot'}
-                                            <Icon icon="FLOORBALL" /> Penalty
+                                            <Icon icon="FLOORBALL2" /> {e.goal_type_string}
                                         {:else}
-                                            ???
+                                            ERROR: e.goal_type = {e.goal_type}
                                         {/if}
+                                    {:else}
+                                        <div class="error">ERRORR: if e.goal_type && e.goal_type_string</div>
+                                        <div class="">e.goal_type = {e.goal_type}</div>
+                                        <div class="">>e.goal_type_string = {e.goal_type_string}</div>
                                     {/if}
                                 </div>
                             {:else if e.event_type == SM.EventType.Penalty}
@@ -317,10 +318,10 @@
                         {#each sortPlayers(game.players[team]) as p}
                             {@const { goals, assists, penaltiesString } = getScorer(game, team, p.trikot_number)}
                             <div
-                                class="player grid grid-cols-[2em,1fr,4em,2em] gap-2 px-2 py-1 border justify-center items-center border-transparent hover:border-l-prim hover:border-r-prim border-b-sf2"
+                                class="player grid grid-cols-[3em,1fr,4em,2em] gap-2 py-1 border items-center border-transparent hover:border-l-prim hover:border-r-prim border-b-sf2"
                             >
                                 <div
-                                    class="sc h-full font-bold border-r border-prim place-self-end self-center px-4"
+                                    class="sc flex items-center font-bold border-r border-prim px-4 place-self-end h-full"
                                     class:captain={p.captain}
                                     class:goalkeeper={p.goalkeeper}
                                 >
@@ -333,24 +334,28 @@
                                         (C)
                                     {/if}
                                 </div>
-                                <div class="name text-txt2 text-xs leading-3 flex flex-col">
+                                <div class="name text-txt2 text-sm leading-3 flex flex-col cursor-help">
                                     {#if goals}
-                                        <div class="goals flex gap-2" title="Tore">
-                                            <div class="text-[50%]"><Icon icon="GOAL" /></div>
+                                        <div class="goals flex gap-2" title="Tore: {goals}">
+                                            <Icon icon="GOAL" class="w-4" />
                                             {goals}
                                         </div>
                                     {/if}
                                     {#if assists}
-                                        <div class="assists flex gap-2" title="Vorlagen">
-                                            <div class="text-[50%]"><Icon icon="FLOORBALL" /></div>
+                                        <div class="assists flex gap-2" title="Vorlagen: {assists}">
+                                            <Icon icon="FLOORBALL2" class="w-4" />
                                             {assists}
                                         </div>
                                     {/if}
                                     {#if penaltiesString}
-                                        <div class="penalties" title="Strafen">{penaltiesString}</div>
+                                        <div class="penalties flex gap-2" title="Strafen: {penaltiesString}">
+                                            <Icon icon="WHISTLE" class="w-4" />
+                                            {penaltiesString}
+                                        </div>
                                     {/if}
                                 </div>
                                 <div class="name text-txt2 text-sm leading-3 text-center">
+                                    <!-- {p.position} -->
                                     {#if p.goalkeeper}
                                         Tor
                                     {:else}

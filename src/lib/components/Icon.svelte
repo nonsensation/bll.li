@@ -32,6 +32,7 @@
     // import HOME from '$lib/assets/icons/HOME.svg?raw';
     import LIGHTMODE from '$lib/assets/icons/LIGHTMODE.svg?raw';
     import DARKMODE from '$lib/assets/icons/DARKMODE.svg?raw';
+    import VIDEO from '$lib/assets/icons/VIDEO.svg?raw';
 
     import CAPTAIN from '$lib/assets/icons/floorball/CAPTAIN.svg?raw';
     import CARD from '$lib/assets/icons/floorball/CARD.svg?raw';
@@ -43,6 +44,7 @@
     import REFEREE from '$lib/assets/icons/floorball/REFEREE.svg?raw';
     import TRIKOT from '$lib/assets/icons/floorball/TRIKOT.svg?raw';
     import WHISTLE from '$lib/assets/icons/floorball/WHISTLE.svg?raw';
+    import TIMEOUT from '$lib/assets/icons/floorball/TIMEOUT.svg?raw';
 
     import YT from '$lib/assets/icons/logos/YT.svg?raw';
     import DISCORD from '$lib/assets/icons/logos/DISCORD.svg?raw';
@@ -51,6 +53,7 @@
         // HOME,
         LIGHTMODE,
         DARKMODE ,
+        VIDEO ,
 
         CARD ,
         FLOORBALL ,
@@ -61,6 +64,7 @@
         REFEREE ,
         TRIKOT ,
         WHISTLE ,
+        TIMEOUT ,
         CAPTAIN ,
 
         DISCORD ,
