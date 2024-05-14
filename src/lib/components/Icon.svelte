@@ -29,7 +29,7 @@
     const classes = $$restProps.class ?? 'w-6';
 
     // svg
-    import HOME from '$lib/assets/icons/HOME.svg?raw';
+    // import HOME from '$lib/assets/icons/HOME.svg?raw';
     import LIGHTMODE from '$lib/assets/icons/LIGHTMODE.svg?raw';
     import DARKMODE from '$lib/assets/icons/DARKMODE.svg?raw';
 
@@ -48,7 +48,7 @@
     import DISCORD from '$lib/assets/icons/logos/DISCORD.svg?raw';
 
     const iconsSvgImport = {
-        HOME,
+        // HOME,
         LIGHTMODE,
         DARKMODE ,
 
