@@ -419,7 +419,7 @@
 <script lang="ts">
     import FLOORBALL from '$lib/components/icons/FLOORBALL2.svelte';
     import TRIKOT from '$lib/components/icons/TRIKOT.svelte';
-    import CAPTAIN from '$lib/components/icons/CAPTAIN.svelte';
+    import CAPTAIN from '$lib/assets/icons/floorball/CAPTAIN.svg';
     import GOAL from '$lib/components/icons/GOAL.svelte';
     import TIMEOUT from '$lib/components/icons/GOAL.svelte';
 

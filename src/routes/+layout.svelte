@@ -10,23 +10,17 @@
 
 <div class="relative layout grid gap-2 w-full h-full min-h-screen justify-stretch bg-sf text-txt">
     <header class="w-full flex justify-center border-b-2 border-prim">
-        <div class="flex flex-col items-center md:flex-row md:justify-between w-full max-w-screen-xl px-[5%]">
-            <a class="flex items-center" href="/">
-                <img src="/favicon.png" class="m-2 h-12 sm:h-16" alt="Logo" />
-                <div class="hidden md:flex flex-col">
-					<span class="self-center whitespace-nowrap text-xl font-semibold">
-						Black Lions Landsberg
-					</span>
-					<span class="text-xs">Fanseite</span>
-				</div>
+        <div class="flex flex-col items-center md:grid md:grid-cols-3 w-full max-w-screen-xl px-[5%]">
+            <DarkMode class="hidden md:block" />
+            <a class="flex justify-center" href="/">
+                <img src="/favicon.png" class="m-2 h-12 md:h-24" alt="Logo" />
             </a>
-
-            <ul class="flex gap-4 items-center">
-                <li class="list-none"><DarkMode></DarkMode></li>
-                <li class="list-none"><a class="text-txt font-bold hover:text-prim" href="/">Start</a></li>
-                <li class="list-none"><a class="text-txt font-bold hover:text-prim" href="/wiki">Wiki</a></li>
-                <li class="list-none"><a class="text-txt font-bold hover:text-prim" href="/info">Info</a></li>
-            </ul>
+            <div class="gap-4 flex md:justify-end *:font-bold hover:*:text-prim pb-2 md:pb-0">
+                <DarkMode class="md:hidden w-6" />
+                <div class="list-none"><a class="" href="/">Start</a></div>
+                <div class="list-none"><a class="" href="/wiki">Wiki</a></div>
+                <div class="list-none"><a class="" href="/info">Info</a></div>
+            </div>
         </div>
     </header>
 
@@ -62,7 +56,9 @@
             <a href="/info">Über die Webseite</a>
             <a href="/datenschutz">Datenschutz</a>
             <a href="/info#Kontakt">Kontakt</a>
-            <a href="https://discord.gg/9UH8X2ssh3" target="_blank"><Discord></Discord>Discord</a>
+            <a href="https://discord.gg/9UH8X2ssh3" target="_blank" class="flex"
+                ><Icon icon="DISCORD" class="w-6" /><span>Discord</span></a
+            >
         </div>
     </footer>
 </div>
@@ -72,7 +68,8 @@
     import BreadNav from '$lib/components/BreadNav.svelte';
     import DarkMode from '$lib/components/DarkMode.svelte';
     import { onMount } from 'svelte';
-    import Discord from '$lib/components/icons/DISCORD.svelte';
+    import Discord from '$lib/assets/icons/logos/DISCORD.svg';
+    import Icon from '$lib/components/Icon.svelte';
 
     let cookieConsent = false;
     const cookieItemString = 'cookieConsent';

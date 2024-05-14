@@ -1,15 +1,5 @@
-<style>
-    svg {
-        display: inline;
-    }
-</style>
 
-<script lang="ts">
-    export let classes = "";
-</script>
-
-<svg class="{classes}" version="1.0" xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 752 752">
+<svg viewBox="0 0 752 752">
     <g transform="translate(-100.000000,852.000000) scale(0.12500000,-0.12500000)"
     fill="currentColor" stroke="none">
     <path

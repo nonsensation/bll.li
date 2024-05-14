@@ -1,18 +1,5 @@
-<style>
-    svg {
-        display: inline;
-    }
-</style>
-
-<svg
-    class=""
-    version="1.0"
-    xmlns="http://www.w3.org/2000/svg"
-    width="1.5em"
-    height="1.5em"
-    viewBox="0 0 752.000000 752.000000"
->
-    <g transform="translate(-190.000000,942.000000) scale(0.1500000,-0.1500000)" fill="var(--color-text)" stroke="none">
+<svg viewBox="0 0 752.000000 752.000000">
+    <g transform="translate(-190.000000,942.000000) scale(0.1500000,-0.1500000)" fill="currentColor" stroke="none">
         <path
             d="M3540 5799 c-773 -87 -1422 -586 -1695 -1305 -258 -680 -140 -1442
 313 -2018 30 -39 101 -116 156 -171 385 -382 903 -595 1448 -595 883 0 1666

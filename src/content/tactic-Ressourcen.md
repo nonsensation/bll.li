@@ -10,7 +10,7 @@ published: true
 <script>
   import {Rating,BoardImg} from '$lib/mdsvex/components'
 
-  import YT from '$lib/components/icons/YT.svelte'
+  import Icon from '$lib/components/Icon.svelte'
   import RINK from '$lib/components/icons/RINK.svelte'
 
 </script>
@@ -31,7 +31,7 @@ published: true
 
 ## Videos
 
-- [<YT/> Floorball Basics](https://www.youtube.com/@FloorballBasics/playlists) 
+- [<Icon icon="YT" class="inline" /> Floorball Basics](https://www.youtube.com/@FloorballBasics/playlists) 
 
 <RINK/>
 
