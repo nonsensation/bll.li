@@ -4,10 +4,14 @@
     }
 </style>
 
-<svg class="" version="1.0" xmlns="http://www.w3.org/2000/svg"
-    width="1.75em" height="1.75em" viewBox="0 0 752 752">
+<script lang="ts">
+    export let classes = "";
+</script>
+
+<svg class="{classes}" version="1.0" xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 752 752">
     <g transform="translate(-100.000000,852.000000) scale(0.12500000,-0.12500000)"
-    fill="var(--color-text)" stroke="none">
+    fill="currentColor" stroke="none">
     <path
         d="M3540 6124 c-607 -73 -1088 -305 -1485 -715 -347 -359 -558 -784
 -642 -1294 -26 -156 -26 -554 0 -710 88 -529 321 -985 688 -1341 366 -354 791
