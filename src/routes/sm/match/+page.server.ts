@@ -40,22 +40,22 @@ export async function load( event )
 
 async function getData<T>( event : ServerLoadEvent , apiUrl : string  ) : Promise<T|void>
 {
-    // https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2/init.json
-    try
-    {
-        // remove .json file extension for vite-import
-        // const parsed = path.parse( apiUrl )
-        // const apiName = path.join( parsed.dir , parsed.name )
-        // const imported = await import( `./$SM/api/v2/${apiName}.json` )
+    // // https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2/init.json
+    // try
+    // {
+    //     // remove .json file extension for vite-import
+    //     // const parsed = path.parse( apiUrl )
+    //     // const apiName = path.join( parsed.dir , parsed.name )
+    //     // const imported = await import( `./$SM/api/v2/${apiName}.json` )
 
-        const imported = await import( /* @vite-ignore */ `/floorball-saisonmanager-data/data/api/v2/${apiUrl}` )
+    //     const imported = await import( /* @vite-ignore */ `/floorball-saisonmanager-data/data/api/v2/${apiUrl}` )
         
-        return await imported.default
-    }
-    catch( err )
-    {
-        console.error( "floorball-saisonmanager-data api fail" )
-    }
+    //     return await imported.default
+    // }
+    // catch( err )
+    // {
+    //     console.error( "floorball-saisonmanager-data api fail" )
+    // }
 
     try
     {
@@ -66,7 +66,8 @@ async function getData<T>( event : ServerLoadEvent , apiUrl : string  ) : Promis
             return ctrl.signal
         }
 
-        const liveApi = 'https://saisonmanager.de/api/v2'
+        // const liveApi = 'https://saisonmanager.de/api/v2'
+        const liveApi = 'https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2'
         const smUrl = `${liveApi}/${apiUrl}`
         const response = await event.fetch( smUrl )//,
             //  {
