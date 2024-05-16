@@ -24,4 +24,11 @@ export default defineConfig( {
 	// assetsInclude: [
 	// 	"./node_modules/floorball-saisonmanager/static/**/*.json" ,
 	// ],
+
+	// See: https://github.com/vitejs/vite/discussions/5912#discussioncomment-2908994
+	define: {
+		// By default, Vite doesn't include shims for NodeJS/
+		// necessary for segment analytics lib to work
+		global: {},
+	  },
 } );

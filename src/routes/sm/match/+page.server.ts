@@ -40,6 +40,7 @@ export async function load( event )
 
 async function getData<T>( event : ServerLoadEvent , apiUrl : string  ) : Promise<T|void>
 {
+    // https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2/init.json
     try
     {
         // remove .json file extension for vite-import
