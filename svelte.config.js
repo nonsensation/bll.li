@@ -70,7 +70,7 @@ const config = {
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter(),
 		alias: {
-			'./$SM': '/floorball-saisonmanager-data/data' ,
+			'./$SM': 'src/lib/static/floorball-saisonmanager-data/data' ,
 		}
 	},
 	

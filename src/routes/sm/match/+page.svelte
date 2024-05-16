@@ -2,10 +2,11 @@
     .event {
         display: grid;
         grid-template-columns:
-            [middle] 6em
-            [status home_status guest_status] 1fr
-            [player home_player guest_player] 2fr
-            [logo home_logo guest_logo] 5em;
+        [middle] 4em
+        [status home_status guest_status] 1fr
+        [player home_player guest_player] 2fr
+        [logo home_logo guest_logo] 4em
+            ;
     }
 
     @media (min-width: 768px) {
@@ -15,7 +16,7 @@
                 [home_logo] 5em
                 [home_player] 2fr
                 [home_status] 1fr
-                [middle] 6em
+                [middle] 8em
                 [guest_status] 1fr
                 [guest_player] 2fr
                 [guest_logo] 5em;
@@ -103,7 +104,7 @@
 {:then game}
     {#if game && visible}
         <div transition:fade class="timeline w-full flex flex-col gap-8 py-8">
-            <div class="events flex flex-col mb-8">
+            <div class="events flex flex-col mb-8 gap-8">
                 <div
                     class="header sticky top-0 grid grid-cols-3 border-b border-b-prim py-4 mb-4 bg-sf *:flex *:place-content-center *:flex-col *:items-center"
                 >
@@ -154,7 +155,7 @@
                         <div class="name sm:font-bold pt-4 text-center text-sm">{game.guest_team_name}</div>
                     </div>
                 </div>
-                <div class="info flex flex-col items-center border-b py-8">
+                <div class="info flex flex-col items-center border-b py-8 gap-16">
                     <div class="maps">
                         {#if !game.ended && game.arena_name && game.arena_address}
                             <div class="maps arena">
@@ -215,7 +216,7 @@
 
                     <div
                         class:even={idx % 2 === 0}
-                        class="event bg-sf3 *:row-start-1 *:border-b-2 *:border-sf2 *:p-2 sm:*:py-4 border-transparent border-r hover:border-prim border-l"
+                        class="event *:row-start-1 px-1 *:py-4 border-transparent border-r hover:border-prim border-l *:border-b-txt *:border-b-2"
                     >
                         <div class="sc col-middle">
                             <div class="grid grid-cols-[1fr,auto,1fr] time text-txt2">
@@ -224,7 +225,9 @@
                                 <span class="sec">{sec}</span>
                             </div>
                             {#if displayGoals}
-                                <div class="goals font-bold text-xl sm:text-3xl text-center grid grid-cols-[1fr,auto,1fr]">
+                                <div
+                                    class="goals font-bold text-xl sm:text-3xl text-center grid grid-cols-[1fr,auto,1fr]"
+                                >
                                     <span class="">{e.home_goals}</span>
                                     <span class="">{scoreSep}</span>
                                     <span class="">{e.guest_goals}</span>
@@ -242,24 +245,30 @@
                             {#if e.event_type == SM.EventType.Goal}
                                 <div class="">
                                     {#if e.goal_type && e.goal_type_string}
-                                        {#if e.goal_type == SM.GoalType.Owngoal}
-                                            <Icon icon="FLOORBALL2" /> {e.goal_type_string}
-                                        {:else if e.goal_type == SM.GoalType.Regular}
-                                            <Icon icon="FLOORBALL2" /> {e.goal_type_string}
-                                        {:else if e.goal_type == 'penalty_shot'}
-                                            <Icon icon="FLOORBALL2" /> {e.goal_type_string}
-                                        {:else}
-                                            ERROR: e.goal_type = {e.goal_type}
-                                        {/if}
+                                        <div class="text-xs md:text-sm flex flex-col items-center">
+                                            <Icon icon="GOAL" />
+                                            {e.goal_type_string}
+                                            <!-- {#if e.goal_type == SM.GoalType.Owngoal}
+                                                <Icon icon="FLOORBALL2" /> {e.goal_type_string}
+                                            {:else if e.goal_type == SM.GoalType.Regular}
+                                                <Icon icon="FLOORBALL2" /> {e.goal_type_string}
+                                            {:else if e.goal_type == 'penalty_shot'}
+                                                <Icon icon="FLOORBALL2" /> {e.goal_type_string}
+                                            {:else}
+                                                ERROR: e.goal_type = {e.goal_type}
+                                            {/if} -->
+                                        </div>
                                     {:else}
-                                        <div class="error">ERRORR: if e.goal_type && e.goal_type_string</div>
+                                        <div class="error">ERROR: if e.goal_type && e.goal_type_string</div>
                                         <div class="">e.goal_type = {e.goal_type}</div>
                                         <div class="">>e.goal_type_string = {e.goal_type_string}</div>
                                     {/if}
                                 </div>
                             {:else if e.event_type == SM.EventType.Penalty}
                                 <div class="">
-                                    <div class="">Strafe <span class="font-bold">{e.penalty_type_string}</span></div>
+                                    <div class="text-sm md:text-base">
+                                        Strafe <span class="font-bold">{e.penalty_type_string}</span>
+                                    </div>
                                     <div class="text-txt2 text-xs md:text-sm">
                                         {e.penalty_reason_string}
                                     </div>
@@ -279,16 +288,14 @@
                                 {@const p = getPlayerByNumber(game, team, e.number)}
                                 <div class="">
                                     <div class="">
-                                        {p.player_firstname}
-                                        {p.player_name}
-                                        <span class="sc text-txt2">#{e.number}</span>
+                                        <span class="font-bold">{p.player_firstname} {p.player_name}</span>
+                                        <!-- <span class="sc text-txt2">#{e.number}</span> -->
                                     </div>
                                     {#if e.assist}
                                         {@const a = getPlayerByNumber(game, team, e.assist)}
                                         <div class="text-txt2 text-sm">
-                                            {a.player_firstname}
-                                            {a.player_name}
-                                            <span class="sc">#{e.assist}</span>
+                                            <span class="font-bold">{a.player_firstname} {a.player_name}</span>
+                                            <!-- <span class="sc">#{e.assist}</span> -->
                                         </div>
                                     {/if}
                                 </div>

@@ -4,7 +4,7 @@
     }
 </style>
 
-<span class="icon {classes}" >
+<div class="icon {classes}" >
     {#if icon in iconsSvgImport}
         {@html iconsSvgImport[icon]}
 <!--
@@ -18,7 +18,7 @@
     {:else}
         [?]
     {/if}
-</span>
+</div>
 
 <script lang="ts">
     // Use: <Icon icon="CAPTAIN" class=""/>
