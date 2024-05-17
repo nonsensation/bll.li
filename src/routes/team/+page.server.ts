@@ -1,11 +1,14 @@
 import type { PageServerLoad } from "./$types"
-import prisma from '$lib/prisma';
+import { sql } from '@vercel/postgres';
+import { drizzle } from 'drizzle-orm/vercel-postgres';
+import * as schema from '$drizzle/schema';
+import { db } from '$drizzle/db';
+
+
 
 export async function load( ev: PageServerLoad )
 {
-    const posts = await prisma.post.count();
-
     return {
-        posts,
+        posts: await db.query.Post.findMany() ,
     };
 }

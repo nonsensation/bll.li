@@ -38,6 +38,11 @@ You can preview the production build with `npm run preview`.
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
 
 
-### Prisma
+### Drizzle
 
-- update schema: `npx prisma generate`
+[Docs](https://orm.drizzle.team/kit-docs/commands)
+
+- studio: `npx drizzle-kit studio`
+- update schema: `npx drizzle-kit generate`
+- create schema from db: `npx drizzle-kit introspect`
+- push schema to db without migration: `npx drizzle-kit push`

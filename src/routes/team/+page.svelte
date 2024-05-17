@@ -9,7 +9,7 @@
 {#await data}
     Lade posts..
 {:then data}
-    Posts: {data.posts}
+    Posts: {data.posts.length}
 {:catch err}
     ERROR: {err}
 {/await}
