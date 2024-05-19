@@ -46,3 +46,15 @@ You can preview the production build with `npm run preview`.
 - update schema: `npx drizzle-kit generate`
 - create schema from db: `npx drizzle-kit introspect`
 - push schema to db without migration: `npx drizzle-kit push`
+
+Drop all ps Tables:
+
+```
+do $$ declare
+    r record;
+begin
+    for r in (select tablename from pg_tables where schemaname = 'public') loop
+        execute 'drop table if exists ' || quote_ident(r.tablename) || ' cascade';
+    end loop;
+end $$;
+```

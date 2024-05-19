@@ -116,5 +116,8 @@
 		"transition",
 		"width",
 		"zIndex"
-	]
+	],
+	"[typescript]": {
+		"editor.defaultFormatter": "Jota0222.multi-formatter"
+	}
 }

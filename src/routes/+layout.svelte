@@ -25,6 +25,7 @@
                 <div class="list-none"><a class="" href="/">Start</a></div>
                 <div class="list-none"><a class="" href="/wiki">Wiki</a></div>
                 <div class="list-none"><a class="" href="/info">Info</a></div>
+                <div class="list-none"><a class="" href="/teams">Teams</a></div>
             </div>
         </div>
     </header>
