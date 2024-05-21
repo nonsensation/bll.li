@@ -4,4 +4,4 @@ import * as schema from './schema'
 import { POSTGRES_URL } from '$env/static/private'
 
 const client = createPool( { connectionString: POSTGRES_URL } )
-export const db = drizzle( client, { schema, logger: false } )
+export const db = drizzle( client, { schema, logger: true } )

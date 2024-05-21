@@ -1,88 +1,58 @@
-
-
 import { SM } from 'floorball-saisonmanager'
-import { error, type ServerLoadEvent } from '@sveltejs/kit'
-import path from 'path'
+import { error } from '@sveltejs/kit'
 
 
-export async function load( event )
+export async function load( {fetch,url} )
 {
-    const { fetch , params , url } = event
-
     let gameId = 0
 
     if( url && url.searchParams )
     {
         const gameIdParam = url.searchParams.get( 'gameId' )
 
-        if( gameIdParam )
-            gameId = parseInt( gameIdParam ) || 0
+        if( gameIdParam ) gameId = parseInt( gameIdParam ) || 0
     }
 
     if( gameId <= 0 )
     {
-        // TODO: error handling
-
-        gameId = 35477
+        error( 404, 'Spiel nicht gefunden!' )
     }
-
-    try {
-        return {
-            gameId ,
-            game: getData<SM.Game>( event , `games/${gameId}.json` ) ,
-        }
-    }
-    catch( err )
-    {
-        error( 404 , "LOL" )
-    }
-}
-
-async function getData<T>( event : ServerLoadEvent , apiUrl : string  ) : Promise<T|void>
-{
-    // // https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2/init.json
-    // try
-    // {
-    //     // remove .json file extension for vite-import
-    //     // const parsed = path.parse( apiUrl )
-    //     // const apiName = path.join( parsed.dir , parsed.name )
-    //     // const imported = await import( `./$SM/api/v2/${apiName}.json` )
-
-    //     const imported = await import( /* @vite-ignore */ `/floorball-saisonmanager-data/data/api/v2/${apiUrl}` )
-        
-    //     return await imported.default
-    // }
-    // catch( err )
-    // {
-    //     console.error( "floorball-saisonmanager-data api fail" )
-    // }
 
     try
     {
-        // Timeout, see: https://stackoverflow.com/a/50101022/11341498
-        AbortSignal.timeout ??= function timeout( ms ) {
-            const ctrl = new AbortController()
-            setTimeout( () => ctrl.abort() , ms )
-            return ctrl.signal
+        const getGame = async () => await getData<SM.Game>( fetch , `games/${ gameId }.json` )
+        return {
+            gameId,
+            game: getData<SM.Game>( fetch , `games/${ gameId }.json` ),
         }
+    } catch( err )
+    {
+        error( 404, 'LOL' )
+    }
+}
 
+async function getData<T>( fetch: any, apiUrl: string ): Promise<T | void>
+{
+    try
+    {
         // const liveApi = 'https://saisonmanager.de/api/v2'
         const liveApi = 'https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2'
-        const smUrl = `${liveApi}/${apiUrl}`
-        const response = await event.fetch( smUrl )//,
-            //  {
-            //     // signal: AbortSignal.timeout( 5000 ) ,
-            // } )
-    
+        const smUrl = `${ liveApi }/${ apiUrl }`
+        const response = await fetch( smUrl ) //,
+
         if( !response.ok )
         {
-            error( 404 , 'saisonmanager.de api not ok - tried: ' + smUrl )
+            error( 404, 'saisonmanager.de api not ok - tried: ' + smUrl )
         }
-    
-        return await response.json() as T
-    }
-    catch( err )
+
+        const json = await response.json()
+        const game = json as T
+
+        console.dir( "FOUND: " + game.id)
+
+        return game
+    } catch( err )
     {
-        error( 404 , "saisonmanager.de api fail: " + JSON.stringify(err) )
+        error( 404, 'saisonmanager.de api fail: ' + JSON.stringify( err ) )
     }
 }
