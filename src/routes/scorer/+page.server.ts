@@ -162,7 +162,7 @@ export async function load( { fetch, url } )
                 penalty10Count: sql`COALESCE(${ penalties10CountQuery.penalty10Count }, 0)`.as( 'penalty10Count' ),
             } )
             .from( schema.players )
-            .where(sql`${ schema.players.firstName } || ' ' || ${ schema.players.lastName } LIKE ${'%' + search + '%'}`)
+            // .where(sql`${ schema.players.firstName } || ' ' || ${ schema.players.lastName } LIKE ${'%' + search + '%'}`)
             .leftJoin( goalsCountQuery, eq( schema.players.id, goalsCountQuery.playerId ) )
             .leftJoin( assistsCountQuery, eq( schema.players.id, assistsCountQuery.assistId ) )
             .leftJoin( penalties2CountQuery, eq( schema.players.id, penalties2CountQuery.penaltyPlayerId ) )
@@ -192,11 +192,11 @@ export async function load( { fetch, url } )
             asc( schema.players.firstName ),
         ]
 
-        if( search )
-            ordering = [
-                desc( sql`levenshtein(${ schema.players.firstName } || ' ' || ${ schema.players.lastName }, ${ search })` ),
-                ...ordering,
-            ]
+        // if( search )
+        //     ordering = [
+        //         desc( sql`levenshtein(${ schema.players.firstName } || ' ' || ${ schema.players.lastName }, ${ search })` ),
+        //         ...ordering,
+        //     ]
         const scorer = await withPagination( scorerQuery.$dynamic(), ordering, Math.ceil( skip / pageSize ) + 1, pageSize )
 
         const totalScorers = await db

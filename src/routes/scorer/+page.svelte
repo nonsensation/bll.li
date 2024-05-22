@@ -15,7 +15,6 @@
     }
 </style>
 
-<input type="text" name="" id="" bind:value={value}>
 <div class="">
     {#await data.scorers}
         Loading
