@@ -15,6 +15,7 @@
     }
 </style>
 
+<input type="text" name="" id="" bind:value={value}>
 <div class="">
     {#await data.scorers}
         Loading
@@ -96,4 +97,6 @@
     $: pages = Array.from({ length: count * 2 + 1 }, (_, i) => currentPage - count + i).filter(
         i => i > 0 && i <= totalPages
     );
+
+    let value = '';
 </script>

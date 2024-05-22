@@ -28,6 +28,7 @@ function withPagination<T extends PgSelect>(
 
 export async function load( { fetch, url } )
 {
+    let search = url.searchParams.get( 'search' )
     let pageSize = Number( url.searchParams.get( 'pageSize' ) ) || 10
     const skip = Number( url.searchParams.get( 'skip' ) ) || 0
 
@@ -161,6 +162,7 @@ export async function load( { fetch, url } )
                 penalty10Count: sql`COALESCE(${ penalties10CountQuery.penalty10Count }, 0)`.as( 'penalty10Count' ),
             } )
             .from( schema.players )
+            .where(sql`${ schema.players.firstName } || ' ' || ${ schema.players.lastName } LIKE ${'%' + search + '%'}`)
             .leftJoin( goalsCountQuery, eq( schema.players.id, goalsCountQuery.playerId ) )
             .leftJoin( assistsCountQuery, eq( schema.players.id, assistsCountQuery.assistId ) )
             .leftJoin( penalties2CountQuery, eq( schema.players.id, penalties2CountQuery.penaltyPlayerId ) )
@@ -173,27 +175,29 @@ export async function load( { fetch, url } )
             .leftJoin( penaltiesMs3CountQuery, eq( schema.players.id, penaltiesMs3CountQuery.penaltyPlayerId ) )
             .leftJoin( penaltiesMsFullCountQuery, eq( schema.players.id, penaltiesMsFullCountQuery.penaltyPlayerId ) )
 
-        const scorer = await withPagination(
-            scorerQuery.$dynamic(),
-            [
-                desc( goalsCountQuery.goalsCount ),
-                desc( goalsCountQuery.goalsCount ),
-                desc( assistsCountQuery.assistsCount ),
-                asc( penalties2CountQuery.penalty2Count ),
-                asc( penalties5CountQuery.penalty5Count ),
-                asc( penalties10CountQuery.penalty10Count ),
-                asc( penalties2and2CountQuery.penalty2and2Count ),
-                asc( penaltiesMsTechCountQuery.penaltyMsTechCount ),
-                asc( penaltiesMs1CountQuery.penaltyMs1Count ),
-                asc( penaltiesMs2CountQuery.penaltyMs2Count ),
-                asc( penaltiesMs3CountQuery.penaltyMs3Count ),
-                asc( penaltiesMsFullCountQuery.penaltyMsFullCount ),
-                asc( schema.players.lastName ),
-                asc( schema.players.firstName ),
-            ],
-            Math.ceil( skip / pageSize ) + 1,
-            pageSize
-        )
+        let ordering = [
+            desc( goalsCountQuery.goalsCount ),
+            desc( goalsCountQuery.goalsCount ),
+            desc( assistsCountQuery.assistsCount ),
+            asc( penalties2CountQuery.penalty2Count ),
+            asc( penalties5CountQuery.penalty5Count ),
+            asc( penalties10CountQuery.penalty10Count ),
+            asc( penalties2and2CountQuery.penalty2and2Count ),
+            asc( penaltiesMsTechCountQuery.penaltyMsTechCount ),
+            asc( penaltiesMs1CountQuery.penaltyMs1Count ),
+            asc( penaltiesMs2CountQuery.penaltyMs2Count ),
+            asc( penaltiesMs3CountQuery.penaltyMs3Count ),
+            asc( penaltiesMsFullCountQuery.penaltyMsFullCount ),
+            asc( schema.players.lastName ),
+            asc( schema.players.firstName ),
+        ]
+
+        if( search )
+            ordering = [
+                desc( sql`levenshtein(${ schema.players.firstName } || ' ' || ${ schema.players.lastName }, ${ search })` ),
+                ...ordering,
+            ]
+        const scorer = await withPagination( scorerQuery.$dynamic(), ordering, Math.ceil( skip / pageSize ) + 1, pageSize )
 
         const totalScorers = await db
             .select( {
