@@ -4,7 +4,7 @@ import { drizzle } from 'drizzle-orm/vercel-postgres'
 import * as schema from '$drizzle/schema'
 import { db } from '$drizzle/db'
 import { fetchData } from '$lib/sm/data'
-import { arrayContains, asc, desc, eq, inArray } from 'drizzle-orm'
+import { and, arrayContains, asc, desc, eq, inArray, isNotNull } from 'drizzle-orm'
 import { setTimeout } from 'timers/promises'
 import { parse } from 'csv-parse/sync'
 import { any, z } from 'zod'
@@ -35,53 +35,174 @@ export async function load( { fetch, url } )
 
     async function getScorers( limit: number = 10, offset: number = 0 )
     {
-        const scorerQuery = db
+        const goalsCountQuery = db
             .select( {
                 playerId: schema.goals.playerId,
-                firstName: schema.players.firstName,
-                lastName: schema.players.lastName,
-                goalsCount: sql`COUNT(${ schema.goals.id })`.as( 'goalsCount' ),
-                // assistsCount:
-                //     sql`(SELECT COUNT(*) FROM ${ schema.goals } WHERE ${ schema.goals.assistId } = ${ schema.players.id })`.as(
-                //         'assistsCount'
-                //     ),
+                goalsCount: sql`COUNT(*)`.as( 'goalsCount' ),
             } )
             .from( schema.goals )
-            .innerJoin( schema.players, eq( schema.players.id, schema.goals.playerId ) )
-            .groupBy( schema.goals.playerId, schema.players.firstName, schema.players.lastName, schema.players.id )
-        // .orderBy( desc( sql`COUNT(${ schema.goals.id })` ), asc( schema.players.lastName ) )
-        // .offset( offset )
-        // .limit( limit )
+            .groupBy( schema.goals.playerId )
+            .as( 'goalsCountSubquery' )
+
+        const assistsCountQuery = db
+            .select( {
+                assistId: schema.goals.assistId,
+                assistsCount: sql`COUNT(*)`.as( 'assistsCount' ),
+            } )
+            .from( schema.goals )
+            .where( isNotNull( schema.goals.assistId ) )
+            .groupBy( schema.goals.assistId )
+            .as( 'assistsCountSubquery' )
+
+        const penalties2CountQuery = db
+            .select( {
+                penaltyPlayerId: schema.penalties.playerId,
+                penalty2Count: sql`COUNT(*)`.as( 'penalty2Count' ),
+            } )
+            .from( schema.penalties )
+            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_2' ) ) )
+            .groupBy( schema.penalties.playerId )
+            .as( 'penalties2CountQuery' )
+
+        const penaltiesMs1CountQuery = db
+            .select( {
+                penaltyPlayerId: schema.penalties.playerId,
+                penaltyMs1Count: sql`COUNT(*)`.as( 'penaltyMs1Count' ),
+            } )
+            .from( schema.penalties )
+            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms1' ) ) )
+            .groupBy( schema.penalties.playerId )
+            .as( 'penaltiesMs1CountQuery' )
+        const penalties2and2CountQuery = db
+            .select( {
+                penaltyPlayerId: schema.penalties.playerId,
+                penalty2and2Count: sql`COUNT(*)`.as( 'penalty2and2Count' ),
+            } )
+            .from( schema.penalties )
+            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_2and2' ) ) )
+            .groupBy( schema.penalties.playerId )
+            .as( 'penalties2and2CountQuery' )
+        const penaltiesMs2CountQuery = db
+            .select( {
+                penaltyPlayerId: schema.penalties.playerId,
+                penaltyMs2Count: sql`COUNT(*)`.as( 'penaltyMs2Count' ),
+            } )
+            .from( schema.penalties )
+            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms2' ) ) )
+            .groupBy( schema.penalties.playerId )
+            .as( 'penaltiesMs2CountQuery' )
+        const penaltiesMs3CountQuery = db
+            .select( {
+                penaltyPlayerId: schema.penalties.playerId,
+                penaltyMs3Count: sql`COUNT(*)`.as( 'penaltyMs3Count' ),
+            } )
+            .from( schema.penalties )
+            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms3' ) ) )
+            .groupBy( schema.penalties.playerId )
+            .as( 'penaltiesMs3CountQuery' )
+        const penaltiesMsTechCountQuery = db
+            .select( {
+                penaltyPlayerId: schema.penalties.playerId,
+                penaltyMsTechCount: sql`COUNT(*)`.as( 'penaltyMsTechCount' ),
+            } )
+            .from( schema.penalties )
+            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms_tech' ) ) )
+            .groupBy( schema.penalties.playerId )
+            .as( 'penaltiesMsTechCountQuery' )
+        const penaltiesMsFullCountQuery = db
+            .select( {
+                penaltyPlayerId: schema.penalties.playerId,
+                penaltyMsFullCount: sql`COUNT(*)`.as( 'penaltyMsFullCount' ),
+            } )
+            .from( schema.penalties )
+            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms_full' ) ) )
+            .groupBy( schema.penalties.playerId )
+            .as( 'penaltiesMsFullCountQuery' )
+        const penalties5CountQuery = db
+            .select( {
+                penaltyPlayerId: schema.penalties.playerId,
+                penalty5Count: sql`COUNT(*)`.as( 'penalty5Count' ),
+            } )
+            .from( schema.penalties )
+            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_5' ) ) )
+            .groupBy( schema.penalties.playerId )
+            .as( 'penalties5CountQuery' )
+        const penalties10CountQuery = db
+            .select( {
+                penaltyPlayerId: schema.penalties.playerId,
+                penalty10Count: sql`COUNT(*)`.as( 'penalty10Count' ),
+            } )
+            .from( schema.penalties )
+            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_10' ) ) )
+            .groupBy( schema.penalties.playerId )
+            .as( 'penalties10CountQuery' )
+
+        const scorerQuery = db
+            .select( {
+                playerId: schema.players.id,
+                firstName: schema.players.firstName,
+                lastName: schema.players.lastName,
+                goalsCount: sql`COALESCE(${ goalsCountQuery.goalsCount }, 0)`.as( 'goalsCount' ),
+                assistsCount: sql`COALESCE(${ assistsCountQuery.assistsCount }, 0)`.as( 'assistsCount' ),
+                penalty2Count: sql`COALESCE(${ penalties2CountQuery.penalty2Count }, 0)`.as( 'penalty2Count' ),
+                penaltyMs1Count: sql`COALESCE(${ penaltiesMs1CountQuery.penaltyMs1Count }, 0)`.as( 'penaltyMs1Count' ),
+                penalty2and2Count: sql`COALESCE(${ penalties2and2CountQuery.penalty2and2Count }, 0)`.as(
+                    'penalty2and2Count'
+                ),
+                penaltyMs2Count: sql`COALESCE(${ penaltiesMs2CountQuery.penaltyMs2Count }, 0)`.as( 'penaltyMs2Count' ),
+                penaltyMs3Count: sql`COALESCE(${ penaltiesMs3CountQuery.penaltyMs3Count }, 0)`.as( 'penaltyMs3Count' ),
+                penaltyMsTechCount: sql`COALESCE(${ penaltiesMsTechCountQuery.penaltyMsTechCount }, 0)`.as(
+                    'penaltyMsTechCount'
+                ),
+                penaltyMsFullCount: sql`COALESCE(${ penaltiesMsFullCountQuery.penaltyMsFullCount }, 0)`.as(
+                    'penaltyMsFullCount'
+                ),
+                penalty5Count: sql`COALESCE(${ penalties5CountQuery.penalty5Count }, 0)`.as( 'penalty5Count' ),
+                penalty10Count: sql`COALESCE(${ penalties10CountQuery.penalty10Count }, 0)`.as( 'penalty10Count' ),
+            } )
+            .from( schema.players )
+            .leftJoin( goalsCountQuery, eq( schema.players.id, goalsCountQuery.playerId ) )
+            .leftJoin( assistsCountQuery, eq( schema.players.id, assistsCountQuery.assistId ) )
+            .leftJoin( penalties2CountQuery, eq( schema.players.id, penalties2CountQuery.penaltyPlayerId ) )
+            .leftJoin( penalties5CountQuery, eq( schema.players.id, penalties5CountQuery.penaltyPlayerId ) )
+            .leftJoin( penalties10CountQuery, eq( schema.players.id, penalties10CountQuery.penaltyPlayerId ) )
+            .leftJoin( penalties2and2CountQuery, eq( schema.players.id, penalties2and2CountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMsTechCountQuery, eq( schema.players.id, penaltiesMsTechCountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMs1CountQuery, eq( schema.players.id, penaltiesMs1CountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMs2CountQuery, eq( schema.players.id, penaltiesMs2CountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMs3CountQuery, eq( schema.players.id, penaltiesMs3CountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMsFullCountQuery, eq( schema.players.id, penaltiesMsFullCountQuery.penaltyPlayerId ) )
 
         const scorer = await withPagination(
             scorerQuery.$dynamic(),
-            [ desc( sql`COUNT(${ schema.goals.id })` ), asc( schema.players.lastName ) ],
+            [
+                desc( goalsCountQuery.goalsCount ),
+                desc( goalsCountQuery.goalsCount ),
+                desc( assistsCountQuery.assistsCount ),
+                asc( penalties2CountQuery.penalty2Count ),
+                asc( penalties5CountQuery.penalty5Count ),
+                asc( penalties10CountQuery.penalty10Count ),
+                asc( penalties2and2CountQuery.penalty2and2Count ),
+                asc( penaltiesMsTechCountQuery.penaltyMsTechCount ),
+                asc( penaltiesMs1CountQuery.penaltyMs1Count ),
+                asc( penaltiesMs2CountQuery.penaltyMs2Count ),
+                asc( penaltiesMs3CountQuery.penaltyMs3Count ),
+                asc( penaltiesMsFullCountQuery.penaltyMsFullCount ),
+                asc( schema.players.lastName ),
+                asc( schema.players.firstName ),
+            ],
             Math.ceil( skip / pageSize ) + 1,
             pageSize
         )
 
         const totalScorers = await db
             .select( {
-                count: sql`COUNT(DISTINCT ${ schema.goals.playerId })`.as( 'count' ),
+                count: sql`COUNT(*)`.as( 'count' ),
             } )
-            .from( schema.goals )
-
-        const playerIds = scorer.map( x => x.playerId ?? 0 )
-        const assistsQuery = await db
-            .select( {
-                assistId: schema.goals.assistId,
-                assistsCount: sql`COUNT(${ schema.goals.id })`.as( 'assistsCount' ),
-            } )
-            .from( schema.goals )
-            .where( inArray( schema.goals.assistId, playerIds ) )
-            .groupBy( schema.goals.assistId )
-        const assists = {}
-
-        assistsQuery.forEach( x => ( assists[ x.assistId ?? 0 ] = x.assistsCount ) )
+            .from( schema.players )
 
         return {
             scorer,
-            assists,
             totalScorers: ( totalScorers[ 0 ]?.count as number ) || 0,
         }
     }

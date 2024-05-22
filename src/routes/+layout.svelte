@@ -13,29 +13,29 @@
     }
 </style>
 
-<div class="relative layout grid gap-2 w-full h-full min-h-screen justify-stretch bg-sf text-txt">
-    <header class="w-full flex justify-center border-b-2 border-prim">
-        <div class="flex flex-col items-center md:grid md:grid-cols-3 w-full max-w-screen-xl px-[5%]">
+<div class="layout relative grid h-full min-h-screen w-full justify-stretch gap-2 bg-sf text-txt">
+    <header class="flex w-full justify-center border-b-2 border-prim">
+        <div class="flex w-full max-w-screen-xl flex-col items-center px-[5%] md:grid md:grid-cols-3">
             <DarkMode class="hidden md:block" />
             <a class="flex justify-center" href="/">
                 <img src="/favicon.png" class="m-2 h-12 md:h-24" alt="Logo" />
             </a>
-            <div class="gap-4 flex md:justify-end *:font-bold hover:*:text-prim pb-2 md:pb-0">
-                <DarkMode class="md:hidden w-6" />
-                <div class="list-none"><a class="" href="/">Start</a></div>
-                <div class="list-none"><a class="" href="/wiki">Wiki</a></div>
-                <div class="list-none"><a class="" href="/info">Info</a></div>
-                <div class="list-none"><a class="" href="/teams">Teams</a></div>
+            <div class="flex gap-4 pb-2 *:font-bold hover:*:text-prim md:justify-end md:pb-0">
+                <DarkMode class="w-6 md:hidden" />
+                <div class=""><a class="" href="/scorer" title="Scorer"><Icon icon="STATS" /></a></div>
+                <div class=""><a class="" href="/" title="Scorer">Start</a></div>
+                <div class=""><a class="" href="/wiki" title="Scorer">Wiki</a></div>
+                <div class=""><a class="" href="/info" title="Scorer">Info</a></div>
             </div>
         </div>
     </header>
 
-    <main class="w-full flex justify-center">
-        <div class="w-full max-w-screen-xl px-[5%] flex flex-col gap-2">
+    <main class="flex w-full justify-center">
+        <div class="flex w-full max-w-screen-xl flex-col gap-2 px-[5%]">
             <div class="page-header">
                 <BreadNav />
             </div>
-            <div class="page-content flex-grow w-full">
+            <div class="page-content w-full flex-grow">
                 <slot />
             </div>
             <div class="page-footer">
@@ -46,19 +46,19 @@
 
     <div
         class:hidden={cookieConsent}
-        class="hidden fixed cookie w-full bg-prim p-4 text-center bottom-0 flex justify-center"
+        class="cookie fixed bottom-0 flex hidden w-full justify-center bg-prim p-4 text-center"
     >
-        <div class="flex justify-between gap-4 max-w-screen-xl px-[5%]">
+        <div class="flex max-w-screen-xl justify-between gap-4 px-[5%]">
             <span class="text-sm">
                 Diese Webseite nutzt Cookies, eingebettete Inhalte und externe Dienste zur Darstellung. Genauere
                 Informationen sind unter <a href="/datenschutz" class="text-txt underline">Datenschutz</a> zu finden.
             </span>
-            <button class="border rounded px-2 py-1 bg-sf2" on:click={setCookieConsent}>OK</button>
+            <button class="rounded border bg-sf2 px-2 py-1" on:click={setCookieConsent}>OK</button>
         </div>
     </div>
 
     <footer class="border-t-2 border-prim">
-        <div class="flex max-w-screen-xl px-[5%] justify-around gap-4 py-4 flex-wrap">
+        <div class="flex max-w-screen-xl flex-wrap justify-around gap-4 px-[5%] py-4">
             <a href="/info">Über die Webseite</a>
             <a href="/datenschutz">Datenschutz</a>
             <a href="/info#Kontakt">Kontakt</a>
@@ -74,7 +74,6 @@
     import BreadNav from '$lib/components/BreadNav.svelte';
     import DarkMode from '$lib/components/DarkMode.svelte';
     import { onMount } from 'svelte';
-    import Discord from '$lib/assets/icons/logos/DISCORD.svg';
     import Icon from '$lib/components/Icon.svelte';
 
     let cookieConsent = false;

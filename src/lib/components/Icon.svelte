@@ -45,6 +45,11 @@
     import TRIKOT from '$lib/assets/icons/floorball/TRIKOT.svg?raw';
     import WHISTLE from '$lib/assets/icons/floorball/WHISTLE.svg?raw';
     import TIMEOUT from '$lib/assets/icons/floorball/TIMEOUT.svg?raw';
+    import PLAYER from '$lib/assets/icons/floorball/PLAYER.svg?raw';
+    import STICKS_FULL from '$lib/assets/icons/floorball/STICKS_FULL.svg?raw';
+    import STICKS_OUTLINE from '$lib/assets/icons/floorball/STICKS_OUTLINE.svg?raw';
+
+    import STATS from '$lib/assets/icons/floorball/STATS.svg?raw';
 
     import YT from '$lib/assets/icons/logos/YT.svg?raw';
     import DISCORD from '$lib/assets/icons/logos/DISCORD.svg?raw';
@@ -66,6 +71,11 @@
         WHISTLE ,
         TIMEOUT ,
         CAPTAIN ,
+        PLAYER,
+        STICKS_FULL,
+        STICKS_OUTLINE,
+
+        STATS,
 
         DISCORD ,
         YT ,
