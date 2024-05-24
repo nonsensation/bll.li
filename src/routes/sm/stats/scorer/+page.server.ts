@@ -1,21 +1,29 @@
 import type { PageServerLoad } from './$types'
-import { type QueryResult } from '@vercel/postgres'
-import { drizzle } from 'drizzle-orm/vercel-postgres'
-import * as schema from '$drizzle/schema'
-import { db } from '$drizzle/db'
+// import { type QueryResult } from '@vercel/postgres'
+// import { drizzle } from 'drizzle-orm/vercel-postgres'
+import { drizzle } from 'drizzle-orm/mysql2'
+import * as schema from '$mysql/schema'
+// import * as schema from '$drizzle/schema'
+import { db } from '$mysql/db'
+// import { db } from '$drizzle/db'
 import { fetchData } from '$lib/sm/data'
-import { and, arrayContains, asc, desc, eq, inArray, isNotNull } from 'drizzle-orm'
+import { and, arrayContains, asc, desc, eq, inArray, isNotNull, like } from 'drizzle-orm'
 import { setTimeout } from 'timers/promises'
 import { parse } from 'csv-parse/sync'
 import { any, z } from 'zod'
 import { sql } from 'drizzle-orm'
+import { MySqlDialect, QueryBuilder } from 'drizzle-orm/mysql-core'
 
 import { SQL } from 'drizzle-orm'
-import { PgColumn, type PgSelect } from 'drizzle-orm/pg-core'
+// import { PgColumn, type PgSelect } from 'drizzle-orm/pg-core'
+import { MySqlColumn, type MySqlSelect } from 'drizzle-orm/mysql-core'
+import { querySql } from '$lib/db'
 
-function withPagination<T extends PgSelect>(
+const mysqlDialect = new MySqlDialect()
+
+function withPagination<T extends MySqlSelect>(
     qb: T,
-    orderByColumn: PgColumn[] | SQL[] | SQL.Aliased[],
+    orderByColumn: MySqlColumn[] | SQL[] | SQL.Aliased[],
     page = 1,
     pageSize = 10
 )
@@ -28,6 +36,8 @@ function withPagination<T extends PgSelect>(
 
 export async function load( { fetch, url } )
 {
+    const qb = db //new QueryBuilder()
+
     let search = url.searchParams.get( 'search' )
     let pageSize = Number( url.searchParams.get( 'pageSize' ) ) || 10
     const skip = Number( url.searchParams.get( 'skip' ) ) || 0
@@ -36,7 +46,7 @@ export async function load( { fetch, url } )
 
     async function getScorers( limit: number = 10, offset: number = 0 )
     {
-        const goalsCountQuery = db
+        const goalsCountQuery = qb
             .select( {
                 playerId: schema.goals.playerId,
                 goalsCount: sql`COUNT(*)`.as( 'goalsCount' ),
@@ -45,7 +55,7 @@ export async function load( { fetch, url } )
             .groupBy( schema.goals.playerId )
             .as( 'goalsCountSubquery' )
 
-        const assistsCountQuery = db
+        const assistsCountQuery = qb
             .select( {
                 assistId: schema.goals.assistId,
                 assistsCount: sql`COUNT(*)`.as( 'assistsCount' ),
@@ -55,7 +65,7 @@ export async function load( { fetch, url } )
             .groupBy( schema.goals.assistId )
             .as( 'assistsCountSubquery' )
 
-        const penalties2CountQuery = db
+        const penalties2CountQuery = qb
             .select( {
                 penaltyPlayerId: schema.penalties.playerId,
                 penalty2Count: sql`COUNT(*)`.as( 'penalty2Count' ),
@@ -65,7 +75,7 @@ export async function load( { fetch, url } )
             .groupBy( schema.penalties.playerId )
             .as( 'penalties2CountQuery' )
 
-        const penaltiesMs1CountQuery = db
+        const penaltiesMs1CountQuery = qb
             .select( {
                 penaltyPlayerId: schema.penalties.playerId,
                 penaltyMs1Count: sql`COUNT(*)`.as( 'penaltyMs1Count' ),
@@ -74,7 +84,7 @@ export async function load( { fetch, url } )
             .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms1' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMs1CountQuery' )
-        const penalties2and2CountQuery = db
+        const penalties2and2CountQuery = qb
             .select( {
                 penaltyPlayerId: schema.penalties.playerId,
                 penalty2and2Count: sql`COUNT(*)`.as( 'penalty2and2Count' ),
@@ -83,7 +93,7 @@ export async function load( { fetch, url } )
             .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_2and2' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penalties2and2CountQuery' )
-        const penaltiesMs2CountQuery = db
+        const penaltiesMs2CountQuery = qb
             .select( {
                 penaltyPlayerId: schema.penalties.playerId,
                 penaltyMs2Count: sql`COUNT(*)`.as( 'penaltyMs2Count' ),
@@ -92,7 +102,7 @@ export async function load( { fetch, url } )
             .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms2' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMs2CountQuery' )
-        const penaltiesMs3CountQuery = db
+        const penaltiesMs3CountQuery = qb
             .select( {
                 penaltyPlayerId: schema.penalties.playerId,
                 penaltyMs3Count: sql`COUNT(*)`.as( 'penaltyMs3Count' ),
@@ -101,7 +111,7 @@ export async function load( { fetch, url } )
             .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms3' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMs3CountQuery' )
-        const penaltiesMsTechCountQuery = db
+        const penaltiesMsTechCountQuery = qb
             .select( {
                 penaltyPlayerId: schema.penalties.playerId,
                 penaltyMsTechCount: sql`COUNT(*)`.as( 'penaltyMsTechCount' ),
@@ -110,7 +120,7 @@ export async function load( { fetch, url } )
             .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms_tech' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMsTechCountQuery' )
-        const penaltiesMsFullCountQuery = db
+        const penaltiesMsFullCountQuery = qb
             .select( {
                 penaltyPlayerId: schema.penalties.playerId,
                 penaltyMsFullCount: sql`COUNT(*)`.as( 'penaltyMsFullCount' ),
@@ -119,7 +129,7 @@ export async function load( { fetch, url } )
             .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms_full' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMsFullCountQuery' )
-        const penalties5CountQuery = db
+        const penalties5CountQuery = qb
             .select( {
                 penaltyPlayerId: schema.penalties.playerId,
                 penalty5Count: sql`COUNT(*)`.as( 'penalty5Count' ),
@@ -128,7 +138,7 @@ export async function load( { fetch, url } )
             .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_5' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penalties5CountQuery' )
-        const penalties10CountQuery = db
+        const penalties10CountQuery = qb
             .select( {
                 penaltyPlayerId: schema.penalties.playerId,
                 penalty10Count: sql`COUNT(*)`.as( 'penalty10Count' ),
@@ -138,11 +148,11 @@ export async function load( { fetch, url } )
             .groupBy( schema.penalties.playerId )
             .as( 'penalties10CountQuery' )
 
-        const scorerQuery = db
+        const scorerQuery = qb
             .select( {
-                playerId: schema.players.id,
-                firstName: schema.players.firstName,
-                lastName: schema.players.lastName,
+                playerId: sql`${ schema.players.id }`.as( 'playerId' ),
+                firstName: sql`${ schema.players.firstName }`.as( 'firstName' ),
+                lastName: sql`${ schema.players.lastName }`.as( 'lastName' ),
                 goalsCount: sql`COALESCE(${ goalsCountQuery.goalsCount }, 0)`.as( 'goalsCount' ),
                 assistsCount: sql`COALESCE(${ assistsCountQuery.assistsCount }, 0)`.as( 'assistsCount' ),
                 penalty2Count: sql`COALESCE(${ penalties2CountQuery.penalty2Count }, 0)`.as( 'penalty2Count' ),
@@ -162,7 +172,6 @@ export async function load( { fetch, url } )
                 penalty10Count: sql`COALESCE(${ penalties10CountQuery.penalty10Count }, 0)`.as( 'penalty10Count' ),
             } )
             .from( schema.players )
-            // .where(sql`${ schema.players.firstName } || ' ' || ${ schema.players.lastName } LIKE ${'%' + search + '%'}`)
             .leftJoin( goalsCountQuery, eq( schema.players.id, goalsCountQuery.playerId ) )
             .leftJoin( assistsCountQuery, eq( schema.players.id, assistsCountQuery.assistId ) )
             .leftJoin( penalties2CountQuery, eq( schema.players.id, penalties2CountQuery.penaltyPlayerId ) )
@@ -174,36 +183,56 @@ export async function load( { fetch, url } )
             .leftJoin( penaltiesMs2CountQuery, eq( schema.players.id, penaltiesMs2CountQuery.penaltyPlayerId ) )
             .leftJoin( penaltiesMs3CountQuery, eq( schema.players.id, penaltiesMs3CountQuery.penaltyPlayerId ) )
             .leftJoin( penaltiesMsFullCountQuery, eq( schema.players.id, penaltiesMsFullCountQuery.penaltyPlayerId ) )
+            .orderBy(
+                desc( goalsCountQuery.goalsCount ),
+                desc( goalsCountQuery.goalsCount ),
+                desc( assistsCountQuery.assistsCount ),
+                asc( penalties2CountQuery.penalty2Count ),
+                asc( penalties5CountQuery.penalty5Count ),
+                asc( penalties10CountQuery.penalty10Count ),
+                asc( penalties2and2CountQuery.penalty2and2Count ),
+                asc( penaltiesMsTechCountQuery.penaltyMsTechCount ),
+                asc( penaltiesMs1CountQuery.penaltyMs1Count ),
+                asc( penaltiesMs2CountQuery.penaltyMs2Count ),
+                asc( penaltiesMs3CountQuery.penaltyMs3Count ),
+                asc( penaltiesMsFullCountQuery.penaltyMsFullCount ),
+                asc( schema.players.lastName ),
+                asc( schema.players.firstName )
+            )
+            .limit( pageSize )
+            .offset( Math.ceil( skip / pageSize ) * pageSize )
 
-        let ordering = [
-            desc( goalsCountQuery.goalsCount ),
-            desc( goalsCountQuery.goalsCount ),
-            desc( assistsCountQuery.assistsCount ),
-            asc( penalties2CountQuery.penalty2Count ),
-            asc( penalties5CountQuery.penalty5Count ),
-            asc( penalties10CountQuery.penalty10Count ),
-            asc( penalties2and2CountQuery.penalty2and2Count ),
-            asc( penaltiesMsTechCountQuery.penaltyMsTechCount ),
-            asc( penaltiesMs1CountQuery.penaltyMs1Count ),
-            asc( penaltiesMs2CountQuery.penaltyMs2Count ),
-            asc( penaltiesMs3CountQuery.penaltyMs3Count ),
-            asc( penaltiesMsFullCountQuery.penaltyMsFullCount ),
-            asc( schema.players.lastName ),
-            asc( schema.players.firstName ),
-        ]
+        const q = mysqlDialect.sqlToQuery( scorerQuery.getSQL() )
 
-        // if( search )
-        //     ordering = [
-        //         desc( sql`levenshtein(${ schema.players.firstName } || ' ' || ${ schema.players.lastName }, ${ search })` ),
-        //         ...ordering,
-        //     ]
-        const scorer = await withPagination( scorerQuery.$dynamic(), ordering, Math.ceil( skip / pageSize ) + 1, pageSize )
+        const replaceQuestionMarks = ( str: string, arr: any[] ) =>
+        {
+            let strArr = str.split( '?' )
+            for( let i = 0; i < arr.length; i++ )
+            {
+                strArr[ i ] +=
+                    typeof arr[ i ] === 'string' ? `'${ arr[ i ] }'` : typeof arr[ i ] === 'number' ? `${ arr[ i ] }` : '?'
+            }
+            return strArr.join( '' )
+        }
 
-        const totalScorers = await db
+        const rawSql = replaceQuestionMarks( q.sql, q.params )
+
+        console.dir( rawSql )
+
+        const totalScorersQuery = qb
             .select( {
                 count: sql`COUNT(*)`.as( 'count' ),
             } )
             .from( schema.players )
+        const totalScorersSql = totalScorersQuery.toSQL().sql
+
+        const totalScorersData = await querySql( totalScorersSql, fetch )
+        const scorerData = await querySql( rawSql, fetch )
+
+        const totalScorers: Awaited<typeof totalScorersQuery> = totalScorersData.data
+        const scorer: Awaited<typeof scorerQuery> = scorerData.data
+
+        console.dir( scorer )
 
         return {
             scorer,

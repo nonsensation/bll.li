@@ -10,7 +10,7 @@
     }
 
     .row {
-        @apply grid grid-cols-[4fr,1fr,1fr,1fr] items-center gap-6 md:grid-cols-[4fr,1fr,1fr,1fr,6fr];
+        @apply grid grid-cols-[4fr,1fr,1fr,1fr] items-center gap-2 md:grid-cols-[4fr,1fr,1fr,1fr,6fr];
         /* grid-template-columns: 1fr 5fr 1fr 1fr 5fr; */
     }
 </style>
@@ -21,7 +21,7 @@
     {:then scorers}
         <div class="row sticky top-0 w-full border-b border-b-prim bg-sf py-4 font-bold">
             <div class="text-right">Name</div>
-            <div class="text-right">Platz</div>
+            <div class="text-center">Platz</div>
             <div class="text-center">Tore</div>
             <div class="text-center md:mr-4">Assists</div>
             <div
@@ -41,10 +41,10 @@
         {#each scorers.scorer as scorer, idx}
             <a
                 href="/stats/player?id={scorer.playerId}"
-                class="row rounded border border-transparent *:py-2 even:bg-sf3 hover:border-txt2"
+                class="row rounded border border-transparent *:py-2 odd:bg-sf3 hover:border-txt2"
             >
                 <div class="text-right">{scorer.firstName} {scorer.lastName}</div>
-                <div class="text-right font-bold">#{(currentPage - 1) * pageSize + idx + 1}</div>
+                <div class="text-center font-bold">{(currentPage - 1) * pageSize + idx + 1}</div>
                 <div class="text-center">{scorer.goalsCount}</div>
                 <div class="text-center md:mr-4">{scorer.assistsCount}</div>
                 <div
@@ -65,7 +65,7 @@
     {/await}
 </div>
 
-<div class="m-8 flex w-full flex-wrap justify-center gap-2 *:rounded *:border *:px-4 *:py-2">
+<div class="my-8 flex w-full flex-wrap justify-center gap-2 *:rounded *:border *:px-4 *:py-2">
     {#if currentPage > count + 1}
         <a href="/scorer?pageSize={pageSize}">1</a>
         <div class="">...</div>
@@ -85,7 +85,7 @@
     import { page } from '$app/stores';
     export let data;
 
-    $: pageSize = Number($page.url.searchParams.get('pageSize')) || 10;
+    $: pageSize = Number($page.url.searchParams.get('pageSize')) || 100;
     $: skip = Number($page.url.searchParams.get('skip')) || 0;
     $: totalItems = data.scorers.totalScorers;
 

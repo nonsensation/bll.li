@@ -14,6 +14,9 @@ importers:
       '@next/env':
         specifier: ^14.2.3
         version: 14.2.3
+      '@planetscale/database':
+        specifier: ^1.18.0
+        version: 1.18.0
       '@vercel/postgres':
         specifier: ^0.8.0
         version: 0.8.0
@@ -22,10 +25,10 @@ importers:
         version: 5.5.6
       drizzle-orm:
         specifier: ^0.30.10
-        version: 0.30.10(@neondatabase/serverless@0.7.2)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7)
+        version: 0.30.10(@neondatabase/serverless@0.7.2)(@planetscale/database@1.18.0)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7)
       drizzle-zod:
         specifier: ^0.5.1
-        version: 0.5.1(drizzle-orm@0.30.10(@neondatabase/serverless@0.7.2)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7))(zod@3.23.8)
+        version: 0.5.1(drizzle-orm@0.30.10(@neondatabase/serverless@0.7.2)(@planetscale/database@1.18.0)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7))(zod@3.23.8)
       floorball-saisonmanager:
         specifier: github:nonsensation/floorball-saisonmanager
         version: https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/5d5bf2b8474cdf66f3eb735a871e5c25ed66744e
@@ -655,6 +658,10 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@planetscale/database@1.18.0':
+    resolution: {integrity: sha512-t2XdOfrVgcF7AW791FtdPS27NyNqcE1SpoXgk3HpziousvUMsJi4Q6NL3JyOBpsMOrvk94749o8yyonvX5quPw==}
+    engines: {node: '>=16'}
 
   '@polka/url@1.0.0-next.25':
     resolution: {integrity: sha512-j7P6Rgr3mmtdkeDGTe0E/aYyWEWVtc5yFXtHCRHs28/jptDEWfaVOc5T7cblqy1XKPPfCxJc/8DwQ5YgLOZOVQ==}
@@ -2956,6 +2963,8 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@planetscale/database@1.18.0': {}
+
   '@polka/url@1.0.0-next.25': {}
 
   '@popperjs/core@2.11.8': {}
@@ -3501,16 +3510,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.30.10(@neondatabase/serverless@0.7.2)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7):
+  drizzle-orm@0.30.10(@neondatabase/serverless@0.7.2)(@planetscale/database@1.18.0)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7):
     optionalDependencies:
       '@neondatabase/serverless': 0.7.2
+      '@planetscale/database': 1.18.0
       '@types/pg': 8.6.6
       '@vercel/postgres': 0.8.0
       mysql2: 3.9.7
 
-  drizzle-zod@0.5.1(drizzle-orm@0.30.10(@neondatabase/serverless@0.7.2)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7))(zod@3.23.8):
+  drizzle-zod@0.5.1(drizzle-orm@0.30.10(@neondatabase/serverless@0.7.2)(@planetscale/database@1.18.0)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7))(zod@3.23.8):
     dependencies:
-      drizzle-orm: 0.30.10(@neondatabase/serverless@0.7.2)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7)
+      drizzle-orm: 0.30.10(@neondatabase/serverless@0.7.2)(@planetscale/database@1.18.0)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7)
       zod: 3.23.8
 
   eastasianwidth@0.2.0: {}

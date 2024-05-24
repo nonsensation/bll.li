@@ -71,7 +71,8 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			// './$SM': 'src/lib/static/floorball-saisonmanager-data/data' ,
-			'$drizzle': 'drizzle' ,
+			'$drizzle': 'db/drizzle' ,
+			'$mysql': 'db/mysql' ,
 		}
 	},
 	
