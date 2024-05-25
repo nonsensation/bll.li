@@ -17,6 +17,7 @@ export const arenas = Table( 'arenas', {
 
 export const events = Table( 'events', {
     id: integer( 'id' ).primaryKey(),
+    eventId: integer( 'eventId' ),
     eventType: text( 'eventType' ).notNull(),
     gameId: integer( 'gameId' ).notNull(), //.references( () => games.id ),
     period: integer( 'period' ).notNull(),
@@ -46,6 +47,7 @@ export const gameOperations = Table( 'game_operations', {
 
 export const games = Table( 'games', {
     id: integer( 'id' ).primaryKey(),
+    gameId: integer( 'gameId' ),
     gameNumber: text( 'gameNumber' ).notNull(),
     date: text( 'date' ).notNull(),
     leagueId: integer( 'leagueId' ).notNull(), //.references( () => leagues.id ),
@@ -71,6 +73,7 @@ export const goals = Table( 'goals', {
 
 export const leagues = Table( 'leagues', {
     id: integer( 'id' ).primaryKey(),
+    leagueId: integer( 'leagueId' ),
     leagueCategoryId: text( 'leagueCategoryId' ).notNull(),
     leagueClassId: text( 'leagueClassId' ).notNull(),
     leagueSystemId: text( 'leagueSystemId' ).notNull(),
@@ -104,12 +107,14 @@ export const penalties = Table( 'penalties', {
 
 export const players = Table( 'players', {
     id: integer( 'id' ).primaryKey(),
+    playerId: integer( 'playerId' ),
     firstName: text( 'firstName' ).notNull(),
     lastName: text( 'lastName' ).notNull(),
 } )
 
 export const referees = Table( 'referees', {
     id: integer( 'id' ).primaryKey(),
+    refereeId: integer( 'refereeId' ),
     firstName: text( 'firstName' ).notNull(),
     lastName: text( 'lastName' ).notNull(),
     licenseId: integer( 'licenseId' ).notNull(),
@@ -124,6 +129,7 @@ export const seasons = Table( 'seasons', {
 
 export const teams = Table( 'teams', {
     id: integer( 'id' ).primaryKey(),
+    teamId: integer( 'teamId' ),
     name: text( 'name' ).notNull(),
     logo: text( 'logo' ).notNull(),
 } )

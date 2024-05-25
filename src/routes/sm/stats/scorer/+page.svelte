@@ -25,7 +25,7 @@
             <div class="text-center">Tore</div>
             <div class="text-center md:mr-4">Assists</div>
             <div
-                class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid"
+                class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4"
             >
                 <div class="">2'</div>
                 <div class="">2+2'</div>

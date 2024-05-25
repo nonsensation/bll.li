@@ -150,7 +150,7 @@ export async function load( { fetch, url } )
 
         const scorerQuery = qb
             .select( {
-                playerId: sql`${ schema.players.id }`.as( 'playerId' ),
+                playerId: sql`${ schema.players.playerId }`.as( 'playerId' ),
                 firstName: sql`${ schema.players.firstName }`.as( 'firstName' ),
                 lastName: sql`${ schema.players.lastName }`.as( 'lastName' ),
                 goalsCount: sql`COALESCE(${ goalsCountQuery.goalsCount }, 0)`.as( 'goalsCount' ),
@@ -172,17 +172,17 @@ export async function load( { fetch, url } )
                 penalty10Count: sql`COALESCE(${ penalties10CountQuery.penalty10Count }, 0)`.as( 'penalty10Count' ),
             } )
             .from( schema.players )
-            .leftJoin( goalsCountQuery, eq( schema.players.id, goalsCountQuery.playerId ) )
-            .leftJoin( assistsCountQuery, eq( schema.players.id, assistsCountQuery.assistId ) )
-            .leftJoin( penalties2CountQuery, eq( schema.players.id, penalties2CountQuery.penaltyPlayerId ) )
-            .leftJoin( penalties5CountQuery, eq( schema.players.id, penalties5CountQuery.penaltyPlayerId ) )
-            .leftJoin( penalties10CountQuery, eq( schema.players.id, penalties10CountQuery.penaltyPlayerId ) )
-            .leftJoin( penalties2and2CountQuery, eq( schema.players.id, penalties2and2CountQuery.penaltyPlayerId ) )
-            .leftJoin( penaltiesMsTechCountQuery, eq( schema.players.id, penaltiesMsTechCountQuery.penaltyPlayerId ) )
-            .leftJoin( penaltiesMs1CountQuery, eq( schema.players.id, penaltiesMs1CountQuery.penaltyPlayerId ) )
-            .leftJoin( penaltiesMs2CountQuery, eq( schema.players.id, penaltiesMs2CountQuery.penaltyPlayerId ) )
-            .leftJoin( penaltiesMs3CountQuery, eq( schema.players.id, penaltiesMs3CountQuery.penaltyPlayerId ) )
-            .leftJoin( penaltiesMsFullCountQuery, eq( schema.players.id, penaltiesMsFullCountQuery.penaltyPlayerId ) )
+            .leftJoin( goalsCountQuery, eq( schema.players.playerId, goalsCountQuery.playerId ) )
+            .leftJoin( assistsCountQuery, eq( schema.players.playerId, assistsCountQuery.assistId ) )
+            .leftJoin( penalties2CountQuery, eq( schema.players.playerId, penalties2CountQuery.penaltyPlayerId ) )
+            .leftJoin( penalties5CountQuery, eq( schema.players.playerId, penalties5CountQuery.penaltyPlayerId ) )
+            .leftJoin( penalties10CountQuery, eq( schema.players.playerId, penalties10CountQuery.penaltyPlayerId ) )
+            .leftJoin( penalties2and2CountQuery, eq( schema.players.playerId, penalties2and2CountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMsTechCountQuery, eq( schema.players.playerId, penaltiesMsTechCountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMs1CountQuery, eq( schema.players.playerId, penaltiesMs1CountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMs2CountQuery, eq( schema.players.playerId, penaltiesMs2CountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMs3CountQuery, eq( schema.players.playerId, penaltiesMs3CountQuery.penaltyPlayerId ) )
+            .leftJoin( penaltiesMsFullCountQuery, eq( schema.players.playerId, penaltiesMsFullCountQuery.penaltyPlayerId ) )
             .orderBy(
                 desc( goalsCountQuery.goalsCount ),
                 desc( goalsCountQuery.goalsCount ),
@@ -229,8 +229,8 @@ export async function load( { fetch, url } )
         const totalScorersData = await querySql( totalScorersSql, fetch )
         const scorerData = await querySql( rawSql, fetch )
 
-        const totalScorers: Awaited<typeof totalScorersQuery> = totalScorersData.data
-        const scorer: Awaited<typeof scorerQuery> = scorerData.data
+        const totalScorers: Awaited<typeof totalScorersQuery> = totalScorersData
+        const scorer: Awaited<typeof scorerQuery> = scorerData
 
         console.dir( scorer )
 

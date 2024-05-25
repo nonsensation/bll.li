@@ -1,14 +1,26 @@
 import { MYSQL_HOST, MYSQL_USERNAME, MYSQL_DATABASE, MYSQL_PASSWORD } from '$env/static/private'
 import { json } from '@sveltejs/kit'
-import type { RequestEvent } from './$types'
+
+// Thanks to https://www.youtube.com/watch?v=9i38FPugxB8&t=308s
+type MySqlPostResponse = {
+    success: boolean
+} & ( DataProps | ErrorProps )
+
+type DataProps = {
+    success: true
+    data: any
+}
+
+type ErrorProps = {
+    success: false
+    error: string
+}
 
 export async function POST( { fetch, request } )
 {
     const apiUrl = 'https://bll.wik.li'
 
     const queryStr = await request.text()
-
-    // console.dir( queryStr )
 
     const dbInfo = {
         servername: MYSQL_HOST,
@@ -31,18 +43,21 @@ export async function POST( { fetch, request } )
         {
             if( !response.ok )
             {
-                throw new Error( 'Network response was not ok ' + response.statusText )
+                throw new Error( 'Network response was not ok: ' + response.statusText )
             }
 
-            const r = response.json()
-
-            return r
+            return response.json()
         } )
-        .then( response =>
+        .then( jsonResponse =>
         {
-            // console.dir( response )
+            const response = jsonResponse as MySqlPostResponse
 
-            return response
+            if( !response.success )
+            {
+                throw new Error( 'MYSQL Error: ' + response.error )
+            }
+
+            return response.data
         } )
         .catch( error =>
         {
