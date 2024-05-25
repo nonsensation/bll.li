@@ -7,7 +7,7 @@ import * as schema from '$mysql/schema'
 import { db } from '$mysql/db'
 // import { db } from '$drizzle/db'
 import { fetchData } from '$lib/sm/data'
-import { and, arrayContains, asc, desc, eq, inArray, isNotNull, like } from 'drizzle-orm'
+import { and, arrayContains, asc, desc, eq , ne , inArray, isNotNull, like, gt } from 'drizzle-orm'
 import { setTimeout } from 'timers/promises'
 import { parse } from 'csv-parse/sync'
 import { any, z } from 'zod'
@@ -39,12 +39,12 @@ export async function load( { fetch, url } )
     const qb = db //new QueryBuilder()
 
     let search = url.searchParams.get( 'search' )
-    let pageSize = Number( url.searchParams.get( 'pageSize' ) ) || 10
+    let pageSize = Number( url.searchParams.get( 'pageSize' ) ) || 100
     const skip = Number( url.searchParams.get( 'skip' ) ) || 0
 
-    pageSize = Math.max( 0, Math.min( pageSize, 100 ) )
+    pageSize = Math.max( 0, Math.min( pageSize, 1000 ) )
 
-    async function getScorers( limit: number = 10, offset: number = 0 )
+    async function getScorers( limit: number = 100, offset: number = 0 )
     {
         const goalsCountQuery = qb
             .select( {
@@ -52,6 +52,7 @@ export async function load( { fetch, url } )
                 goalsCount: sql`COUNT(*)`.as( 'goalsCount' ),
             } )
             .from( schema.goals )
+            .where( gt( schema.goals.playerId , 0 ) )
             .groupBy( schema.goals.playerId )
             .as( 'goalsCountSubquery' )
 
@@ -61,7 +62,7 @@ export async function load( { fetch, url } )
                 assistsCount: sql`COUNT(*)`.as( 'assistsCount' ),
             } )
             .from( schema.goals )
-            .where( isNotNull( schema.goals.assistId ) )
+            .where( gt( schema.goals.assistId , 0 ) )
             .groupBy( schema.goals.assistId )
             .as( 'assistsCountSubquery' )
 
@@ -71,7 +72,7 @@ export async function load( { fetch, url } )
                 penalty2Count: sql`COUNT(*)`.as( 'penalty2Count' ),
             } )
             .from( schema.penalties )
-            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_2' ) ) )
+            .where( and( gt( schema.penalties.playerId , 0 ), eq( schema.penalties.penaltyType, 'penalty_2' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penalties2CountQuery' )
 
@@ -81,7 +82,7 @@ export async function load( { fetch, url } )
                 penaltyMs1Count: sql`COUNT(*)`.as( 'penaltyMs1Count' ),
             } )
             .from( schema.penalties )
-            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms1' ) ) )
+            .where( and( gt( schema.penalties.playerId , 0 ) , eq( schema.penalties.penaltyType, 'penalty_ms1' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMs1CountQuery' )
         const penalties2and2CountQuery = qb
@@ -90,7 +91,7 @@ export async function load( { fetch, url } )
                 penalty2and2Count: sql`COUNT(*)`.as( 'penalty2and2Count' ),
             } )
             .from( schema.penalties )
-            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_2and2' ) ) )
+            .where( and( gt( schema.penalties.playerId , 0 ) , eq( schema.penalties.penaltyType, 'penalty_2and2' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penalties2and2CountQuery' )
         const penaltiesMs2CountQuery = qb
@@ -99,7 +100,7 @@ export async function load( { fetch, url } )
                 penaltyMs2Count: sql`COUNT(*)`.as( 'penaltyMs2Count' ),
             } )
             .from( schema.penalties )
-            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms2' ) ) )
+            .where( and( gt( schema.penalties.playerId , 0 ) , eq( schema.penalties.penaltyType, 'penalty_ms2' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMs2CountQuery' )
         const penaltiesMs3CountQuery = qb
@@ -108,7 +109,7 @@ export async function load( { fetch, url } )
                 penaltyMs3Count: sql`COUNT(*)`.as( 'penaltyMs3Count' ),
             } )
             .from( schema.penalties )
-            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms3' ) ) )
+            .where( and( gt( schema.penalties.playerId , 0 ) , eq( schema.penalties.penaltyType, 'penalty_ms3' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMs3CountQuery' )
         const penaltiesMsTechCountQuery = qb
@@ -117,7 +118,7 @@ export async function load( { fetch, url } )
                 penaltyMsTechCount: sql`COUNT(*)`.as( 'penaltyMsTechCount' ),
             } )
             .from( schema.penalties )
-            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms_tech' ) ) )
+            .where( and( gt( schema.penalties.playerId , 0 ) , eq( schema.penalties.penaltyType, 'penalty_ms_tech' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMsTechCountQuery' )
         const penaltiesMsFullCountQuery = qb
@@ -126,7 +127,7 @@ export async function load( { fetch, url } )
                 penaltyMsFullCount: sql`COUNT(*)`.as( 'penaltyMsFullCount' ),
             } )
             .from( schema.penalties )
-            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_ms_full' ) ) )
+            .where( and( gt( schema.penalties.playerId , 0 ) , eq( schema.penalties.penaltyType, 'penalty_ms_full' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penaltiesMsFullCountQuery' )
         const penalties5CountQuery = qb
@@ -135,7 +136,7 @@ export async function load( { fetch, url } )
                 penalty5Count: sql`COUNT(*)`.as( 'penalty5Count' ),
             } )
             .from( schema.penalties )
-            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_5' ) ) )
+            .where( and( gt( schema.penalties.playerId , 0 ) , eq( schema.penalties.penaltyType, 'penalty_5' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penalties5CountQuery' )
         const penalties10CountQuery = qb
@@ -144,7 +145,7 @@ export async function load( { fetch, url } )
                 penalty10Count: sql`COUNT(*)`.as( 'penalty10Count' ),
             } )
             .from( schema.penalties )
-            .where( and( isNotNull( schema.penalties.playerId ), eq( schema.penalties.penaltyType, 'penalty_10' ) ) )
+            .where( and( gt( schema.penalties.playerId , 0 ) , eq( schema.penalties.penaltyType, 'penalty_10' ) ) )
             .groupBy( schema.penalties.playerId )
             .as( 'penalties10CountQuery' )
 
@@ -244,155 +245,3 @@ export async function load( { fetch, url } )
         scorers: await getScorers( pageSize, skip ),
     }
 }
-
-// async function lol()
-// {
-//     const teams = await fetchCsv<schema.Team>( fetch, schema.insertTeamSchema.safeParse, 'teams' )
-//     const arenas = await fetchCsv<schema.Arena>( fetch, schema.insertArenaSchema.safeParse, 'arenas' )
-//     const leagues = await fetchCsv<schema.League>( fetch, schema.insertLeagueSchema.safeParse, 'leagues' )
-//     const penalties = await fetchCsv<schema.Penalty>( fetch, schema.insertPenaltySchema.safeParse, 'penalties' )
-//     const goals = await fetchCsv<schema.Goal>( fetch, schema.insertGoalSchema.safeParse, 'goals' )
-//     const games = await fetchCsv<schema.Game>( fetch, schema.insertGameSchema.safeParse, 'games' )
-//     const referees = await fetchCsv<schema.Referee>( fetch, schema.insertRefereeSchema.safeParse, 'referees' )
-//     const gameOperations = await fetchCsv<schema.GameOperation>(
-//         fetch,
-//         schema.insertGameOperationSchema.safeParse,
-//         'gameOperations'
-//     )
-//     const seasons = await fetchCsv<schema.Season>( fetch, schema.insertSeasonSchema.safeParse, 'seasons' )
-//     const players = await fetchCsv<schema.Player>( fetch, schema.insertPlayerSchema.safeParse, 'players' )
-//     const events = await fetchCsv<schema.Event>( fetch, schema.insertEventSchema.safeParse, 'events' )
-
-//     // await chunked( gameOperations, async ( vals: any[] ) => upsert( vals, schema.gameOperations, schema.gameOperations.id ) )
-//     // await chunked( arenas, async ( vals: any[] ) => upsert( vals, schema.arenas, schema.arenas.id ) )
-//     // await chunked( seasons, async ( vals: any[] ) => upsert( vals, schema.seasons, schema.seasons.id ) )
-//     // await chunked( referees, async ( vals: any[] ) => upsert( vals, schema.referees, schema.referees.id ) )
-//     // await chunked( teams, async ( vals: any[] ) => upsert( vals, schema.teams, schema.teams.id ) )
-//     // await chunked( leagues, async ( vals: any[] ) => upsert( vals, schema.leagues, schema.leagues.id ) )
-//     // await chunked( players, async ( vals: any[] ) => upsert( vals, schema.players, schema.players.id ) )
-//     // await chunked( games, async ( vals: any[] ) => upsert( vals, schema.games, schema.games.id ) )
-//     // await chunked( goals, async ( vals: any[] ) => upsert( vals, schema.goals, schema.goals.id ) )
-//     // await chunked( penalties, async ( vals: any[] ) => upsert( vals, schema.penalties, schema.penalties.id ) )
-//     // await chunked( events, async ( vals: any[] ) => upsert( vals, schema.events, schema.events.id ) )
-
-//     return {
-//         // teams: teams(),
-//         // arenas: arenas(),
-//         // leagues: leagues(),
-//         // penalties: penalties(),
-//         // goals: goals(),
-//         // games: games(),
-//         // referees: referees(),
-//         // gameOperations: gameOperations(),
-
-//         events,
-//         teams,
-//         players,
-//         seasons,
-//         arenas,
-//         leagues,
-//         penalties,
-//         goals,
-//         games,
-//         referees,
-//         gameOperations,
-//     }
-// }
-
-// const upsert = async ( vals: any[], table: any, id: any ) =>
-//     await db.insert( table ).values( vals ).onConflictDoNothing( { target: id } )
-
-// async function fetchCsv<T>( fetch: any, validate: any, csv: string ): Promise<T[]>
-// {
-//     const parseOptions = {
-//         delimiter: '|',
-//         columns: true,
-//         skip_empty_lines: true,
-//         trim: true,
-//         comment: '#',
-//         cast: ( value, context ) =>
-//         {
-//             if( context.header ) return value
-
-//             const col: string = context.column
-
-//             if( col === 'leagueCategoryId' || col === 'leagueClassId' || col === 'leagueSystemId' ) return String( value )
-
-//             if( col.endsWith( 'Id' ) ) return Number( value )
-//             if( col.endsWith( 'Goals' ) ) return Number( value )
-
-//             if( col.startsWith( 'is' ) ) return Boolean( value )
-//             if( col.startsWith( 'has' ) ) return Boolean( value )
-
-//             switch( col )
-//             {
-//                 case 'id':
-//                 case 'period':
-//                 case 'number':
-//                 case 'assist':
-//                 case 'penaltyReason':
-//                 case 'audience':
-//                     return Number( value )
-//                 default:
-//                     return String( value )
-//             }
-//         },
-//     }
-
-//     const url = `https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/generated/csv/${ csv }.csv`
-
-//     const response = await fetch( url )
-//     const csvString = await response.text()
-//     const records = parse( csvString, parseOptions )
-//     const arr: T[] = []
-
-//     console.log( 'Records: ' + records.length )
-
-//     for( const record of records )
-//     {
-//         const result = validate( record )
-
-//         if( result.success )
-//         {
-//             arr.push( result.data as T )
-//         } else
-//         {
-//             console.error( 'Validation failed:', result.error.errors )
-//         }
-//     }
-
-//     return arr
-// }
-
-// type ProcessFn<T> = ( chnk: T[] ) => Promise<QueryResult<never>>
-// async function chunked<T>( arr: T[], processFn: ProcessFn<T>, chunkSize: number = 1000 ): Promise<void>
-// {
-//     let hasErr = false
-
-//     let len = arr.length
-
-//     // len = 3
-
-//     console.log( `Baching ${ len } values in ${ Math.ceil( len / chunkSize ) } batches` )
-
-//     for( let i = 0; i < len; i += chunkSize )
-//     {
-//         const chunk = arr.slice( i, i + chunkSize )
-
-//         console.log( `Start Batch #${ i } - ${ i + chunkSize } [${ chunk.map( x => x.id ).join( ',' ) }]` )
-
-//         await processFn( chunk )
-//             .then( x => console.error( `Batch #${ i } done.` ) )
-//             .catch( err =>
-//             {
-//                 hasErr = true
-//                 console.error( `Error in chunk #${ i }!`, err )
-//             } )
-
-//         if( hasErr )
-//         {
-//             if( chunk.length < 10 ) console.dir( chunk )
-//             break
-//         }
-//     }
-// }

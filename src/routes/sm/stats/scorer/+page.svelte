@@ -40,7 +40,7 @@
         </div>
         {#each scorers.scorer as scorer, idx}
             <a
-                href="/stats/player?id={scorer.playerId}"
+                href="/sm/stats/player?id={scorer.playerId}"
                 class="row rounded border border-transparent *:py-2 odd:bg-sf3 hover:border-txt2"
             >
                 <div class="text-right">{scorer.firstName} {scorer.lastName}</div>
@@ -67,17 +67,17 @@
 
 <div class="my-8 flex w-full flex-wrap justify-center gap-2 *:rounded *:border *:px-4 *:py-2">
     {#if currentPage > count + 1}
-        <a href="/scorer?pageSize={pageSize}">1</a>
+        <a href="/sm/stats/scorer?pageSize={pageSize}">1</a>
         <div class="">...</div>
     {/if}
     {#each pages as idx}
-        <a href="/scorer?pageSize={pageSize}&skip={pageSize * (idx - 1)}" class:isCurrentPage={currentPage === idx}>
+        <a href="/sm/stats/scorer?pageSize={pageSize}&skip={pageSize * (idx - 1)}" class:isCurrentPage={currentPage === idx}>
             {idx}
         </a>
     {/each}
     {#if currentPage < totalPages - count}
         <div class="">...</div>
-        <a href="/scorer?pageSize={pageSize}&skip={pageSize * (totalPages - 1)}">{totalPages}</a>
+        <a href="/sm/stats/scorer?pageSize={pageSize}&skip={pageSize * (totalPages - 1)}">{totalPages}</a>
     {/if}
 </div>
 
