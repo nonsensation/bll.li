@@ -17,7 +17,7 @@ import { MySqlDialect, QueryBuilder } from 'drizzle-orm/mysql-core'
 import { SQL } from 'drizzle-orm'
 // import { PgColumn, type PgSelect } from 'drizzle-orm/pg-core'
 import { MySqlColumn, type MySqlSelect } from 'drizzle-orm/mysql-core'
-import { querySql } from '$lib/db'
+import { querySql } from '$mysql/db'
 
 const mysqlDialect = new MySqlDialect()
 
@@ -42,7 +42,7 @@ export async function load( { fetch, url } )
     let pageSize = Number( url.searchParams.get( 'pageSize' ) ) || 100
     const skip = Number( url.searchParams.get( 'skip' ) ) || 0
 
-    pageSize = Math.max( 0, Math.min( pageSize, 1000 ) )
+    pageSize = Math.max( 0, Math.min( pageSize, 300 ) )
 
     async function getScorers( limit: number = 100, offset: number = 0 )
     {
@@ -151,6 +151,7 @@ export async function load( { fetch, url } )
 
         const scorerQuery = qb
             .select( {
+                id: sql`${ schema.players.id }`.as( 'id' ),
                 playerId: sql`${ schema.players.playerId }`.as( 'playerId' ),
                 firstName: sql`${ schema.players.firstName }`.as( 'firstName' ),
                 lastName: sql`${ schema.players.lastName }`.as( 'lastName' ),

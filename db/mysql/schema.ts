@@ -2,10 +2,8 @@ import { mysqlTable, text, int, boolean } from 'drizzle-orm/mysql-core'
 import { type InferSelectModel, type InferInsertModel } from 'drizzle-orm'
 import { createSelectSchema, createInsertSchema } from 'drizzle-zod'
 
-
 const Table = mysqlTable
-const integer = int;
-
+const integer = int
 
 export const arenas = Table( 'arenas', {
     id: integer( 'id' ).primaryKey(),
@@ -134,7 +132,34 @@ export const teams = Table( 'teams', {
     logo: text( 'logo' ).notNull(),
 } )
 
+export const gameStats = Table( 'gameStats', {
+    id: integer( 'id' ).primaryKey(),
+    _key: text( '_key' ),
+    eventIndex: integer( 'eventIndex' ),
+    trikotNumber: integer( 'trikotNumber' ),
+    teamGuestId: integer( 'teamGuestId' ),
+    penaltyReason: integer( 'penaltyReason' ),
+    time: text( 'time' ),
+    period: integer( 'period' ),
+    lastName: text( 'lastName' ),
+    penaltyType: text( 'penaltyType' ),
+    gameId: integer( 'gameId' ),
+    name: text( 'name' ),
+    refereeIndex: integer( 'refereeIndex' ),
+    goalIndex: integer( 'goalIndex' ),
+    short: text( 'short' ),
+    leagueId: integer( 'leagueId' ),
+    teamId: integer( 'teamId' ),
+    playerId: integer( 'playerId' ),
+    address: text( 'address' ),
+    firstName: text( 'firstName' ),
+    statsType: text( 'statsType' ),
+    teamHomeId: integer( 'teamHomeId' ),
+} )
 
+export type SelectGameStats = InferSelectModel<typeof gameStats>
+export type InsertGameStats = InferInsertModel<typeof gameStats>
+export type GameStats = SelectGameStats
 
 export type SelectArena = InferSelectModel<typeof arenas>
 export type InsertArena = InferInsertModel<typeof arenas>
@@ -180,11 +205,8 @@ export type SelectTeam = InferSelectModel<typeof teams>
 export type InsertTeam = InferInsertModel<typeof teams>
 export type Team = SelectTeam
 
-
-
-
-
-
+export const selectGameStatsSchema = createSelectSchema( gameStats )
+export const insertGameStatsSchema = createInsertSchema( gameStats )
 
 export const selectArenaSchema = createSelectSchema( arenas )
 export const insertArenaSchema = createInsertSchema( arenas )

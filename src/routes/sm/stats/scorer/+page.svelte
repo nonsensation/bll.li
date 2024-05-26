@@ -40,7 +40,7 @@
         </div>
         {#each scorers.scorer as scorer, idx}
             <a
-                href="/sm/stats/player?id={scorer.playerId}"
+                href="/sm/stats/player?id={scorer.id}"
                 class="row rounded border border-transparent *:py-2 odd:bg-sf3 hover:border-txt2"
             >
                 <div class="text-right">{scorer.firstName} {scorer.lastName}</div>

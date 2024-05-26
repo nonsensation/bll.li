@@ -22,6 +22,8 @@ export async function POST( { fetch, request } )
 
     const queryStr = await request.text()
 
+    console.info( queryStr )
+
     const dbInfo = {
         servername: MYSQL_HOST,
         username: MYSQL_USERNAME,

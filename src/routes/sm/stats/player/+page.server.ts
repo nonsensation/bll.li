@@ -1,58 +1,101 @@
-import { SM } from 'floorball-saisonmanager'
-import { error } from '@sveltejs/kit'
+import * as schema from '$mysql/schema'
+import { and, asc, desc, eq, gt, inArray } from 'drizzle-orm'
+import { sql } from 'drizzle-orm'
+import { db, fetchFromMyDb, qb } from '$mysql/db'
+import { alias, type MySqlSelectBase, type MySqlSelectQueryBuilderBase } from 'drizzle-orm/mysql-core'
+import { SocketAddress } from 'net'
 
-
-export async function load( {fetch,url} )
+export async function load( { fetch, url } )
 {
-    let gameId = 0
+    const id = Number( url.searchParams.get( 'id' ) ?? -1 )
 
-    if( url && url.searchParams )
+    const playerQuery = qb
+        .select()
+        .from( schema.players )
+        .where( eq( schema.players.id, id ) )
+        .orderBy( desc( schema.players.id ) )
+        .limit( 1 )
+
+    const [ playerData ] = await fetchFromMyDb<ReturnType<typeof playerQuery.$dynamic>, typeof playerQuery._.result>(
+        playerQuery.$dynamic(),
+        fetch
+    )
+
+    const gameStatsQuery = qb
+        .select( {
+            gameId: schema.gameStats.gameId,
+            teamId: schema.gameStats.teamId,
+        } )
+        .from( schema.gameStats )
+        .where( and( eq( schema.gameStats.statsType, 'player' ), eq( schema.gameStats.playerId, id ) ) )
+
+    const gameStats = await fetchFromMyDb<ReturnType<typeof gameStatsQuery.$dynamic>, typeof gameStatsQuery._.result>(
+        gameStatsQuery.$dynamic(),
+        fetch
+    )
+
+    const teamGames = new Map<number,number[]>()
+
+    for( const stat of gameStats )
     {
-        const gameIdParam = url.searchParams.get( 'gameId' )
-
-        if( gameIdParam ) gameId = parseInt( gameIdParam ) || 0
+        if( teamGames.has( stat.teamId! ) )
+            teamGames.get( stat.teamId! )?.push( stat.gameId! )
+        else
+            teamGames.set( stat.gameId! , [stat.gameId!] )
     }
 
-    if( gameId <= 0 )
-    {
-        error( 404, 'Spiel nicht gefunden!' )
-    }
+    const gamesQuery = qb
+        .select()
+        .from( schema.games )
+        .where( inArray( schema.games.gameId, Array.from( teamGames.values() ).flat() ) )
 
-    try
-    {
-        const getGame = async () => await getData<SM.Game>( fetch , `games/${ gameId }.json` )
-        return {
-            gameId,
-            game: getData<SM.Game>( fetch , `games/${ gameId }.json` ),
-        }
-    } catch( err )
-    {
-        error( 404, 'LOL' )
-    }
-}
+    const games = await fetchFromMyDb<ReturnType<typeof gamesQuery.$dynamic>, typeof gamesQuery._.result>(
+        gamesQuery.$dynamic(),
+        fetch
+    )
 
-async function getData<T>( fetch: any, apiUrl: string ): Promise<T | void>
-{
-    try
-    {
-        // const liveApi = 'https://saisonmanager.de/api/v2'
-        const liveApi = 'https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2'
-        const smUrl = `${ liveApi }/${ apiUrl }`
-        const response = await fetch( smUrl ) //,
+    const teamsQuery = qb
+        .select()
+        .from( schema.teams )
+        .where( inArray( schema.teams.teamId , [...teamGames.keys()] ) )
 
-        if( !response.ok )
-        {
-            error( 404, 'saisonmanager.de api not ok - tried: ' + smUrl )
-        }
+    const teams = await fetchFromMyDb<ReturnType<typeof teamsQuery.$dynamic>, typeof teamsQuery._.result>(
+        teamsQuery.$dynamic(),
+        fetch
+    )
 
-        const json = await response.json()
-        const game = json as T
+    const homeTeams = alias( schema.teams , 'homeTeams' ) 
+    const guestTeams = alias( schema.teams , 'guestTeams' ) 
 
-        console.dir( "FOUND: " + game.id)
+    const leaguesQuery = qb
+        .select({
+            gameId: schema.games.gameId ,
+            homeTeam: homeTeams.name ,
+            guestTeam: guestTeams.name ,
+            leagueName: schema.leagues.name,
+            season: schema.seasons.name,
+        })
+        .from( schema.leagues )
+        .where( inArray( schema.leagues.leagueId, games.map( x => x.leagueId ) ) )
+        .leftJoin( schema.games , inArray( schema.games.gameId , games.map( x => x.gameId! ) ) )
+        .leftJoin( schema.seasons , eq( schema.leagues.seasonId , schema.seasons.seasonId ) )
+        .leftJoin( homeTeams , eq( schema.games.teamHomeId , homeTeams.teamId ) )
+        .leftJoin( guestTeams , eq( schema.games.teamGuestId , guestTeams.teamId ) )
+        .groupBy( schema.games.gameId )
+        .orderBy( schema.games.date )
 
-        return game
-    } catch( err )
-    {
-        error( 404, 'saisonmanager.de api fail: ' + JSON.stringify( err ) )
+    const leagues = await fetchFromMyDb<ReturnType<typeof leaguesQuery.$dynamic>, typeof leaguesQuery._.result>(
+        leaguesQuery.$dynamic(),
+        fetch
+    )
+
+    return {
+        // foreach season select team + matches + SocketAddress
+
+        playerData,
+        gameStats,
+        games,
+        teams,
+        leagues,
     }
 }
