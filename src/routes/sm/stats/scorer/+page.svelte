@@ -17,16 +17,16 @@
 
 <div class="">
     {#await data.scorers}
-        Loading
+        <div class="">
+            Lade {data.totalScorers} Spieler
+        </div>
     {:then scorers}
         <div class="row sticky top-0 w-full border-b border-b-prim bg-sf py-4 font-bold">
             <div class="text-right">Name</div>
             <div class="text-center">Platz</div>
             <div class="text-center">Tore</div>
             <div class="text-center md:mr-4">Assists</div>
-            <div
-                class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4"
-            >
+            <div class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4">
                 <div class="">2'</div>
                 <div class="">2+2'</div>
                 <div class="" title="Technische Matchstrafe">t. MS</div>
@@ -44,12 +44,11 @@
                 class="row rounded border border-transparent *:py-2 odd:bg-sf3 hover:border-txt2"
             >
                 <div class="text-right">{scorer.firstName} {scorer.lastName}</div>
-                <div class="text-center font-bold">{(currentPage - 1) * pageSize + idx + 1}</div>
+                <div class="text-center font-bold">{scorer.rank}</div>
+                <!-- <div class="text-center font-bold">{(currentPage - 1) * pageSize + idx + 1}</div> -->
                 <div class="text-center">{scorer.goalsCount}</div>
                 <div class="text-center md:mr-4">{scorer.assistsCount}</div>
-                <div
-                    class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4"
-                >
+                <div class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4">
                     <div class="">{scorer.penalty2Count}</div>
                     <div class="">{scorer.penalty2and2Count}</div>
                     <div class="">{scorer.penaltyMsTechCount}</div>
@@ -71,7 +70,10 @@
         <div class="">...</div>
     {/if}
     {#each pages as idx}
-        <a href="/sm/stats/scorer?pageSize={pageSize}&skip={pageSize * (idx - 1)}" class:isCurrentPage={currentPage === idx}>
+        <a
+            href="/sm/stats/scorer?pageSize={pageSize}&skip={pageSize * (idx - 1)}"
+            class:isCurrentPage={currentPage === idx}
+        >
             {idx}
         </a>
     {/each}
@@ -87,7 +89,7 @@
 
     $: pageSize = Number($page.url.searchParams.get('pageSize')) || 100;
     $: skip = Number($page.url.searchParams.get('skip')) || 0;
-    $: totalItems = data.scorers.totalScorers;
+    $: totalItems = data.totalScorers;
 
     $: totalPages = Math.ceil(totalItems / pageSize);
     $: currentPage = Math.floor(skip / pageSize) + 1;

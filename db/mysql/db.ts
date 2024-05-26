@@ -2,28 +2,48 @@
 // USE PLANETSCALE ONLY TO GET DRIZZLE TO GENERATE SQL,
 // WITHOUT THE NEED FOR AN ACTIVE CONNECTION TO A DATABASE
 //
-import { drizzle } from 'drizzle-orm/planetscale-serverless'
+import { drizzle as drizzle_dummy } from 'drizzle-orm/planetscale-serverless'
 import { Client } from '@planetscale/database'
-import
-    {
-        MySqlDialect,
-        type MySqlSelectQueryBuilderBase,
-        QueryBuilder,
-        type MySqlSelect,
-        type MySqlSelectQueryBuilder,
-        MySqlSelectBuilder,
-        MySqlSelectBase,
-        type MySqlSelectHKTBase,
-        type PreparedQueryHKTBase,
-    } from 'drizzle-orm/mysql-core'
-import { sql, type ColumnsSelection, type Query } from 'drizzle-orm'
-import type { SelectMode } from 'drizzle-orm/query-builders/select.types'
 
-export const db = drizzle( new Client( {} ) )
+import { drizzle as drizzle_local } from 'drizzle-orm/mysql2'
+import mysql from 'mysql2/promise'
+
+import { DEV_MYSQL_HOST, DEV_MYSQL_PASSWORD, DEV_MYSQL_USERNAME, DEV_MYSQL_DATABASE } from '$env/static/private'
+import { MySqlDialect, QueryBuilder, type MySqlSelect, type MySqlSelectQueryBuilder } from 'drizzle-orm/mysql-core'
+import { sql, type Query } from 'drizzle-orm'
+
+const connection = await mysql.createConnection( {
+    host: DEV_MYSQL_HOST,
+    password: DEV_MYSQL_PASSWORD,
+    user: DEV_MYSQL_USERNAME,
+    database: DEV_MYSQL_DATABASE,
+} )
+
+export const db_dummy = drizzle_dummy( new Client( {} ) )
+export const db_local = drizzle_local( connection )
+export const db = db_local
 export const dialect = new MySqlDialect()
 export const qb = new QueryBuilder()
 
-export async function querySql( sqlQuery: string, fetch: any )
+// Thanks to https://www.youtube.com/watch?v=9i38FPugxB8&t=308s
+export type MySqlPostResponse = {
+    success: boolean
+} & ( DataProps | ErrorProps )
+
+type DataProps = {
+    success: true
+    data: any
+}
+
+type ErrorProps = {
+    success: false
+    error: string
+}
+
+export const querySql = querySql_local
+export const fetchFromMyDb = fetchFromMyDb_local
+
+async function querySql_dummy( sqlQuery: string, fetch: any )
 {
     const options = {
         method: 'POST',
@@ -34,15 +54,21 @@ export async function querySql( sqlQuery: string, fetch: any )
     }
 
     const response = await fetch( '/api/db', options )
-    const data = await response.json()
+    const data: MySqlPostResponse = await response.json()
 
-    return data
+    return data.success ? data.data : {}
 }
 
-export async function fetchFromMyDb<
-    T extends MySqlSelectQueryBuilder,
-    R
->( qb: T, fetchFunc: any ) : Promise<R>
+async function querySql_local( sqlQuery: string, fetch: any )
+{
+    const [ rows, fields ] = await db_local.execute( sql.raw( sqlQuery ) )
+
+    // console.log( sqlQuery )
+    
+    return rows
+}
+
+async function fetchFromMyDb_dummy<T extends MySqlSelectQueryBuilder, R>( qb: T, fetchFunc: any ): Promise<R>
 {
     const query = qb
     const rawSqlString = replaceQuestionMarks( query.toSQL() )
@@ -52,7 +78,15 @@ export async function fetchFromMyDb<
     return data
 }
 
-function replaceQuestionMarks( query: Query ): string
+async function fetchFromMyDb_local<T extends MySqlSelectQueryBuilder, R>( qb: T, fetchFunc: any ): Promise<R>
+{
+    const untypedData = await db_dummy.execute( qb )
+    const data = untypedData as R
+
+    return data
+}
+
+export function replaceQuestionMarks( query: Query ): string
 {
     let { sql, params } = query
     let strArr = sql.split( '?' )

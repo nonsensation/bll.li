@@ -1,28 +1,13 @@
 import { MYSQL_HOST, MYSQL_USERNAME, MYSQL_DATABASE, MYSQL_PASSWORD } from '$env/static/private'
 import { json } from '@sveltejs/kit'
-
-// Thanks to https://www.youtube.com/watch?v=9i38FPugxB8&t=308s
-type MySqlPostResponse = {
-    success: boolean
-} & ( DataProps | ErrorProps )
-
-type DataProps = {
-    success: true
-    data: any
-}
-
-type ErrorProps = {
-    success: false
-    error: string
-}
+import { type MySqlPostResponse } from '$mysql/db'
 
 export async function POST( { fetch, request } )
 {
+    // const apiUrl = 'https://bll.wik.li'
     const apiUrl = 'https://bll.wik.li'
 
     const queryStr = await request.text()
-
-    console.info( queryStr )
 
     const dbInfo = {
         servername: MYSQL_HOST,
@@ -40,12 +25,16 @@ export async function POST( { fetch, request } )
         body: JSON.stringify( dbInfo ),
     }
 
-    const dbData = await fetch( apiUrl, options )
+    const dbData: MySqlPostResponse = await fetch( apiUrl, options )
         .then( response =>
         {
             if( !response.ok )
             {
-                throw new Error( 'Network response was not ok: ' + response.statusText )
+                // throw new Error( 'Network response was not ok: ' + response.statusText )
+                return {
+                    success: false,
+                    error: 'Network response was not ok: ' + response.statusText,
+                } as MySqlPostResponse
             }
 
             return response.json()
@@ -56,15 +45,27 @@ export async function POST( { fetch, request } )
 
             if( !response.success )
             {
-                throw new Error( 'MYSQL Error: ' + response.error )
+                // throw new Error( 'MYSQL Error: ' + response.error )
+                return {
+                    success: false,
+                    error: 'MYSQL Error: ' + response.error,
+                } as MySqlPostResponse
             }
 
-            return response.data
+            return response
         } )
         .catch( error =>
         {
-            console.error( 'There was a problem with the fetch operation:', error )
+            // console.error( 'There was a problem with the fetch operation:', error )
+
+            return {
+                success: false,
+                error: 'There was a problem with the fetch operation:' + error,
+            } as MySqlPostResponse
         } )
 
-    return json( dbData )
+    return json( {
+        success: true,
+        data: dbData,
+    } as MySqlPostResponse )
 }
