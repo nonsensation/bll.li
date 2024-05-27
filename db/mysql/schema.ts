@@ -67,6 +67,8 @@ export const goals = Table( 'goals', {
     goalType: text( 'goalType' ).notNull(),
     playerId: integer( 'playerId' ), //.references( () => players.id ),
     assistId: integer( 'assistId' ), //.references( () => players.id ),
+    time: text( 'time' ),
+    period: integer( 'period' ),
 } )
 
 export const leagues = Table( 'leagues', {
@@ -86,6 +88,7 @@ export const leagues = Table( 'leagues', {
     hasPreround: boolean( 'hasPreround' ).notNull(),
     isFemale: boolean( 'isFemale' ).notNull(),
     isLegacyLeague: boolean( 'isLegacyLeague' ).notNull(),
+    isJunior: boolean( 'isJunior' ).notNull(),
     leagueModus: text( 'leagueModus' ),
     overtimeLength: text( 'overtimeLength' ),
     periodLength: text( 'periodLength' ),
@@ -101,6 +104,8 @@ export const penalties = Table( 'penalties', {
     teamId: integer( 'teamId' ).notNull(), //.references( () => teams.id ),
     penaltyReason: integer( 'penaltyReason' ).notNull(),
     penaltyType: text( 'penaltyType' ).notNull(),
+    time: text( 'time' ),
+    period: integer( 'period' ),
 } )
 
 export const players = Table( 'players', {
@@ -151,6 +156,8 @@ export const gameStats = Table( 'gameStats', {
     leagueId: integer( 'leagueId' ),
     teamId: integer( 'teamId' ),
     playerId: integer( 'playerId' ),
+    goalPlayerId: integer( 'goalPlayerId' ),
+    assistPlayerId: integer( 'assistPlayerId' ),
     address: text( 'address' ),
     firstName: text( 'firstName' ),
     statsType: text( 'statsType' ),

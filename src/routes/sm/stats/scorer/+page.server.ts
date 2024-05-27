@@ -16,6 +16,7 @@ import { SQL } from 'drizzle-orm'
 // import { PgColumn, type PgSelect } from 'drizzle-orm/pg-core'
 import { MySqlColumn, type MySqlSelect } from 'drizzle-orm/mysql-core'
 import { querySql } from '$mysql/db'
+import { setTimeout } from 'timers/promises'
 
 const mysqlDialect = new MySqlDialect()
 
@@ -147,6 +148,15 @@ export async function load( { fetch, url } )
             .groupBy( schema.penalties.playerId )
             .as( 'penalties10CountQuery' )
 
+        const leaguesQuery = qb
+            .select( {
+                leagueId: schema.leagues.leagueId
+            } )
+            .from( schema.leagues )
+            .where( eq( schema.leagues.isJunior , false ) )
+            .groupBy( schema.leagues.leagueId )
+            .as( 'leaguesQuery' )
+
         const ordering = [
             desc( goalsCountQuery.goalsCount ),
             desc( goalsCountQuery.goalsCount ),
@@ -202,7 +212,7 @@ export async function load( { fetch, url } )
             .orderBy( ...ordering )
             .as( 'scorerQuery' )
 
-        const orderList = sql.join(ordering , sql`,`)
+        const orderList = sql.join( ordering, sql`,` )
         const rankedScorerQuery = qb
             .select( {
                 ...scorerQuery._.selectedFields,
@@ -228,6 +238,8 @@ export async function load( { fetch, url } )
 
         // const totalScorers = totalScorersData as typeof totalScorersQuery
         const scorer = scorerData as typeof rankedScorerQuery
+
+        // await setTimeout( 30000 , "" )
 
         return {
             scorer,
