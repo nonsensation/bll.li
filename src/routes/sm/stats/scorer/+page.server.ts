@@ -1,9 +1,8 @@
 import * as schema from '$mysql/schema'
-import { replaceQuestionMarks } from '$mysql/db'
-import { and, asc, desc, eq, ne, inArray, isNotNull, like, gt, notLike, count } from 'drizzle-orm'
+import { querySql, replaceQuestionMarks } from '$mysql/db'
+import { and, asc, desc, eq, ne, inArray, isNotNull, like, gt, notLike, type SQLWrapper, or } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { QueryBuilder, type MySqlSelectQueryBuilder } from 'drizzle-orm/mysql-core'
-import { querySql } from '$mysql/db'
 import type { PageServerLoadEvent } from './$types'
 
 export async function load( serverLoadEvent: PageServerLoadEvent )
@@ -23,6 +22,7 @@ async function getTotalScorers( serverLoadEvent: PageServerLoadEvent )
         } )
         .from( schema.leagueScorers )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueScorers.leagueId ) )
+        .leftJoin( schema.players, eq( schema.players.id, schema.leagueScorers.playerId ) )
         .$dynamic()
 
     query = filter( query, serverLoadEvent )
@@ -38,52 +38,65 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
 {
     const qb = new QueryBuilder()
 
-    let leagueScorerQuery = qb
-        .select()
+    let subQuery = qb
+        .select( {
+            LeagueName: sql`${ schema.leagues.name }`.as( 'LeagueName' ),
+            IsJunior: sql`${ schema.leagues.isJunior }`.as( 'IsJunior' ),
+            PlayerId: sql`${ schema.leagueScorers.playerId }`.as( 'PlayerId' ),
+            Goals: sql`${ schema.leagueScorers.goals }`.as( 'Goals' ),
+            Assists: sql`${ schema.leagueScorers.assists }`.as( 'Assists' ),
+            Games: sql`${ schema.leagueScorers.games }`.as( 'Games' ),
+            Penalty2: sql`${ schema.leagueScorers.penalty2 }`.as( 'Penalty2' ),
+            Penalty2and2: sql`${ schema.leagueScorers.penalty2and2 }`.as( 'Penalty2and2' ),
+            Penalty5: sql`${ schema.leagueScorers.penalty5 }`.as( 'Penalty5' ),
+            Penalty10: sql`${ schema.leagueScorers.penalty10 }`.as( 'Penalty10' ),
+            PenaltyMsTech: sql`${ schema.leagueScorers.penaltyMsTech }`.as( 'PenaltyMsTech' ),
+            PenaltyMsFull: sql`${ schema.leagueScorers.penaltyMsFull }`.as( 'PenaltyMsFull' ),
+            PenaltyMs1: sql`${ schema.leagueScorers.penaltyMs1 }`.as( 'PenaltyMs1' ),
+            PenaltyMs2: sql`${ schema.leagueScorers.penaltyMs2 }`.as( 'PenaltyMs2' ),
+            PenaltyMs3: sql`${ schema.leagueScorers.penaltyMs3 }`.as( 'PenaltyMs3' ),
+        } )
         .from( schema.leagueScorers )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueScorers.leagueId ) )
+        .leftJoin( schema.players, eq( schema.players.id, schema.leagueScorers.playerId ) )
         .$dynamic()
-    leagueScorerQuery = filter( leagueScorerQuery, serverLoadEvent )
+    subQuery = filter( subQuery, serverLoadEvent )
 
-    let leagueScorerSubQuery = leagueScorerQuery.as('leagueScorerSubQuery')
+    let sub = subQuery.as( 'subQuery' )
 
     let query = qb
         .select( {
-            PlayerId: sql`${schema.players.id}`.as( 'PlayerId' ),
-            FirstName: sql`${schema.players.firstName}`.as( 'FirstName' ),
-            LastName: sql`${schema.players.lastName}`.as( 'LastName' ),
+            PlayerId: sql`${ schema.players.id }`.as( 'PlayerId' ),
+            FirstName: sql`${ schema.players.firstName }`.as( 'FirstName' ),
+            LastName: sql`${ schema.players.lastName }`.as( 'LastName' ),
             PlayerRank: sql`RANK() OVER ( ORDER BY
-                COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.goals }), 0) DESC,
-                COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.assists }), 0) DESC,
-                COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.games }), 0) ASC
+                COALESCE(SUM(${ sub.Goals }), 0) DESC,
+                COALESCE(SUM(${ sub.Assists }), 0) DESC,
+                COALESCE(SUM(${ sub.Games }), 0) ASC
                 )`.as( 'PlayerRank' ),
-            TotalGoals: sql`COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.goals }), 0)`.as( 'TotalGoals' ),
-            TotalAssists: sql`COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.assists }), 0)`.as( 'TotalAssists' ),
-            TotalGames: sql`COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.games }), 0)`.as( 'TotalGames' ),
-            TotalPenalty2: sql`COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.penalty2 }), 0)`.as( 'TotalPenalty2' ),
-            TotalPenalty2and2: sql`COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.penalty2and2 }), 0)`.as( 'TotalPenalty2and2' ),
-            TotalPenalty5: sql`COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.penalty5 }), 0)`.as( 'TotalPenalty5' ),
-            TotalPenalty10: sql`COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.penalty10 }), 0)`.as( 'TotalPenalty10' ),
-            TotalPenaltyMs: sql`COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.penaltyMs1 }), 0) +
-                    COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.penaltyMs2 }), 0) +
-                    COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.penaltyMs3 }), 0) +
-                    COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.penaltyMsTech }), 0) +
-                    COALESCE(SUM(${ leagueScorerSubQuery.LeagueScorer.penaltyMsFull }), 0)`.as( 'TotalPenaltyMs' ),
+            TotalGoals: sql`COALESCE(SUM(${ sub.Goals }), 0)`.as( 'TotalGoals' ),
+            TotalAssists: sql`COALESCE(SUM(${ sub.Assists }), 0)`.as( 'TotalAssists' ),
+            TotalGames: sql`COALESCE(SUM(${ sub.Games }), 0)`.as( 'TotalGames' ),
+            TotalPenalty2: sql`COALESCE(SUM(${ sub.Penalty2 }), 0)`.as( 'TotalPenalty2' ),
+            TotalPenalty2and2: sql`COALESCE(SUM(${ sub.Penalty2and2 }), 0)`.as( 'TotalPenalty2and2' ),
+            TotalPenalty5: sql`COALESCE(SUM(${ sub.Penalty5 }), 0)`.as( 'TotalPenalty5' ),
+            TotalPenalty10: sql`COALESCE(SUM(${ sub.Penalty10 }), 0)`.as( 'TotalPenalty10' ),
+            TotalPenaltyMs: sql`COALESCE(SUM(${ sub.PenaltyMs1 }), 0) +
+                    COALESCE(SUM(${ sub.PenaltyMs2 }), 0) +
+                    COALESCE(SUM(${ sub.PenaltyMs3 }), 0) +
+                    COALESCE(SUM(${ sub.PenaltyMsTech }), 0) +
+                    COALESCE(SUM(${ sub.PenaltyMsFull }), 0)`.as( 'TotalPenaltyMs' ),
         } )
-        .from( leagueScorerSubQuery )
-        .leftJoin( schema.players, eq( schema.players.id, leagueScorerSubQuery.LeagueScorer.playerId ) )
-        // .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueScorers.leagueId ) )
-        // .groupBy( schema.players.id, schema.players.firstName, schema.players.lastName )
-        // .orderBy( sql`TotalGoals DESC`, sql`TotalAssists DESC`, sql`TotalGames ASC`, sql`TotalPenaltyMs ASC` )
+        .from( sub )
+        .leftJoin( schema.players, eq( schema.players.id, sub.PlayerId ) )
         .$dynamic()
-    // query = filter( query, serverLoadEvent )
-    query = query.groupBy( schema.players.id, schema.players.firstName, schema.players.lastName )
-        // .orderBy( sql`TotalGoals DESC`, sql`TotalAssists DESC`, sql`TotalGames ASC`, sql`TotalPenaltyMs ASC` )
+    query = query
+        .groupBy( sql`PlayerId`, sql`FirstName`, sql`LastName` )
+        .orderBy( sql`TotalGoals DESC`, sql`TotalAssists DESC`, sql`TotalGames ASC`, sql`TotalPenaltyMs ASC` )
     query = withPagination( query, serverLoadEvent )
 
     const scorerQuerySql = replaceQuestionMarks( query.toSQL() )
-
-    console.log( scorerQuerySql );
+    console.error( '\n\n\n' + scorerQuerySql )
     const scorerData = await querySql( scorerQuerySql, serverLoadEvent.fetch )
     const scorers = scorerData as typeof query
 
@@ -93,27 +106,33 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
 function filter<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: PageServerLoadEvent )
 {
     const { url } = serverLoadEvent
+    const name = url.searchParams.get( 'name' )
     const enableJuniorLeagues = url.searchParams.get( 'junior' )
     const enableFieldSize = url.searchParams.get( 'fieldSize' )
+    const filters = []
 
     if( enableFieldSize != null )
     {
         // TODO: use .FieldSize column
         if( enableFieldSize == 'KF' )
-            qb = qb.where( like( schema.leagues.name, 'Kleinfeld' ) )
+            filters.push( or( like( schema.leagues.name, '%Kleinfeld%' ), like( schema.leagues.name, '%KF%' ) ) )
         else if( enableFieldSize == 'GF' )
-            qb = qb.where( notLike( schema.leagues.name, 'Kleinfeld' ) )
+            filters.push( or( notLike( schema.leagues.name, '%Kleinfeld%' ), notLike( schema.leagues.name, '%KF%' ) ) )
     }
 
     if( enableJuniorLeagues != null )
     {
-        if( enableJuniorLeagues == '1' )
-            qb = qb.where( eq( schema.leagues.isJunior, true ) )
-        else if( enableJuniorLeagues == '0' )
-            qb = qb.where( eq( schema.leagues.isJunior, false ) )
+        if( enableJuniorLeagues == '1' ) filters.push( eq( schema.leagues.isJunior, true ) )
+        else if( enableJuniorLeagues == '0' ) filters.push( eq( schema.leagues.isJunior, false ) )
     }
 
-    return qb
+    if( name != null )
+    {
+        const likeStr = `%${name}%`;
+        filters.push( sql`CONCAT( ${schema.players.firstName} , ' ' , ${schema.players.lastName} ) LIKE ${likeStr}` )
+    }
+
+    return qb.where( and( ...filters ) )
 }
 
 function withPagination<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: PageServerLoadEvent )
