@@ -12,16 +12,16 @@ import { DEV_MYSQL_HOST, DEV_MYSQL_PASSWORD, DEV_MYSQL_USERNAME, DEV_MYSQL_DATAB
 import { MySqlDialect, QueryBuilder, type MySqlSelect, type MySqlSelectQueryBuilder } from 'drizzle-orm/mysql-core'
 import { sql, type Query } from 'drizzle-orm'
 
-const connection = await mysql.createConnection( {
-    host: DEV_MYSQL_HOST,
-    password: DEV_MYSQL_PASSWORD,
-    user: DEV_MYSQL_USERNAME,
-    database: DEV_MYSQL_DATABASE,
-} )
+// const connection = await mysql.createConnection( {
+//     host: DEV_MYSQL_HOST,
+//     password: DEV_MYSQL_PASSWORD,
+//     user: DEV_MYSQL_USERNAME,
+//     database: DEV_MYSQL_DATABASE,
+// } )
 
 export const db_dummy = drizzle_dummy( new Client( {} ) )
-export const db_local = drizzle_local( connection )
-export const db = db_local
+// export const db_local = drizzle_local( connection )
+export const db = db_dummy
 export const dialect = new MySqlDialect()
 export const qb = new QueryBuilder()
 
@@ -40,10 +40,10 @@ type ErrorProps = {
     error: string
 }
 
-export const querySql = querySql_local
-export const fetchFromMyDb = fetchFromMyDb_local
+export const querySql = querySql_dummy
+export const fetchFromMyDb = fetchFromMyDb_dummy
 
-async function querySql_dummy( sqlQuery: string, fetch: any )
+async function querySql_dummy( sqlQuery: string, fetchFunc: any )
 {
     const options = {
         method: 'POST',
@@ -53,20 +53,20 @@ async function querySql_dummy( sqlQuery: string, fetch: any )
         body: sqlQuery,
     }
 
-    const response = await fetch( '/api/db', options )
+    const response = await fetchFunc( '/api/db', options )
     const data: MySqlPostResponse = await response.json()
 
     return data.success ? data.data : {}
 }
 
-async function querySql_local( sqlQuery: string, fetch: any )
-{
-    const [ rows, fields ] = await db_local.execute( sql.raw( sqlQuery ) )
+// async function querySql_local( sqlQuery: string, fetch: any )
+// {
+//     const [ rows, fields ] = await db_local.execute( sql.raw( sqlQuery ) )
 
-    // console.log( sqlQuery )
-    
-    return rows
-}
+//     console.log( sqlQuery )
+
+//     return rows
+// }
 
 async function fetchFromMyDb_dummy<T extends MySqlSelectQueryBuilder, R>( qb: T, fetchFunc: any ): Promise<R>
 {
@@ -78,13 +78,13 @@ async function fetchFromMyDb_dummy<T extends MySqlSelectQueryBuilder, R>( qb: T,
     return data
 }
 
-async function fetchFromMyDb_local<T extends MySqlSelectQueryBuilder, R>( qb: T, fetchFunc: any ): Promise<R>
-{
-    const untypedData = await db_dummy.execute( qb )
-    const data = untypedData as R
+// async function fetchFromMyDb_local<T extends MySqlSelectQueryBuilder, R>( qb: T, fetchFunc: any ): Promise<R>
+// {
+//     const untypedData = await db_dummy.execute( qb )
+//     const data = untypedData as R
 
-    return data
-}
+//     return data
+// }
 
 export function replaceQuestionMarks( query: Query ): string
 {

@@ -1,168 +1,183 @@
-import { mysqlTable, text, int, boolean } from 'drizzle-orm/mysql-core'
+import { text, int, boolean,json, mysqlTable } from 'drizzle-orm/mysql-core'
 import { type InferSelectModel, type InferInsertModel } from 'drizzle-orm'
 import { createSelectSchema, createInsertSchema } from 'drizzle-zod'
 
 const Table = mysqlTable
 const integer = int
 
-export const arenas = Table( 'arenas', {
-    id: integer( 'id' ).primaryKey(),
-    arenaId: integer( 'arenaId' ).notNull(),
-    name: text( 'name' ).notNull(),
-    short: text( 'short' ).notNull(),
-    address: text( 'address' ).notNull(),
-} )
+export const fileStates = Table('FileState', {
+  id: integer('Id').primaryKey(),
+  fileName: text('FileName').notNull(),
+});
 
-export const events = Table( 'events', {
-    id: integer( 'id' ).primaryKey(),
-    eventId: integer( 'eventId' ),
-    eventType: text( 'eventType' ).notNull(),
-    gameId: integer( 'gameId' ).notNull(), //.references( () => games.id ),
-    period: integer( 'period' ).notNull(),
-    sortkey: text( 'sortkey' ).notNull(),
-    teamId: integer( 'teamId' ).notNull(), //.references( () => teams.id ),
-    time: text( 'time' ).notNull(),
-    assist: integer( 'assist' ),
-    goalType: text( 'goalType' ),
-    guestGoals: integer( 'guestGoals' ), // TODO: notnull
-    homeGoals: integer( 'homeGoals' ), // TODO: notnull
-    isForfait: boolean( 'isForfait' ).notNull(),
-    isOvertime: boolean( 'isOvertime' ).notNull(),
-    number: integer( 'number' ),
-    penaltyReason: integer( 'penaltyReason' ),
-    penaltyType: text( 'penaltyType' ),
-} )
+export const seasons = Table('Season', {
+  id: integer('Id').primaryKey(),
+  name: text('Name').notNull(),
+  isCurrent: boolean('IsCurrent').notNull(),
+});
 
-export const gameOperations = Table( 'game_operations', {
-    id: integer( 'id' ).primaryKey(),
-    gameOperationId: integer( 'gameOperationId' ).notNull(),
-    name: text( 'name' ).notNull(),
-    logoQuadUrl: text( 'logoQuadUrl' ),
-    logoUrl: text( 'logoUrl' ),
-    path: text( 'path' ),
-    shortName: text( 'shortName' ),
-} )
+export const gameOperations = Table('GameOperation', {
+  id: integer('Id').primaryKey(),
+  name: text('Name').notNull(),
+  shortName: text('ShortName').notNull(),
+});
 
-export const games = Table( 'games', {
-    id: integer( 'id' ).primaryKey(),
-    gameId: integer( 'gameId' ),
-    gameNumber: text( 'gameNumber' ).notNull(),
-    date: text( 'date' ).notNull(),
-    leagueId: integer( 'leagueId' ).notNull(), //.references( () => leagues.id ),
-    arenaId: integer( 'arenaId' ).notNull(), //.references( () => arenas.id ),
-    gameOperationId: integer( 'gameOperationId' ).notNull(), //.references( () => gameOperations.id ),
-    teamHomeId: integer( 'teamHomeId' ).notNull(), //.references( () => teams.id ),
-    teamGuestId: integer( 'teamGuestId' ).notNull(), //.references( () => teams.id ),
-    nominatedReferees: text( 'nominatedReferees' ).notNull(),
-    audience: integer( 'audience' ),
-    livestreamLink: text( 'livestreamLink' ),
-    vodLink: text( 'vodLink' ),
-} )
+export const games = Table('Game', {
+  id: integer('Id').primaryKey(),
+  leagueId: integer('LeagueId').notNull(),
+  arenaId: integer('ArenaId').notNull(),
+  homeTeamId: integer('HomeTeamId').notNull(),
+  guestTeamId: integer('GuestTeamId').notNull(),
+  date: text('Date').notNull(),
+  gameNumber: text('GameNumber').notNull(),
+  startTime: text('StartTime').notNull(),
+  audience: integer('Audience').notNull(),
+  homeGoals: integer('HomeGoals').notNull(),
+  guestGoals: integer('GuestGoals').notNull(),
+  nominatedReferees: text('NominatedReferees').notNull(),
+  refereeIds: json('RefereeIds').notNull(),
+  isForfait: boolean('IsForfait').notNull(),
+  isOverTime: boolean('IsOverTime').notNull(),
+  isPenaltyShootout: boolean('IsPenaltyShootout').notNull(),
+});
 
-export const goals = Table( 'goals', {
-    id: integer( 'id' ).primaryKey(),
-    eventId: integer( 'eventId' ).notNull(), //.references( () => events.id ),
-    gameId: integer( 'gameId' ).notNull(), //.references( () => games.id ),
-    teamId: integer( 'teamId' ).notNull(), //.references( () => teams.id ),
-    goalType: text( 'goalType' ).notNull(),
-    playerId: integer( 'playerId' ), //.references( () => players.id ),
-    assistId: integer( 'assistId' ), //.references( () => players.id ),
-    time: text( 'time' ),
-    period: integer( 'period' ),
-} )
+export const arenas = Table('Arena', {
+  id: integer('Id').primaryKey(),
+  capacity: integer('Capacity').notNull(),
+  name: text('Name').notNull(),
+  city: text('City').notNull(),
+  postCode: text('PostCode').notNull(),
+  street: text('Street').notNull(),
+  houseNumber: text('HouseNumber').notNull(),
+  publicTransportNote: text('PublicTransportNote').notNull(),
+  travelNote: text('TravelNote').notNull(),
+  comment: text('Comment').notNull(),
+  isDisabled: boolean('IsDisabled').notNull(),
+});
 
-export const leagues = Table( 'leagues', {
-    id: integer( 'id' ).primaryKey(),
-    leagueId: integer( 'leagueId' ),
-    leagueCategoryId: text( 'leagueCategoryId' ).notNull(),
-    leagueClassId: text( 'leagueClassId' ).notNull(),
-    leagueSystemId: text( 'leagueSystemId' ).notNull(),
-    leagueType: text( 'leagueType' ).notNull(),
-    name: text( 'name' ).notNull(),
-    shortName: text( 'shortName' ).notNull(),
-    sortKey: text( 'sortKey' ).notNull(),
-    season: text( 'season' ).notNull(),
-    seasonId: integer( 'seasonId' ).notNull(), //.references( () => seasons.id ),
-    fieldSize: text( 'fieldSize' ),
-    gameOperationId: integer( 'gameOperationId' ).notNull(), //.references( () => gameOperations.id ),
-    hasPreround: boolean( 'hasPreround' ).notNull(),
-    isFemale: boolean( 'isFemale' ).notNull(),
-    isLegacyLeague: boolean( 'isLegacyLeague' ).notNull(),
-    isJunior: boolean( 'isJunior' ).notNull(),
-    leagueModus: text( 'leagueModus' ),
-    overtimeLength: text( 'overtimeLength' ),
-    periodLength: text( 'periodLength' ),
-    periods: text( 'periods' ),
-    tableModus: text( 'tableModus' ).notNull(),
-} )
+export const clubs = Table('Club', {
+  id: integer('Id').primaryKey(),
+  name: text('Name').notNull(),
+  longName: text('LongName').notNull(),
+  shortName: text('ShortName').notNull(),
+  state: text('State').notNull(),
+  logoUrl: text('LogoUrl').notNull(),
+});
 
-export const penalties = Table( 'penalties', {
-    id: integer( 'id' ).primaryKey(),
-    eventId: integer( 'eventId' ).notNull(), //.references( () => events.id ),
-    gameId: integer( 'gameId' ).notNull(), //.references( () => games.id ),
-    playerId: integer( 'playerId' ).notNull(), //.references( () => players.id ),
-    teamId: integer( 'teamId' ).notNull(), //.references( () => teams.id ),
-    penaltyReason: integer( 'penaltyReason' ).notNull(),
-    penaltyType: text( 'penaltyType' ).notNull(),
-    time: text( 'time' ),
-    period: integer( 'period' ),
-} )
+export const teams = Table('Team', {
+  id: integer('Id').primaryKey(),
+  clubId: integer('ClubId').notNull(),
+  name: text('Name').notNull(),
+  shortName: text('ShortName').notNull(),
+  logoUrl: text('LogoUrl').notNull(),
+  syndicateClubIds: json('SyndicateClubIds').notNull(),
+});
 
-export const players = Table( 'players', {
-    id: integer( 'id' ).primaryKey(),
-    playerId: integer( 'playerId' ),
-    firstName: text( 'firstName' ).notNull(),
-    lastName: text( 'lastName' ).notNull(),
-} )
+export const gameEvents = Table('GameEvent', {
+  id: integer('Id').primaryKey(),
+  eventType: text('EventType').notNull(),
+  eventIndex: integer('EventIndex').notNull(),
+  teamId: integer('TeamId').notNull(),
+  gameId: integer('GameId').notNull(),
+  period: integer('Period').notNull(),
+  time: text('Time').notNull(),
+});
 
-export const referees = Table( 'referees', {
-    id: integer( 'id' ).primaryKey(),
-    refereeId: integer( 'refereeId' ),
-    firstName: text( 'firstName' ).notNull(),
-    lastName: text( 'lastName' ).notNull(),
-    licenseId: integer( 'licenseId' ).notNull(),
-} )
+export const gameStats = Table('GameStat', {
+  id: integer('Id').primaryKey(),
+  key: text('_Key').notNull(),
+  statType: text('StatType').notNull(),
+  teamId: integer('TeamId'),
+  eventId: integer('EventId'),
+  gameId: integer('GameId').notNull(),
+  foreignId: integer('ForeignId').notNull(),
+});
 
-export const seasons = Table( 'seasons', {
-    id: integer( 'id' ).primaryKey(),
-    seasonId: integer( 'seasonId' ).notNull(),
-    name: text( 'name' ).notNull(),
-    isCurrent: boolean( 'isCurrent' ).notNull(),
-} )
+export const goals = Table('Goal', {
+  id: integer('Id').primaryKey(),
+  eventId: integer('EventId').notNull(),
+  teamId: integer('TeamId').notNull(),
+  gameId: integer('GameId').notNull(),
+  period: integer('Period').notNull(),
+  time: text('Time').notNull(),
+  playerId: integer('PlayerId'),
+  assistPlayerId: integer('AssistPlayerId'),
+  goalType: text('GoalType').notNull(),
+});
 
-export const teams = Table( 'teams', {
-    id: integer( 'id' ).primaryKey(),
-    teamId: integer( 'teamId' ),
-    name: text( 'name' ).notNull(),
-    logo: text( 'logo' ).notNull(),
-} )
+export const penalties = Table('Penalty', {
+  id: integer('Id').primaryKey(),
+  eventId: integer('EventId').notNull(),
+  teamId: integer('TeamId').notNull(),
+  gameId: integer('GameId').notNull(),
+  playerId: integer('PlayerId').notNull(),
+  penaltyCode: integer('PenaltyCode').notNull(),
+  penaltyType: text('PenaltyType').notNull(),
+});
 
-export const gameStats = Table( 'gameStats', {
-    id: integer( 'id' ).primaryKey(),
-    _key: text( '_key' ),
-    eventIndex: integer( 'eventIndex' ),
-    trikotNumber: integer( 'trikotNumber' ),
-    teamGuestId: integer( 'teamGuestId' ),
-    penaltyReason: integer( 'penaltyReason' ),
-    time: text( 'time' ),
-    period: integer( 'period' ),
-    lastName: text( 'lastName' ),
-    penaltyType: text( 'penaltyType' ),
-    gameId: integer( 'gameId' ),
-    name: text( 'name' ),
-    refereeIndex: integer( 'refereeIndex' ),
-    goalIndex: integer( 'goalIndex' ),
-    short: text( 'short' ),
-    leagueId: integer( 'leagueId' ),
-    teamId: integer( 'teamId' ),
-    playerId: integer( 'playerId' ),
-    goalPlayerId: integer( 'goalPlayerId' ),
-    assistPlayerId: integer( 'assistPlayerId' ),
-    address: text( 'address' ),
-    firstName: text( 'firstName' ),
-    statsType: text( 'statsType' ),
-    teamHomeId: integer( 'teamHomeId' ),
-} )
+export const referees = Table('Referee', {
+  id: integer('Id').primaryKey(),
+  licenseId: integer('LicenseId').notNull(),
+  firstName: text('FirstName').notNull(),
+  lastName: text('LastName').notNull(),
+});
+
+export const players = Table('Player', {
+  id: integer('Id').primaryKey(),
+  firstName: text('FirstName').notNull(),
+  lastName: text('LastName').notNull(),
+});
+
+export const leagueTableTeams = Table('LeagueTableTeam', {
+  id: integer('Id').primaryKey(),
+  orderKey: integer('OrderKey').notNull(),
+  position: integer('Position').notNull(),
+  teamId: integer('TeamId').notNull(),
+  leagueId: integer('LeagueId').notNull(),
+  goalsScored: integer('GoalsScored').notNull(),
+  goalsReceived: integer('GoalsReceived').notNull(),
+  gamesWon: integer('GamesWon').notNull(),
+  gamesLost: integer('GamesLost').notNull(),
+  gamesDraw: integer('GamesDraw').notNull(),
+  gamesWonOt: integer('GamesWonOt').notNull(),
+  gamesLostOt: integer('GamesLostOt').notNull(),
+  pointsCorrection: integer('PointsCorrection').notNull(),
+  points: integer('Points').notNull(),
+});
+
+export const leagueScorers = Table('LeagueScorer', {
+  id: integer('Id').primaryKey(),
+  playerId: integer('PlayerId').notNull(),
+  teamId: integer('TeamId').notNull(),
+  leagueId: integer('LeagueId').notNull(),
+  orderKey: integer('OrderKey').notNull(),
+  position: integer('Position').notNull(),
+  games: integer('Games').notNull(),
+  goals: integer('Goals').notNull(),
+  assists: integer('Assists').notNull(),
+  penalty2: integer('Penalty2').notNull(),
+  penalty5: integer('Penalty5').notNull(),
+  penalty2and2: integer('Penalty2and2').notNull(),
+  penalty10: integer('Penalty10').notNull(),
+  penaltyMs1: integer('PenaltyMs1').notNull(),
+  penaltyMs2: integer('PenaltyMs2').notNull(),
+  penaltyMs3: integer('PenaltyMs3').notNull(),
+  penaltyMsFull: integer('PenaltyMsFull').notNull(),
+  penaltyMsTech: integer('PenaltyMsTech').notNull(),
+});
+
+export const leagues = Table('League', {
+  id: integer('Id').primaryKey(),
+  gameOperationId: integer('GameOperationId').notNull(),
+  seasonId: integer('SeasonId').notNull(),
+  name: text('Name').notNull(),
+  shortName: text('ShortName').notNull(),
+  isFemale: boolean('IsFemale').notNull(),
+  isCurrent: boolean('IsCurrent').notNull(),
+  isJunior: boolean('IsJunior').notNull(),
+  orderKey: text('OrderKey').notNull(),
+});
+
 
 export type SelectGameStats = InferSelectModel<typeof gameStats>
 export type InsertGameStats = InferInsertModel<typeof gameStats>
@@ -172,8 +187,8 @@ export type SelectArena = InferSelectModel<typeof arenas>
 export type InsertArena = InferInsertModel<typeof arenas>
 export type Arena = SelectArena
 
-export type SelectEvent = InferSelectModel<typeof events>
-export type InsertEvent = InferInsertModel<typeof events>
+export type SelectEvent = InferSelectModel<typeof gameEvents>
+export type InsertEvent = InferInsertModel<typeof gameEvents>
 export type Event = SelectEvent
 
 export type SelectGameOperation = InferSelectModel<typeof gameOperations>
@@ -218,8 +233,8 @@ export const insertGameStatsSchema = createInsertSchema( gameStats )
 export const selectArenaSchema = createSelectSchema( arenas )
 export const insertArenaSchema = createInsertSchema( arenas )
 
-export const selectEventSchema = createSelectSchema( events )
-export const insertEventSchema = createInsertSchema( events )
+export const selectEventSchema = createSelectSchema( gameEvents )
+export const insertEventSchema = createInsertSchema( gameEvents )
 
 export const selectGameOperationSchema = createSelectSchema( gameOperations )
 export const insertGameOperationSchema = createInsertSchema( gameOperations )

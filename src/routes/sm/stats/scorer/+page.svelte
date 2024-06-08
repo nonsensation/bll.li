@@ -10,7 +10,7 @@
     }
 
     .row {
-        @apply grid grid-cols-[4fr,1fr,1fr,1fr] items-center gap-2 md:grid-cols-[4fr,1fr,1fr,1fr,6fr];
+        @apply grid grid-cols-[4fr,1fr,1fr,1fr,1fr] items-center gap-2 md:grid-cols-[4fr,1fr,1fr,1fr,1fr,6fr];
         /* grid-template-columns: 1fr 5fr 1fr 1fr 5fr; */
     }
 
@@ -35,6 +35,7 @@
         <div class="text-center">Platz</div>
         <div class="text-center">Tore</div>
         <div class="text-center md:mr-4">Assists</div>
+        <div class="text-center md:mr-4">Spiele</div>
         <div class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4">
             <div class="">2'</div>
             <div class="">2+2'</div>
@@ -54,6 +55,7 @@
                 <div class="skeleton text-right">&nbsp;</div>
                 <div class="text-center font-bold">{(currentPage - 1) * pageSize + idx + 1}</div>
                 <div class="skeleton text-center">&nbsp;</div>
+                <div class="skeleton text-center md:mr-4">&nbsp;</div>
                 <div class="skeleton text-center md:mr-4">&nbsp;</div>
                 <div class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4">
                     <div class="skeleton">&nbsp;</div>
@@ -77,26 +79,26 @@
             </div>
         {/await}
     {:then scorers}
-        {#each scorers.scorer as scorer, idx}
+        {#each scorers as scorer, idx}
             <a
-                href="/sm/stats/player?id={scorer.playerId}"
+                href="/sm/stats/player?id={scorer.PlayerId}"
                 class="row rounded border border-transparent *:py-2 odd:bg-sf3 hover:border-txt2"
             >
-                <div class="text-right">{scorer.firstName} {scorer.lastName}</div>
-                <div class="text-center font-bold">{scorer.rank}</div>
-                <!-- <div class="text-center font-bold">{(currentPage - 1) * pageSize + idx + 1}</div> -->
-                <div class="text-center">{scorer.goalsCount}</div>
-                <div class="text-center md:mr-4">{scorer.assistsCount}</div>
+                <div class="text-right">{scorer.FirstName} {scorer.LastName}</div>
+                <div class="text-center font-bold">{scorer.Rank}</div>
+                <div class="text-center">{scorer.TotalGoals}</div>
+                <div class="text-center md:mr-4">{scorer.TotalAssists}</div>
+                <div class="text-center md:mr-4">{scorer.TotalGames}</div>
                 <div class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4">
-                    <div class="">{scorer.penalty2Count}</div>
-                    <div class="">{scorer.penalty2and2Count}</div>
-                    <div class="">{scorer.penaltyMsTechCount}</div>
-                    <div class="">{scorer.penaltyMsFullCount}</div>
-                    <div class="">{scorer.penalty5Count}</div>
-                    <div class="">{scorer.penalty10Count}</div>
-                    <div class="">{scorer.penaltyMs1Count}</div>
-                    <div class="">{scorer.penaltyMs2Count}</div>
-                    <div class="">{scorer.penaltyMs3Count}</div>
+                    <div class="">{scorer.TotalPenalty2}</div>
+                    <div class="">{scorer.TotalPenalty2and2 ?? 0}</div>
+                    <div class="">{scorer.TotalPenaltyMsTech ?? 0}</div>
+                    <div class="">{scorer.TotalPenaltyMsFull ?? 0}</div>
+                    <div class="">{scorer.TotalPenalty5 ?? 0}</div>
+                    <div class="">{scorer.TotalPenalty10 ?? 0}</div>
+                    <div class="">{scorer.TotalPenaltyMs1 ?? 0}</div>
+                    <div class="">{scorer.TotalPenaltyMs2 ?? 0}</div>
+                    <div class="">{scorer.TotalPenaltyMs3 ?? 0}</div>
                 </div>
             </a>
         {/each}
@@ -122,13 +124,20 @@
     {/if}
 </div>
 
+<div>pageSize: {pageSize}</div>
+<div>skip: {skip}</div>
+<div>totalItems: {totalItems}</div>
+<div>totalPages: {totalPages}</div>
+<div>currentPage: {currentPage}</div>
+<!-- <div>pages: {JSON.stringify(pages)}</div> -->
+
 <script lang="ts">
     import { page } from '$app/stores';
     export let data;
 
     $: pageSize = Number($page.url.searchParams.get('pageSize')) || 100;
     $: skip = Number($page.url.searchParams.get('skip')) || 0;
-    $: totalItems = 0; // data.totalScorers;
+    $: totalItems = 0;
 
     $: totalPages = Math.ceil(totalItems / pageSize);
     $: currentPage = Math.floor(skip / pageSize) + 1;
@@ -140,6 +149,7 @@
 
     const loadTotalScorers = async () => {
         const totalScorers = await data.totalScorers;
+        console.log("LOOOOOOOL"+totalScorers)
         totalItems = totalScorers;
         return totalScorers;
     };
