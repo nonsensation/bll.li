@@ -81,11 +81,11 @@
     {:then scorers}
         {#each scorers as scorer, idx}
             <a
-                href="/sm/stats/player?id={scorer.PlayerId}"
+                href="/sm/stats/player?id={scorer.Id}"
                 class="row rounded border border-transparent *:py-2 odd:bg-sf3 hover:border-txt2"
             >
                 <div class="text-right">{scorer.FirstName} {scorer.LastName}</div>
-                <div class="text-center font-bold">{scorer.Rank}</div>
+                <div class="text-center font-bold">{scorer.PlayerRank}</div>
                 <div class="text-center">{scorer.TotalGoals}</div>
                 <div class="text-center md:mr-4">{scorer.TotalAssists}</div>
                 <div class="text-center md:mr-4">{scorer.TotalGames}</div>
@@ -128,8 +128,8 @@
     import { page } from '$app/stores';
     export let data;
 
-    $: pageSize = Number($page.url.searchParams.get('pageSize')) || 100;
-    $: skip = Number($page.url.searchParams.get('skip')) || 0;
+    $: pageSize = Math.max( 0 , Math.min( Number($page.url.searchParams.get('pageSize')) || 100 , 300 ) );
+    $: skip = Math.max( 0 , Math.min( Number($page.url.searchParams.get('skip')) || 0 , totalItems ) );
     $: totalItems = 0;
 
     $: totalPages = Math.ceil(totalItems / pageSize);

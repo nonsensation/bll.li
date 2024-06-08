@@ -48,7 +48,7 @@ async function getScorers( pageSize: number = 100, skip: number = 0, fetchFunc: 
                 COALESCE(SUM(${ schema.leagueScorers.goals }), 0) DESC,
                 COALESCE(SUM(${ schema.leagueScorers.assists }), 0) DESC,
                 COALESCE(SUM(${ schema.leagueScorers.games }), 0) ASC
-                )`.as( 'Rank' ),
+                )`.as( 'PlayerRank' ),
             TotalGoals: sql`COALESCE(SUM(${ schema.leagueScorers.goals }), 0)`.as( 'TotalGoals' ),
             TotalAssists: sql`COALESCE(SUM(${ schema.leagueScorers.assists }), 0)`.as( 'TotalAssists' ),
             TotalGames: sql`COALESCE(SUM(${ schema.leagueScorers.games }), 0)`.as( 'TotalGames' ),

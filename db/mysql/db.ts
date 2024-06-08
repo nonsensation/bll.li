@@ -55,8 +55,6 @@ async function querySql_dummy( sqlQuery: string, fetchFunc: any )
 
     const response = await fetchFunc( '/api/db', options )
     const data: MySqlPostResponse = await response.json()
-
-    console.dir( data );
     
     return data.success ? data.data : {}
 }
