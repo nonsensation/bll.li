@@ -1,13 +1,17 @@
 import * as schema from '$mysql/schema'
 import { querySql, replaceQuestionMarks } from '$mysql/db'
-import { and, asc, desc, eq, ne, inArray, isNotNull, like, gt, notLike, type SQLWrapper, or } from 'drizzle-orm'
+import { and, asc, desc, eq, ne, inArray, isNotNull, like, gt, notLike, type SQLWrapper, or, max } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { QueryBuilder, type MySqlSelectQueryBuilder } from 'drizzle-orm/mysql-core'
 import type { PageServerLoadEvent } from './$types'
 
 export async function load( serverLoadEvent: PageServerLoadEvent )
 {
+    const { url } = serverLoadEvent
+    const pageSize = getPageSize( url )
+
     return {
+        pageSize: pageSize,
         scorers: getScorers( serverLoadEvent ),
         totalScorers: getTotalScorers( serverLoadEvent ),
     }
@@ -26,12 +30,16 @@ async function getTotalScorers( serverLoadEvent: PageServerLoadEvent )
         .$dynamic()
 
     query = filter( query, serverLoadEvent )
+    query = filterName( query, serverLoadEvent )
 
     const totalScorersSql = replaceQuestionMarks( query.toSQL() )
     const totalScorersData = await querySql( totalScorersSql, serverLoadEvent.fetch )
     const totalScorers = totalScorersData as typeof query
+    const total = ( totalScorers[ 0 ]?.count as number ) || 0
 
-    return ( totalScorers[ 0 ]?.count as number ) || 0
+    console.log( total )
+
+    return total
 }
 
 async function getScorers( serverLoadEvent: PageServerLoadEvent )
@@ -66,6 +74,7 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
 
     let query = qb
         .select( {
+            cnt: sql`count(*)`.as('cnt'),
             PlayerId: sql`${ schema.players.id }`.as( 'PlayerId' ),
             FirstName: sql`${ schema.players.firstName }`.as( 'FirstName' ),
             LastName: sql`${ schema.players.lastName }`.as( 'LastName' ),
@@ -90,6 +99,7 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
         .from( sub )
         .leftJoin( schema.players, eq( schema.players.id, sub.PlayerId ) )
         .$dynamic()
+    query = filterName( query, serverLoadEvent )
     query = query
         .groupBy( sql`PlayerId`, sql`FirstName`, sql`LastName` )
         .orderBy( sql`TotalGoals DESC`, sql`TotalAssists DESC`, sql`TotalGames ASC`, sql`TotalPenaltyMs ASC` )
@@ -106,7 +116,6 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
 function filter<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: PageServerLoadEvent )
 {
     const { url } = serverLoadEvent
-    const name = url.searchParams.get( 'name' )
     const enableJuniorLeagues = url.searchParams.get( 'junior' )
     const enableFieldSize = url.searchParams.get( 'fieldSize' )
     const filters = []
@@ -126,10 +135,19 @@ function filter<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: Page
         else if( enableJuniorLeagues == '0' ) filters.push( eq( schema.leagues.isJunior, false ) )
     }
 
+    return qb.where( and( ...filters ) )
+}
+
+function filterName<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: PageServerLoadEvent )
+{
+    const { url } = serverLoadEvent
+    const name = url.searchParams.get( 'name' )
+    const filters = []
+
     if( name != null )
     {
-        const likeStr = `%${name}%`;
-        filters.push( sql`CONCAT( ${schema.players.firstName} , ' ' , ${schema.players.lastName} ) LIKE ${likeStr}` )
+        const likeStr = `%${ name }%`
+        filters.push( sql`CONCAT( ${ schema.players.firstName } , ' ' , ${ schema.players.lastName } ) LIKE ${ likeStr }` )
     }
 
     return qb.where( and( ...filters ) )
@@ -138,9 +156,14 @@ function filter<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: Page
 function withPagination<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: PageServerLoadEvent )
 {
     const { url } = serverLoadEvent
-    const pageSize = Math.max( 0, Math.min( Number( url.searchParams.get( 'pageSize' ) ) || 100, 300 ) )
-    const skip = Number( url.searchParams.get( 'skip' ) ) || 0
+    const pageSize = getPageSize( url )
+    const skip = clamp( url.searchParams.get( 'skip' ), 0, 0 )
     const offset = Math.ceil( skip / pageSize ) * pageSize
 
     return qb.limit( pageSize ).offset( offset )
 }
+
+const getPageSize = ( url: URL ) => clamp( url.searchParams.get( 'pageSize' ), 10, 100, 300 )
+
+const clamp = ( val: any | null, min: number, def: number, max: number = Infinity ) =>
+    Math.min( Math.max( min, Number( val ?? def ) ), max )
