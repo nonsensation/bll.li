@@ -30,7 +30,7 @@ async function getTotalScorers( fetchFunc: any )
         .where( and( eq( schema.leagues.isJunior, false ), notLike( schema.leagues.name, '%Kleinfeld%' ) ) )
     const totalScorersSql = replaceQuestionMarks( totalScorersQuery.toSQL() )
     const totalScorersData = await querySql( totalScorersSql, fetchFunc )
-    const totalScorers = totalScorersData.data as typeof totalScorersQuery
+    const totalScorers = totalScorersData as typeof totalScorersQuery
 
     return ( totalScorers[ 0 ]?.count as number ) || 0
 }
@@ -73,7 +73,7 @@ async function getScorers( pageSize: number = 100, skip: number = 0, fetchFunc: 
 
     const scorerQuerySql = replaceQuestionMarks( query.toSQL() )
     const scorerData = await querySql( scorerQuerySql, fetchFunc )
-    const scorers = scorerData.data as typeof query
+    const scorers = scorerData as typeof query
 
     return scorers ?? []
 }

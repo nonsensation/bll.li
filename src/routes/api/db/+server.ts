@@ -64,8 +64,5 @@ export async function POST( { fetch, request } )
             } as MySqlPostResponse
         } )
 
-    return json( {
-        success: true,
-        data: dbData,
-    } as MySqlPostResponse )
+    return json( dbData )
 }
