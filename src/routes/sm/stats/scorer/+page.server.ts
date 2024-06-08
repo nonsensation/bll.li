@@ -1,15 +1,9 @@
-import { drizzle } from 'drizzle-orm/mysql2'
 import * as schema from '$mysql/schema'
-import { db, replaceQuestionMarks } from '$mysql/db'
+import { replaceQuestionMarks } from '$mysql/db'
 import { and, asc, desc, eq, ne, inArray, isNotNull, like, gt, notLike, count } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
-import { MySqlDialect, QueryBuilder, alias } from 'drizzle-orm/mysql-core'
-import { SQL } from 'drizzle-orm'
-import { MySqlColumn, type MySqlSelect } from 'drizzle-orm/mysql-core'
+import { QueryBuilder } from 'drizzle-orm/mysql-core'
 import { querySql } from '$mysql/db'
-import { setTimeout } from 'timers/promises'
-
-const mysqlDialect = new MySqlDialect()
 
 export async function load( { fetch, url } )
 {
@@ -28,7 +22,7 @@ async function getTotalScorers( fetchFunc: any )
     const qb = new QueryBuilder()
     const totalScorersQuery = qb
         .select( {
-            count: sql`COUNT(DISTINCT ${schema.leagueScorers.playerId})`.as( 'count' ),
+            count: sql`COUNT(DISTINCT ${ schema.leagueScorers.playerId })`.as( 'count' ),
         } )
         .from( schema.leagueScorers )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueScorers.leagueId ) )
@@ -73,11 +67,7 @@ async function getScorers( pageSize: number = 100, skip: number = 0, fetchFunc: 
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueScorers.leagueId ) )
         .where( and( eq( schema.leagues.isJunior, false ), notLike( schema.leagues.name, '%Kleinfeld%' ) ) )
         .groupBy( schema.players.id, schema.players.firstName, schema.players.lastName )
-        .orderBy(
-            sql`TotalGoals DESC`,
-            sql`TotalAssists DESC`,
-            sql`TotalGames ASC`
-        )
+        .orderBy( sql`TotalGoals DESC`, sql`TotalAssists DESC`, sql`TotalGames ASC` )
         .limit( pageSize )
         .offset( Math.ceil( skip / pageSize ) * pageSize )
 

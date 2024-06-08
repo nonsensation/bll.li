@@ -39,10 +39,10 @@
         <div class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4">
             <div class="">2'</div>
             <div class="">2+2'</div>
-            <div class="" title="Technische Matchstrafe">t. MS</div>
-            <div class="" title="Matchstrafe">MS</div>
             <div class="">5'</div>
             <div class="">10'</div>
+            <div class="" title="Technische Matchstrafe">t. MS</div>
+            <div class="" title="Matchstrafe">MS</div>
             <div class="" title="Matchstrafe 1">MS 1</div>
             <div class="" title="Matchstrafe 2">MS 2</div>
             <div class="" title="Matchstrafe 3">MS 3</div>
@@ -92,10 +92,10 @@
                 <div class="hidden grid-cols-9 justify-center justify-self-stretch text-center md:grid md:pl-4">
                     <div class="">{scorer.TotalPenalty2}</div>
                     <div class="">{scorer.TotalPenalty2and2 ?? 0}</div>
-                    <div class="">{scorer.TotalPenaltyMsTech ?? 0}</div>
-                    <div class="">{scorer.TotalPenaltyMsFull ?? 0}</div>
                     <div class="">{scorer.TotalPenalty5 ?? 0}</div>
                     <div class="">{scorer.TotalPenalty10 ?? 0}</div>
+                    <div class="">{scorer.TotalPenaltyMsTech ?? 0}</div>
+                    <div class="">{scorer.TotalPenaltyMsFull ?? 0}</div>
                     <div class="">{scorer.TotalPenaltyMs1 ?? 0}</div>
                     <div class="">{scorer.TotalPenaltyMs2 ?? 0}</div>
                     <div class="">{scorer.TotalPenaltyMs3 ?? 0}</div>
@@ -124,13 +124,6 @@
     {/if}
 </div>
 
-<div>pageSize: {pageSize}</div>
-<div>skip: {skip}</div>
-<div>totalItems: {totalItems}</div>
-<div>totalPages: {totalPages}</div>
-<div>currentPage: {currentPage}</div>
-<!-- <div>pages: {JSON.stringify(pages)}</div> -->
-
 <script lang="ts">
     import { page } from '$app/stores';
     export let data;
@@ -149,7 +142,6 @@
 
     const loadTotalScorers = async () => {
         const totalScorers = await data.totalScorers;
-        console.log("LOOOOOOOL"+totalScorers)
         totalItems = totalScorers;
         return totalScorers;
     };
