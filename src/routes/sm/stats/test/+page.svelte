@@ -1,7 +1,0 @@
-
-{JSON.stringify(data)}
-
-<script lang="ts">
-
-    export let data;
-</script>
