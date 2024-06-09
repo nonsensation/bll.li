@@ -55,7 +55,7 @@ async function querySql_dummy( sqlQuery: string, fetchFunc: any )
 
     const response = await fetchFunc( '/api/db', options )
     const data: MySqlPostResponse = await response.json()
-    
+
     return data.success ? data.data : {}
 }
 
@@ -68,15 +68,16 @@ async function querySql_dummy( sqlQuery: string, fetchFunc: any )
 //     return rows
 // }
 
-async function fetchFromMyDb_dummy<T extends MySqlSelectQueryBuilder>( qb: T, fetchFunc: any ): Promise<T>
+async function fetchFromMyDb_dummy<T extends MySqlSelectQueryBuilder>( qb: T, fetchFunc: any )
 {
     const query = qb
     const rawSqlString = replaceQuestionMarks( query.toSQL() )
-    const untypedData = await querySql( rawSqlString, fetchFunc )
-    const data = untypedData as T
+    const data = ( await querySql( rawSqlString, fetchFunc ) ) as T
 
     return data
+    // return data._.result
 }
+
 
 // async function fetchFromMyDb_local<T extends MySqlSelectQueryBuilder, R>( qb: T, fetchFunc: any ): Promise<R>
 // {

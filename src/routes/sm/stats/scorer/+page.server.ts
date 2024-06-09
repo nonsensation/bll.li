@@ -1,5 +1,5 @@
 import * as schema from '$mysql/schema'
-import { fetchFromMyDb, querySql, replaceQuestionMarks } from '$mysql/db'
+import { fetchFromMyDb } from '$mysql/db'
 import { and, asc, desc, eq, ne, inArray, isNotNull, like, gt, notLike, type SQLWrapper, or, max } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { QueryBuilder, type MySqlSelectQueryBuilder } from 'drizzle-orm/mysql-core'
@@ -65,24 +65,12 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
     }
 }
 
-export const actions: Actions = {
-    default: async ( { request } ) =>
-    {
-        const form = await superValidate( request, zod( filterFormSchema ) )
-        console.log( form )
-
-        if( !form.valid ) return fail( 400, { form } )
-
-        return message( form, 'Form posted successfully!' )
-    },
-}
-
 async function getTotalScorers( serverLoadEvent: PageServerLoadEvent )
 {
     const qb = new QueryBuilder()
     let query = qb
         .select( {
-            count: sql`COUNT(DISTINCT ${ schema.leagueScorers.playerId })`.as( 'count' ),
+            count: sql<number>`COUNT(DISTINCT ${ schema.leagueScorers.playerId })`.as( 'count' ),
         } )
         .from( schema.leagueScorers )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueScorers.leagueId ) )
@@ -92,11 +80,9 @@ async function getTotalScorers( serverLoadEvent: PageServerLoadEvent )
     query = query.where( and( ...filter( serverLoadEvent ), ...filterName( serverLoadEvent ) ) )
 
     const totalScorers = await fetchFromMyDb( query, serverLoadEvent.fetch )
-    const total = ( totalScorers[ 0 ]?.count as number ) || 0
+    const t = totalScorers as unknown as typeof totalScorers._.result
 
-    console.log( total )
-
-    return total
+    return t[ 0 ]?.count || 0
 }
 
 async function getScorers( serverLoadEvent: PageServerLoadEvent )
@@ -164,8 +150,8 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
     query = withPagination( query, serverLoadEvent )
 
     const scorers = await fetchFromMyDb( query, serverLoadEvent.fetch )
-
-    return scorers ?? []
+    const s = scorers as unknown as typeof scorers._.result
+    return s ?? [] 
 }
 
 // TODO
