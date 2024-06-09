@@ -28,8 +28,9 @@
         }
     }
 
-    input,select {
-        @apply w-full rounded bg-sf cursor-pointer;
+    input,
+    select {
+        @apply w-full cursor-pointer rounded bg-sf;
     }
 
     /* a:hover, a:active, a:focus {
@@ -37,42 +38,40 @@
 } */
 </style>
 
+<!-- <SuperDebug data={$form} /> -->
+
 <div class="*:focus:outline-prim">
-    <form method="get" class="my-8 flex  flex-wrap gap-2 w-full justify-center">
+    <form method="GET" class="my-8 flex w-full flex-wrap justify-center gap-2">
         <div class="">
-            <input type="text" name="name" id="playerName" placeholder="Spielername" class="" />
+            <input type="text" bind:value={$form.name} name="name" placeholder="Spielername" />
         </div>
 
         <div class="">
-            <select name="fieldSize" id="fieldSize" class="">
-                <option hidden value="">Spielfeldgröße</option>
-                <option value="">GF & KF</option>
+            <select name="fieldSize" bind:value={$form.fieldSize}>
+                <option value="">Alle Spielfeldgrößen</option>
                 <option value="GF">Großfeld</option>
                 <option value="KF">Kleinfeld</option>
             </select>
         </div>
 
         <div class="">
-            <select name="junior" id="junior" class="">
-                <option hidden value="">Liga: Alterseinteilung</option>
+            <select name="junior" bind:value={$juniorProxy}>
                 <option value="">Alle Altersstufen</option>
-                <option value="1">Jugend</option>
-                <option value="0">Erwachsene</option>
+                <option value="true">Jugend</option>
+                <option value="false">Erwachsene</option>
             </select>
         </div>
 
         <div class="">
-            <select name="female" id="female" class="">
-                <option hidden value="">Liga: Damen/Herren</option>
-                <option value="">Alle</option>
-                <option value="1">Weiblich/Damen</option>
-                <option value="0">Männlich/Herren</option>
+            <select name="female" bind:value={$femaleProxy}>
+                <option value="">Alle Ligen</option>
+                <option value="1">Damen</option>
+                <option value="0">Herren</option>
             </select>
         </div>
 
         <div class="">
-            <select name="season" id="season" class="">
-                <option hidden value="">Saison</option>
+            <select name="season" id="season" class="" bind:value={$form.season}>
                 <option value="">Alle Saisons</option>
                 {#each data.seasonIds as seasonId}
                     <option value={seasonId}>{2008 + seasonId}/{2009 + seasonId}</option>
@@ -161,19 +160,39 @@
         <div class="">...</div>
     {/if}
     {#each pages as idx}
-        <a href="/sm/stats/scorer?skip={data.pageSize * (idx - 1)}" class:isCurrentPage={currentPage === idx}>
+        <a href="{generateUrl(data.pageSize * (idx - 1))}" class:isCurrentPage={currentPage === idx}>
             {idx}
         </a>
     {/each}
     {#if currentPage < totalPages - count}
         <div class="">...</div>
-        <a href="/sm/stats/scorer?skip={data.pageSize * (totalPages - 1)}">{totalPages}</a>
+        <a href="{generateUrl(data.pageSize * (totalPages - 1))}">{totalPages}</a>
     {/if}
 </div>
 
 <script lang="ts">
+    function generateUrl(skip: number) {
+        const filters = Object.keys($form)
+            .filter( key => $form[key] != null )
+            .map( key => `${key}=${$form[key]}`)
+            .join('&')
+        return `/sm/stats/scorer?skip=${skip}&${filters}`
+    }
+
+    import SuperDebug from 'sveltekit-superforms';
+
     import { page } from '$app/stores';
+    import { superForm, booleanProxy, intProxy } from 'sveltekit-superforms';
+
     export let data;
+
+    const { form, enhance, capture, restore } = superForm(data.form);
+
+    export const snapshot = { capture, restore };
+
+    const seasonProxy = intProxy(form, 'season', { empty: 'null' });
+    const femaleProxy = booleanProxy(form, 'female');
+    const juniorProxy = booleanProxy(form, 'junior');
 
     $: skip = Math.max(0, Math.min(Number($page.url.searchParams.get('skip')) || 0, totalItems));
     $: totalItems = 0;

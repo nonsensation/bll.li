@@ -1,13 +1,58 @@
 import * as schema from '$mysql/schema'
-import { querySql, replaceQuestionMarks } from '$mysql/db'
+import { fetchFromMyDb, querySql, replaceQuestionMarks } from '$mysql/db'
 import { and, asc, desc, eq, ne, inArray, isNotNull, like, gt, notLike, type SQLWrapper, or, max } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { QueryBuilder, type MySqlSelectQueryBuilder } from 'drizzle-orm/mysql-core'
-import type { PageServerLoadEvent } from './$types'
+import type { Actions, PageServerLoadEvent } from './$types'
+import { message, superValidate } from 'sveltekit-superforms'
+import { zod } from 'sveltekit-superforms/adapters'
+
+import { z } from 'zod'
+import { fail } from '@sveltejs/kit'
+
+enum FieldSize
+{
+    GF = 'GF',
+    KF = 'KF',
+}
+
+const filterFormSchema = z.object( {
+    name: z
+        .string()
+        .min( 1 )
+        .max( 64 )
+        .optional()
+        .nullable()
+        .default( '' as unknown as null ),
+    fieldSize: z
+        .nativeEnum( FieldSize )
+        .optional()
+        .nullable()
+        .default( '' as unknown as null ),
+    female: z
+        .boolean()
+        .optional()
+        .nullable()
+        .default( '' as unknown as null ),
+    junior: z
+        .boolean()
+        .optional()
+        .nullable()
+        .default( '' as unknown as null ),
+    season: z
+        .number()
+        .int()
+        .positive()
+        .min( 1 )
+        .max(/*currentSeasonId*/ 15 )
+        .optional()
+        .nullable()
+        .default( '' as unknown as null ),
+} )
 
 export async function load( serverLoadEvent: PageServerLoadEvent )
 {
-    const { url } = serverLoadEvent
+    const { url, params } = serverLoadEvent
     const pageSize = getPageSize( url )
 
     return {
@@ -16,7 +61,20 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
         totalScorers: getTotalScorers( serverLoadEvent ),
         currentSeasonId,
         seasonIds,
+        form: await superValidate( url, zod( filterFormSchema ) ),
     }
+}
+
+export const actions: Actions = {
+    default: async ( { request } ) =>
+    {
+        const form = await superValidate( request, zod( filterFormSchema ) )
+        console.log( form )
+
+        if( !form.valid ) return fail( 400, { form } )
+
+        return message( form, 'Form posted successfully!' )
+    },
 }
 
 async function getTotalScorers( serverLoadEvent: PageServerLoadEvent )
@@ -33,9 +91,7 @@ async function getTotalScorers( serverLoadEvent: PageServerLoadEvent )
 
     query = query.where( and( ...filter( serverLoadEvent ), ...filterName( serverLoadEvent ) ) )
 
-    const totalScorersSql = replaceQuestionMarks( query.toSQL() )
-    const totalScorersData = await querySql( totalScorersSql, serverLoadEvent.fetch )
-    const totalScorers = totalScorersData as typeof query
+    const totalScorers = await fetchFromMyDb( query, serverLoadEvent.fetch )
     const total = ( totalScorers[ 0 ]?.count as number ) || 0
 
     console.log( total )
@@ -103,14 +159,11 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
         .$dynamic()
     query = query.where( and( ...filterName( serverLoadEvent ) ) )
     query = query
-        .groupBy( sql`PlayerId`, sql`FirstName`, sql`LastName`/*, sql`LeagueName`*/ )
+        .groupBy( sql`PlayerId`, sql`FirstName`, sql`LastName` /*, sql`LeagueName`*/ )
         .orderBy( sql`TotalGoals DESC`, sql`TotalAssists DESC`, sql`TotalGames ASC`, sql`TotalPenaltyMs ASC` )
     query = withPagination( query, serverLoadEvent )
 
-    const scorerQuerySql = replaceQuestionMarks( query.toSQL() )
-    console.error( '\n\n\n' + scorerQuerySql )
-    const scorerData = await querySql( scorerQuerySql, serverLoadEvent.fetch )
-    const scorers = scorerData as typeof query
+    const scorers = await fetchFromMyDb( query, serverLoadEvent.fetch )
 
     return scorers ?? []
 }
@@ -134,7 +187,8 @@ function filter( serverLoadEvent: PageServerLoadEvent )
         if( enableFieldSize == 'KF' )
             filters.push( or( like( schema.leagues.name, '%Kleinfeld%' ), like( schema.leagues.name, '%KF%' ) ) )
         else if( enableFieldSize == 'GF' )
-            filters.push( and( notLike( schema.leagues.name, '%Kleinfeld%' ), notLike( schema.leagues.name, '%KF%' ) ) )}
+            filters.push( and( notLike( schema.leagues.name, '%Kleinfeld%' ), notLike( schema.leagues.name, '%KF%' ) ) )
+    }
 
     if( enableJuniorLeagues != null )
     {

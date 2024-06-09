@@ -68,12 +68,12 @@ async function querySql_dummy( sqlQuery: string, fetchFunc: any )
 //     return rows
 // }
 
-async function fetchFromMyDb_dummy<T extends MySqlSelectQueryBuilder, R>( qb: T, fetchFunc: any ): Promise<R>
+async function fetchFromMyDb_dummy<T extends MySqlSelectQueryBuilder>( qb: T, fetchFunc: any ): Promise<T>
 {
     const query = qb
     const rawSqlString = replaceQuestionMarks( query.toSQL() )
     const untypedData = await querySql( rawSqlString, fetchFunc )
-    const data = untypedData as R
+    const data = untypedData as T
 
     return data
 }
