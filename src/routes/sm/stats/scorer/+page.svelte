@@ -27,39 +27,68 @@
             background-color: hsla(204, 20%, 95%, 0.1);
         }
     }
+
+    input,select {
+        @apply w-full rounded bg-sf cursor-pointer;
+    }
+
+    /* a:hover, a:active, a:focus {
+   border: 1px dotted #f00;
+} */
 </style>
 
-<div class="">
-    <form method="get">
+<div class="*:focus:outline-prim">
+    <form method="get" class="my-8 flex  flex-wrap gap-2 w-full justify-center">
         <div class="">
-            <label for="playerName">Name</label>
-            <input type="text" name="name" id="playerName" placeholder="Name" />
+            <input type="text" name="name" id="playerName" placeholder="Spielername" class="" />
         </div>
 
         <div class="">
-            <label for="fieldSize">Feldgröße</label>
-            <select name="fieldSize" id="fieldSize" placeholder="Feldgröße">
-                <option value=""></option>
+            <select name="fieldSize" id="fieldSize" class="">
+                <option hidden value="">Spielfeldgröße</option>
+                <option value="">GF & KF</option>
                 <option value="GF">Großfeld</option>
                 <option value="KF">Kleinfeld</option>
             </select>
         </div>
 
         <div class="">
-            <label for="junior">Nachwuchs</label>
-            <select name="junior" id="junior" placeholder="Nachwuchs">
-                <option value=""></option>
-                <option value="1">Ja</option>
-                <option value="0">Nein</option>
+            <select name="junior" id="junior" class="">
+                <option hidden value="">Liga: Alterseinteilung</option>
+                <option value="">Alle Altersstufen</option>
+                <option value="1">Jugend</option>
+                <option value="0">Erwachsene</option>
             </select>
         </div>
 
         <div class="">
-            <input type="submit" value="Suchen" />
+            <select name="female" id="female" class="">
+                <option hidden value="">Liga: Damen/Herren</option>
+                <option value="">Alle</option>
+                <option value="1">Weiblich/Damen</option>
+                <option value="0">Männlich/Herren</option>
+            </select>
+        </div>
+
+        <div class="">
+            <select name="season" id="season" class="">
+                <option hidden value="">Saison</option>
+                <option value="">Alle Saisons</option>
+                {#each data.seasonIds as seasonId}
+                    <option value={seasonId}>{2008 + seasonId}/{2009 + seasonId}</option>
+                {/each}
+            </select>
+        </div>
+
+        <div class="">
+            <input
+                type="submit"
+                value="Suchen"
+                class="cursor-pointer rounded border border-txt2 bg-sf2 px-4 py-2 text-center hover:bg-sf3"
+            />
         </div>
     </form>
 </div>
-  
 
 <div class="">
     <div class="row sticky top-0 w-full border-b border-b-prim bg-sf py-4 font-bold">
@@ -106,7 +135,7 @@
     {:then scorers}
         {#each scorers as scorer, idx}
             <a
-                href="/sm/stats/player?id={scorer.Id}"
+                href="/sm/stats/player?id={scorer.PlayerId}"
                 class="row rounded border border-transparent *:py-2 odd:bg-sf3 hover:border-txt2"
             >
                 <div class="text-right">{scorer.FirstName} {scorer.LastName}</div>

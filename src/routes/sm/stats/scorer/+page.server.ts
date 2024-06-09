@@ -14,6 +14,8 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
         pageSize: pageSize,
         scorers: getScorers( serverLoadEvent ),
         totalScorers: getTotalScorers( serverLoadEvent ),
+        currentSeasonId,
+        seasonIds,
     }
 }
 
@@ -29,8 +31,7 @@ async function getTotalScorers( serverLoadEvent: PageServerLoadEvent )
         .leftJoin( schema.players, eq( schema.players.id, schema.leagueScorers.playerId ) )
         .$dynamic()
 
-    query = filter( query, serverLoadEvent )
-    query = filterName( query, serverLoadEvent )
+    query = query.where( and( ...filter( serverLoadEvent ), ...filterName( serverLoadEvent ) ) )
 
     const totalScorersSql = replaceQuestionMarks( query.toSQL() )
     const totalScorersData = await querySql( totalScorersSql, serverLoadEvent.fetch )
@@ -67,14 +68,15 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
         .from( schema.leagueScorers )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueScorers.leagueId ) )
         .leftJoin( schema.players, eq( schema.players.id, schema.leagueScorers.playerId ) )
+        .leftJoin( schema.seasons, eq( schema.seasons.id, schema.leagues.seasonId ) )
         .$dynamic()
-    subQuery = filter( subQuery, serverLoadEvent )
+    subQuery = subQuery.where( and( ...filter( serverLoadEvent ) ) )
 
     let sub = subQuery.as( 'subQuery' )
 
     let query = qb
         .select( {
-            cnt: sql`count(*)`.as('cnt'),
+            LeagueName: sql`${ sub.LeagueName }`.as( 'LeagueName' ),
             PlayerId: sql`${ schema.players.id }`.as( 'PlayerId' ),
             FirstName: sql`${ schema.players.firstName }`.as( 'FirstName' ),
             LastName: sql`${ schema.players.lastName }`.as( 'LastName' ),
@@ -99,9 +101,9 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
         .from( sub )
         .leftJoin( schema.players, eq( schema.players.id, sub.PlayerId ) )
         .$dynamic()
-    query = filterName( query, serverLoadEvent )
+    query = query.where( and( ...filterName( serverLoadEvent ) ) )
     query = query
-        .groupBy( sql`PlayerId`, sql`FirstName`, sql`LastName` )
+        .groupBy( sql`PlayerId`, sql`FirstName`, sql`LastName`/*, sql`LeagueName`*/ )
         .orderBy( sql`TotalGoals DESC`, sql`TotalAssists DESC`, sql`TotalGames ASC`, sql`TotalPenaltyMs ASC` )
     query = withPagination( query, serverLoadEvent )
 
@@ -113,11 +115,17 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
     return scorers ?? []
 }
 
-function filter<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: PageServerLoadEvent )
+// TODO
+const currentSeasonId = 15
+const seasonIds = Array.from( { length: currentSeasonId }, ( _, i ) => currentSeasonId - i )
+
+function filter( serverLoadEvent: PageServerLoadEvent )
 {
     const { url } = serverLoadEvent
     const enableJuniorLeagues = url.searchParams.get( 'junior' )
+    const enableFemaleLeagues = url.searchParams.get( 'female' )
     const enableFieldSize = url.searchParams.get( 'fieldSize' )
+    const enableSeason = url.searchParams.get( 'season' )
     const filters = []
 
     if( enableFieldSize != null )
@@ -126,8 +134,7 @@ function filter<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: Page
         if( enableFieldSize == 'KF' )
             filters.push( or( like( schema.leagues.name, '%Kleinfeld%' ), like( schema.leagues.name, '%KF%' ) ) )
         else if( enableFieldSize == 'GF' )
-            filters.push( or( notLike( schema.leagues.name, '%Kleinfeld%' ), notLike( schema.leagues.name, '%KF%' ) ) )
-    }
+            filters.push( and( notLike( schema.leagues.name, '%Kleinfeld%' ), notLike( schema.leagues.name, '%KF%' ) ) )}
 
     if( enableJuniorLeagues != null )
     {
@@ -135,10 +142,23 @@ function filter<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: Page
         else if( enableJuniorLeagues == '0' ) filters.push( eq( schema.leagues.isJunior, false ) )
     }
 
-    return qb.where( and( ...filters ) )
+    if( enableFemaleLeagues != null )
+    {
+        if( enableFemaleLeagues == '1' ) filters.push( eq( schema.leagues.isFemale, true ) )
+        else if( enableFemaleLeagues == '0' ) filters.push( eq( schema.leagues.isFemale, false ) )
+    }
+
+    if( enableSeason != null )
+    {
+        const season = Number( enableSeason )
+
+        if( seasonIds.includes( season ) ) filters.push( eq( schema.leagues.seasonId, season ) )
+    }
+
+    return filters
 }
 
-function filterName<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: PageServerLoadEvent )
+function filterName( serverLoadEvent: PageServerLoadEvent )
 {
     const { url } = serverLoadEvent
     const name = url.searchParams.get( 'name' )
@@ -150,7 +170,7 @@ function filterName<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: 
         filters.push( sql`CONCAT( ${ schema.players.firstName } , ' ' , ${ schema.players.lastName } ) LIKE ${ likeStr }` )
     }
 
-    return qb.where( and( ...filters ) )
+    return filters
 }
 
 function withPagination<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: PageServerLoadEvent )

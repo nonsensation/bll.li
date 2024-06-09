@@ -58,6 +58,14 @@
     word-break: break-all;
   }
 
+    /* FF-only */
+@-moz-document url-prefix() {
+    option{
+      font-family: "Verdana";
+  }
+}
+
+
 :root {
   --color-primary: crimson;
   --color-secondary: rgb(128, 0, 107);
