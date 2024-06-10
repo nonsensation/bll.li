@@ -1,26 +1,54 @@
+<style lang="postcss">
+</style>
+
 {#await loadData()}
-    Loading Seasons
+    Lade..
 {:then seasons}
-    <div class="flex flex-col gap-4">
-        {#each seasons as s}
-            <div class="p-4 border rounded border-sf2">
-                <div class="font-bold pb-4">Saison: {s.key}</div>
-                {#if s.values}
-                    <div class="flex flex-col gap-2">
-                        {#each s.values as tl}
-                            <div class="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-[1fr,2fr,1.5fr] gap-4 break-words">
-                                <div class="">{tl.TeamName}</div>
-                                <div class="">{tl.LeagueName}</div>
-                                <div class="hidden md:block">
-                                    #{tl.Rank} ({tl.Games} Spiele | {tl.Goals} Tore | {tl.Assists} Vorlagen)
-                                </div>
-                            </div>
+    <table class="w-full table-auto text-sm md:text-base">
+        <thead class="bg-sf3">
+            <tr class="*:py-4">
+                <th class="text-center">Saison</th>
+                <th class="text-left">Team</th>
+                <th class="text-center">Spiele</th>
+                <th class="text-center">Tore</th>
+                <th class="text-center">Vorlagen</th>
+            </tr>
+        </thead>
+        <tbody class="">
+            {#each seasons as s, seasonIndex}
+                {#each s.values as t, teamIndex}
+                    {#if t.values}
+                        {#each t.values as l, leagueIndex}
+                            {@const isLast =
+                                seasonIndex < seasons.length - 1 &&
+                                teamIndex == s.values.length - 1 &&
+                                leagueIndex == t.values.length - 1}
+                            <tr class:border-b={isLast} class="rounded hover:bg-sf3">
+                                <td class="text-center">
+                                    {#if teamIndex + leagueIndex == 0}
+                                        <div class="hidden md:inline">{s.key}</div>
+                                        <div class="md:hidden">{s.key.replace(/20(\d{2})\/20(\d{2})/, '$1/$2')}</div>
+                                    {/if}
+                                </td>
+                                <td class="text-left">
+                                    <div class="">
+                                        <!-- img -->
+                                        <div class="font-bold">{leagueIndex == 0 ? l.TeamName : ''}</div>
+                                    </div>
+                                    <div class="pl-8 text-xs md:text-sm">{l.LeagueName}</div>
+                                </td>
+                                <td class="text-center">{l.Games}</td>
+                                <td class="text-center">{l.Goals}</td>
+                                <td class="text-center">{l.Assists}</td>
+                            </tr>
                         {/each}
-                    </div>
-                {/if}
-            </div>
-        {/each}
-    </div>
+                    {/if}
+                {/each}
+            {/each}
+        </tbody>
+    </table>
+
+    {JSON.stringify(data)}
 {/await}
 
 <script lang="ts">
@@ -29,7 +57,12 @@
     async function loadData() {
         const s = await data.seasons;
 
-        return groupBy(s, 'SeasonName');
+        const k = groupBy(s, 'SeasonName').map(x => {
+            return { ...x, values: groupBy(x.values!, 'TeamName') };
+        });
+        console.dir(k);
+
+        return k;
     }
 
     function groupBy<T>(array: T[], key: string) {
