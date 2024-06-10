@@ -24,12 +24,16 @@ async function getAllSeasons( serverLoadEvent: PageServerLoadEvent, playerId: nu
             SeasonId: sql`${ schema.seasons.id }`.as( 'SeasonId' ),
             SeasonName: sql`${ schema.seasons.name }`.as( 'SeasonName' ),
             TeamName: sql`${ schema.teams.name }`.as( 'TeamName' ),
+            TeamId: sql`${ schema.teams.id }`.as( 'TeamId' ),
             LeagueName: sql`${ schema.leagues.name }`.as( 'LeagueName' ),
+            LeagueId: sql`${ schema.leagues.id }`.as( 'LeagueId' ),
             ClubName: sql`${ schema.clubs.name }`.as( 'ClubName' ),
+            ClubId: sql`${ schema.clubs.id }`.as( 'ClubId' ),
             Goals: sql`${ schema.leagueScorers.goals }`.as( 'Goals' ),
             Assists: sql`${ schema.leagueScorers.assists }`.as( 'Assists' ),
             Rank: sql`${ schema.leagueScorers.position }`.as( 'Rank' ),
             Games: sql`${ schema.leagueScorers.games }`.as( 'Games' ),
+            ScorerId: sql`${ schema.leagueScorers.id }`.as( 'ScorerId' ),
         } )
         .from( schema.leagueScorers )
         .where( eq( schema.leagueScorers.playerId, playerId ) )

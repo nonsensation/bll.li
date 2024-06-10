@@ -4,9 +4,9 @@
 {#await loadData()}
     Lade..
 {:then seasons}
-    <table class="w-full table-auto text-sm md:text-base">
-        <thead class="bg-sf3">
-            <tr class="*:py-4">
+    <table class="w-full table-auto text-sm md:text-base break-keep border-separate border-spacing-0">
+        <thead class="sticky top-0 bg-sf">
+            <tr class="*:py-4 *:border-b *:border-sf2 ">
                 <th class="text-center">Saison</th>
                 <th class="text-left">Team</th>
                 <th class="text-center">Spiele</th>
@@ -14,7 +14,7 @@
                 <th class="text-center">Vorlagen</th>
             </tr>
         </thead>
-        <tbody class="">
+        <tbody class="hover:*:bg-sf3">
             {#each seasons as s, seasonIndex}
                 {#each s.values as t, teamIndex}
                     {#if t.values}
@@ -23,23 +23,31 @@
                                 seasonIndex < seasons.length - 1 &&
                                 teamIndex == s.values.length - 1 &&
                                 leagueIndex == t.values.length - 1}
-                            <tr class:border-b={isLast} class="rounded hover:bg-sf3">
-                                <td class="text-center">
-                                    {#if teamIndex + leagueIndex == 0}
-                                        <div class="hidden md:inline">{s.key}</div>
-                                        <div class="md:hidden">{s.key.replace(/20(\d{2})\/20(\d{2})/, '$1/$2')}</div>
-                                    {/if}
-                                </td>
-                                <td class="text-left">
-                                    <div class="">
+                            {#if leagueIndex == 0}
+                                <tr class:border-b={isLast} class="mt-4">
+                                    <td class="text-center">
+                                        {#if teamIndex == 0}
+                                            <div class="hidden md:inline">{s.key}</div>
+                                            <div class="md:hidden">
+                                                {s.key.replace(/20(\d{2})\/20(\d{2})/, '$1/$2')}
+                                            </div>
+                                        {/if}
+                                    </td>
+                                    <td class="text-left">
                                         <!-- img -->
-                                        <div class="font-bold">{leagueIndex == 0 ? l.TeamName : ''}</div>
-                                    </div>
-                                    <div class="pl-8 text-xs md:text-sm">{l.LeagueName}</div>
-                                </td>
-                                <td class="text-center">{l.Games}</td>
-                                <td class="text-center">{l.Goals}</td>
-                                <td class="text-center">{l.Assists}</td>
+                                        <a href="" class="font-bold">{l.TeamName}</a>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            {/if}
+                            <tr class:border-b={isLast} class="">
+                                <td></td>
+                                <td class="text-left text-xs md:text-sm md:pl-8"><a href="">{l.LeagueName}</a></td>
+                                <td class="text-center"><a href="" class="px-4">{l.Games}</a></td>
+                                <td class="text-center"><a href="" class="px-4">{l.Goals}</a></td>
+                                <td class="text-center"><a href="" class="px-4">{l.Assists}</a></td>
                             </tr>
                         {/each}
                     {/if}
@@ -47,8 +55,6 @@
             {/each}
         </tbody>
     </table>
-
-    {JSON.stringify(data)}
 {/await}
 
 <script lang="ts">
