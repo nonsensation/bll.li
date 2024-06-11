@@ -67,7 +67,7 @@
     }
 
     .score {
-        font-size: min(15vw, 1000%);
+        font-size: min(15vw, 500%);
         line-height: 75%;
     }
     .sc {
@@ -92,6 +92,10 @@
     }
     .sec::after {
         /* content: "''"; */
+    }
+
+    .timeline {
+        word-break: normal;
     }
 </style>
 
@@ -334,11 +338,13 @@
                                     {p.trikot_number}
                                 </div>
                                 <div class="name px-2">
-                                    {p.player_firstname}
-                                    {p.player_name}
-                                    {#if p.captain}
-                                        (C)
-                                    {/if}
+                                    <a href="/sm/stats/player?id={p.player_id}">
+                                        {p.player_firstname}
+                                        {p.player_name}
+                                        {#if p.captain}
+                                            (C)
+                                        {/if}
+                                    </a>
                                 </div>
                                 <div class="name flex cursor-help flex-col text-sm leading-3 text-txt2">
                                     {#if goals}
@@ -383,7 +389,9 @@
                 >
                     <div class="">
                         <div class="">Liga</div>
-                        <div class="text-right font-bold">{game.league_name ?? '-'}</div>
+                        <div class="text-right font-bold">
+                            <a href="/sm/stats/league?id={game.league_id}">{game.league_name ?? '-'}</a>
+                        </div>
                     </div>
                     <div class="">
                         <div class="">Spielnummer</div>
@@ -417,8 +425,7 @@
             </div>
             <!-- info -->
         </div>
-    {:else}
-    {/if}
+    {:else}{/if}
 {:catch error}
     <div class="error">{error.message}</div>
 {/await}

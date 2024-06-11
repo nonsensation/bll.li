@@ -1,5 +1,5 @@
 import * as schema from '$mysql/schema'
-import { and, asc, desc, eq, getTableColumns, gt, inArray } from 'drizzle-orm'
+import { and, asc, desc, eq, getTableColumns, gt, inArray, like, or } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { db, fetchFromMyDb, qb } from '$mysql/db'
 import { QueryBuilder, alias, type MySqlSelectBase, type MySqlSelectQueryBuilderBase } from 'drizzle-orm/mysql-core'
@@ -9,64 +9,33 @@ import type { PageServerLoadEvent } from './$types'
 export async function load( serverLoadEvent: PageServerLoadEvent )
 {
     const { fetch, url } = serverLoadEvent
-    const teamId = Number( url.searchParams.get( 'id' ) ?? -1 )
+    const leagueId = Number( url.searchParams.get( 'id' ) ?? -1 )
 
     const qb = new QueryBuilder()
     let query = qb
         .select( {
-            TeamName: sql<string>`${ schema.teams.name }`.as( 'TeamName' ),
-            LogoUrl: sql<string>`${ schema.teams.logoUrl }`.as( 'LogoUrl' ),
-            ClubId: sql<number>`${ schema.teams.clubId }`.as( 'ClubId' ),
-            ClubIds: sql<string>`${ schema.teams.syndicateClubIds }`.as( 'ClubIds' ),
-            LeagueId: sql<number>`${ schema.leagues.id }`.as( 'LeagueId' ),
-            LeagueName: sql<string>`${ schema.leagues.name }`.as( 'LeagueName' ),
-            // LeagueType: sql<string>`${ schema.leagues.leagueType }`.as( 'LeagueType' ), // TODO: do not display cup-tables
+            Name: sql<string>`${ schema.leagues.name }`.as( 'Name' ),
             SeasonName: sql<string>`${ schema.seasons.name }`.as( 'SeasonName' ),
         } )
-        .from( schema.teams )
-        .leftJoin( schema.leagueTableTeams, eq( schema.leagueTableTeams.teamId, schema.teams.id ) )
-        .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueTableTeams.leagueId ) )
+        .from( schema.leagues )
         .leftJoin( schema.seasons, eq( schema.seasons.id, schema.leagues.seasonId ) )
-        .groupBy( schema.leagues.id )
-        .where( eq( schema.teams.id, teamId ) )
-        .$dynamic()
-
-    const teamResult = await fetchFromMyDb( query, serverLoadEvent.fetch )
-    const teamData = ( teamResult as unknown as typeof teamResult._.result )[ 0 ]
-
-    let clubIds = JSON.parse( teamData.ClubIds ) as number[]
-
-    if( clubIds.length <= 0 ) clubIds = [ teamData.ClubId ]
-
-    return {
-        team: teamData,
-        clubs: await getClubs( serverLoadEvent, clubIds ),
-        leagueTable: teamData.LeagueName.includes( 'Pokal' )
-            ? []
-            : await getLeagueTable( serverLoadEvent, teamData.LeagueId ),
-        scorer: await getScorer( serverLoadEvent, teamData.LeagueId, teamId ),
-    }
-}
-
-async function getClubs( serverLoadEvent: PageServerLoadEvent, clubIds: number[] )
-{
-    const qb = new QueryBuilder()
-    let query = qb
-        .select( {
-            Id: sql`${ schema.clubs.id }`.as( 'Id' ),
-            Name: sql`${ schema.clubs.name }`.as( 'Name' ),
-            LogoUrl: sql`${ schema.clubs.logoUrl }`.as( 'LogoUrl' ),
-        } )
-        .from( schema.clubs )
-        .where( inArray( schema.clubs.id, clubIds ) )
+        .where( eq( schema.leagues.id, leagueId ) )
         .$dynamic()
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
-    const d = data as unknown as typeof data._.result
 
-    return d ?? []
+    const league = ( data as unknown as typeof data._.result )[ 0 ]
+    const isCup = league.Name.includes( 'Pokal' )
+    return {
+        leagueName: league.Name,
+        seasonName: league.SeasonName,
+        leagueTable: isCup ? [] : await getLeagueTable( serverLoadEvent, leagueId ),
+        leagueScorer: await getLeagueScorer( serverLoadEvent, leagueId ),
+        games: await getGames( serverLoadEvent, leagueId , isCup ),
+    }
 }
 
+// doesnt exists on leage_type="cup"
 async function getLeagueTable( serverLoadEvent: PageServerLoadEvent, leagueId: number )
 {
     const qb = new QueryBuilder()
@@ -97,24 +66,58 @@ async function getLeagueTable( serverLoadEvent: PageServerLoadEvent, leagueId: n
     return data as unknown as typeof data._.result
 }
 
-async function getScorer( serverLoadEvent: PageServerLoadEvent, leagueId: number, teamId: number )
+async function getLeagueScorer( serverLoadEvent: PageServerLoadEvent, leagueId: number )
 {
     const qb = new QueryBuilder()
     let query = qb
         .select( {
-            PlayerId: sql<string>`${ schema.players.id }`.as( 'PlayerId' ),
+            TeamId: sql<number>`${ schema.leagueScorers.teamId }`.as( 'Date' ),
+            TeamName: sql<string>`${ schema.teams.name }`.as( 'TeamName' ),
+            PlayerId: sql<number>`${ schema.leagueScorers.playerId }`.as( 'PlayerId' ),
             FirstName: sql<string>`${ schema.players.firstName }`.as( 'FirstName' ),
             LastName: sql<string>`${ schema.players.lastName }`.as( 'LastName' ),
-            Position: sql<number>`${ schema.leagueScorers.position }`.as( 'Position' ),
+            Games: sql<number>`${ schema.leagueScorers.games }`.as( 'Games' ),
             Goals: sql<number>`${ schema.leagueScorers.goals }`.as( 'Goals' ),
             Assists: sql<number>`${ schema.leagueScorers.assists }`.as( 'Assists' ),
-            Games: sql<number>`${ schema.leagueScorers.games }`.as( 'Games' ),
+            Position: sql<number>`${ schema.leagueScorers.position }`.as( 'Position' ),
             OrderKey: sql<string>`${ schema.leagueScorers.orderKey }`.as( 'OrderKey' ),
         } )
         .from( schema.leagueScorers )
         .leftJoin( schema.players, eq( schema.players.id, schema.leagueScorers.playerId ) )
-        .where( and( eq( schema.leagueScorers.leagueId, leagueId ), eq( schema.leagueScorers.teamId, teamId ) ) )
+        .leftJoin( schema.teams, eq( schema.teams.id, schema.leagueScorers.teamId ) )
+        .where( eq( schema.leagueScorers.leagueId, leagueId ) )
         .orderBy( asc( schema.leagueScorers.orderKey ) )
+        .$dynamic()
+
+    const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
+
+    return data as unknown as typeof data._.result
+}
+
+async function getGames( serverLoadEvent: PageServerLoadEvent, leagueId: number , isCup: boolean = false )
+{
+    const qb = new QueryBuilder()
+    const orderFunc = isCup ? desc : asc
+    const homeTeams = alias( schema.teams, 'homeTeams' )
+    const guestTeams = alias( schema.teams, 'guestTeams' )
+    let query = qb
+        .select( {
+            GameId: sql<string>`${ schema.games.id }`.as( 'GameId' ),
+            Date: sql<string>`${ schema.games.date }`.as( 'Date' ),
+            HomeGoals: sql<number>`${ schema.games.homeGoals }`.as( 'HomeGoals' ),
+            GuestGoals: sql<number>`${ schema.games.guestGoals }`.as( 'GuestGoals' ),
+            HomeTeamId: sql<number>`${ schema.games.homeTeamId }`.as( 'HomeTeamId' ),
+            HomeTeamName: sql<number>`${ homeTeams.name }`.as( 'HomeTeamName' ),
+            GuestTeamId: sql<number>`${ schema.games.guestTeamId }`.as( 'GuestTeamId' ),
+            GuestTeamName: sql<number>`${ guestTeams.name }`.as( 'GuestTeamName' ),
+        } )
+        .from( schema.games )
+        // TODO: leagueSchedule to get GameDays and groupBy() it
+        .leftJoin( homeTeams, eq( homeTeams.id, schema.games.homeTeamId ) )
+        .leftJoin( guestTeams, eq( guestTeams.id, schema.games.guestTeamId ) )
+        .where( eq( schema.games.leagueId, leagueId ) )
+        .groupBy( schema.games.gameNumber )
+        .orderBy( orderFunc( schema.games.gameNumber ) )
         .$dynamic()
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )

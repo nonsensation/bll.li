@@ -51,7 +51,7 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
         .leftJoin( schema.seasons, eq( schema.seasons.id, schema.leagues.seasonId ) )
         .leftJoin( schema.gameOperations, eq( schema.gameOperations.id, schema.leagues.gameOperationId ) )
         .where( or( eq( schema.teams.clubId, clubId ) , like( schema.teams.syndicateClubIds, `%${clubId}%` ) ) )
-        .groupBy( schema.seasons.id , schema.gameOperations.id , schema.leagues.id , schema.teams.id )
+        .groupBy( schema.seasons.id , schema.gameOperations.id , schema.leagueTableTeams.id , schema.leagues.id , schema.teams.id )
         .orderBy( desc( schema.seasons.id ) , asc( schema.gameOperations.id ) , asc( schema.leagues.orderKey ) )
         .$dynamic()
 

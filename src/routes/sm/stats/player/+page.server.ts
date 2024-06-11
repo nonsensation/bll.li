@@ -9,10 +9,24 @@ import type { PageServerLoadEvent } from './$types'
 export async function load( serverLoadEvent: PageServerLoadEvent )
 {
     const { fetch, url } = serverLoadEvent
-    const id = Number( url.searchParams.get( 'id' ) ?? -1 )
+    const playerId = Number( url.searchParams.get( 'id' ) ?? -1 )
+
+    const qb = new QueryBuilder()
+    let query = qb
+        .select( {
+            FirstName: sql`${ schema.players.firstName }`.as( 'FirstName' ),
+            LastName: sql`${ schema.players.lastName }`.as( 'LastName' ),
+        } )
+        .from( schema.players )
+        .where( eq( schema.players.id, playerId ) )
+        .$dynamic()
+
+    const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
+    const player = (data as unknown as typeof data._.result)[0]
 
     return {
-        seasons: getAllSeasons( serverLoadEvent, id ),
+        player,
+        seasons: getAllSeasons( serverLoadEvent, playerId ),
     }
 }
 
