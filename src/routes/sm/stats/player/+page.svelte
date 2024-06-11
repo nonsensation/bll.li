@@ -59,7 +59,7 @@
                                     <td class="text-left pt-8">
                                         <!-- img -->
                                         <div class="">
-                                            <a href="" class="font-bold">{l.TeamName}</a>
+                                            <a href="/sm/stats/team?id={l.TeamId}" class="font-bold">{l.TeamName}</a>
                                         </div>
                                     </td>
                                     <td class="md:hidden"></td>
@@ -94,7 +94,7 @@
         const s = await data.seasons;
 
         const k = groupBy(s, 'SeasonName').map(x => {
-            return { ...x, values: groupBy(x.values!, 'TeamName') };
+            return { ...x, values: groupBy(x.values!, 'TeamId') };
         });
         console.dir(k);
 

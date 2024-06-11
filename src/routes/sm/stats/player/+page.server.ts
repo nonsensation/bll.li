@@ -29,6 +29,7 @@ async function getAllSeasons( serverLoadEvent: PageServerLoadEvent, playerId: nu
             LeagueId: sql`${ schema.leagues.id }`.as( 'LeagueId' ),
             ClubName: sql`${ schema.clubs.name }`.as( 'ClubName' ),
             ClubId: sql`${ schema.clubs.id }`.as( 'ClubId' ),
+            ClubIds: sql`${ schema.teams.syndicateClubIds }`.as( 'ClubIds' ),
             Goals: sql`${ schema.leagueScorers.goals }`.as( 'Goals' ),
             Assists: sql`${ schema.leagueScorers.assists }`.as( 'Assists' ),
             Rank: sql`${ schema.leagueScorers.position }`.as( 'Rank' ),
