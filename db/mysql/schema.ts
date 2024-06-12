@@ -177,6 +177,8 @@ export const leagues = Table('League', {
   isCurrent: boolean('IsCurrent').notNull(),
   isJunior: boolean('IsJunior').notNull(),
   orderKey: text('OrderKey').notNull(),
+  fieldSize: text('FieldSize').notNull(),
+  leagueType: text('LeagueType').notNull(),
 });
 
 

@@ -8,11 +8,12 @@ import type { PageServerLoadEvent } from './$types'
 export async function load( serverLoadEvent: PageServerLoadEvent )
 {
     const { fetch, url } = serverLoadEvent
-    const id = Number( url.searchParams.get( 'id' ) ?? -1 )
+    const clubId = Number( url.searchParams.get( 'id' ) ?? -1 )
 
     return {
-        club: await getClub( serverLoadEvent, id ),
-        teams: getTeams( serverLoadEvent, id ),
+        club: await getClub( serverLoadEvent, clubId ),
+        teams: await getTeams( serverLoadEvent, clubId ),
+        scorer: await getScorer( serverLoadEvent, clubId ),
     }
 }
 
@@ -64,6 +65,41 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
         .$dynamic()
 
     // console.log( query.toSQL().sql )
+
+    const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
+    return data as unknown as typeof data._.result
+}
+
+async function getScorer( serverLoadEvent: PageServerLoadEvent, clubId: number )
+{
+    let query = qb
+        .select( {
+            PlayerId: sql`${ schema.players.id }`.as( 'PlayerId' ),
+            FirstName: sql`${ schema.players.firstName }`.as( 'FirstName' ),
+            LastName: sql`${ schema.players.lastName }`.as( 'LastName' ),
+            Games: sql`SUM( ${ schema.leagueScorers.games } )`.as( 'Games' ),
+            Goals: sql`SUM( ${ schema.leagueScorers.goals } )`.as( 'Goals' ),
+            Assists: sql`SUM( ${ schema.leagueScorers.assists } )`.as( 'Assists' ),
+            Seasons: sql`COUNT( DISTINCT ${ schema.seasons.id } )`.as( 'Seasons' ),
+        } )
+        .from( schema.teams )
+        .leftJoin( schema.leagueScorers, eq( schema.leagueScorers.teamId, schema.teams.id ) )
+        .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueScorers.leagueId ) )
+        .leftJoin( schema.players, eq( schema.players.id, schema.leagueScorers.playerId ) )
+        .leftJoin( schema.seasons, eq( schema.seasons.id, schema.leagues.seasonId ) )
+        // .where( and( eq( schema.teams.clubId, clubId ) , eq( schema.leagues.isJunior , false ),eq( schema.leagues.fieldSize , "GF" ) ) )
+        .where( eq( schema.teams.clubId, clubId ) )
+        // .where( or( eq( schema.teams.clubId, clubId ), like( schema.teams.syndicateClubIds, `%${ clubId }%` ) ) )
+        .groupBy( schema.players.id )
+        .orderBy(
+            desc( sql`SUM( ${ schema.leagueScorers.games }`.as( 'Games' ) ),
+            desc( sql`COUNT( DISTINCT ${ schema.seasons.id }`.as( 'Seasons' ) ),
+            desc( sql`SUM( ${ schema.leagueScorers.goals }`.as( 'Goals' ) ),
+            desc( sql`SUM( ${ schema.leagueScorers.assists }`.as( 'Assists' ) )
+        )
+        .$dynamic()
+
+    console.log( query.toSQL().sql )
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
     return data as unknown as typeof data._.result

@@ -35,20 +35,21 @@ async function getAllSeasons( serverLoadEvent: PageServerLoadEvent, playerId: nu
     const qb = new QueryBuilder()
     let query = qb
         .select( {
-            SeasonId: sql`${ schema.seasons.id }`.as( 'SeasonId' ),
+            SeasonId: sql<number>`${ schema.seasons.id }`.as( 'SeasonId' ),
             SeasonName: sql`${ schema.seasons.name }`.as( 'SeasonName' ),
             TeamName: sql`${ schema.teams.name }`.as( 'TeamName' ),
-            TeamId: sql`${ schema.teams.id }`.as( 'TeamId' ),
+            TeamId: sql<number>`${ schema.teams.id }`.as( 'TeamId' ),
             LeagueName: sql`${ schema.leagues.name }`.as( 'LeagueName' ),
-            LeagueId: sql`${ schema.leagues.id }`.as( 'LeagueId' ),
+            LeagueId: sql<number>`${ schema.leagues.id }`.as( 'LeagueId' ),
             ClubName: sql`${ schema.clubs.name }`.as( 'ClubName' ),
-            ClubId: sql`${ schema.clubs.id }`.as( 'ClubId' ),
+            ClubLogoUrl: sql`${ schema.clubs.logoUrl }`.as( 'ClubLogoUrl' ),
+            ClubId: sql<number>`${ schema.clubs.id }`.as( 'ClubId' ),
             ClubIds: sql`${ schema.teams.syndicateClubIds }`.as( 'ClubIds' ),
-            Goals: sql`${ schema.leagueScorers.goals }`.as( 'Goals' ),
-            Assists: sql`${ schema.leagueScorers.assists }`.as( 'Assists' ),
-            Rank: sql`${ schema.leagueScorers.position }`.as( 'Rank' ),
-            Games: sql`${ schema.leagueScorers.games }`.as( 'Games' ),
-            ScorerId: sql`${ schema.leagueScorers.id }`.as( 'ScorerId' ),
+            Goals: sql<number>`${ schema.leagueScorers.goals }`.as( 'Goals' ),
+            Assists: sql<number>`${ schema.leagueScorers.assists }`.as( 'Assists' ),
+            Rank: sql<number>`${ schema.leagueScorers.position }`.as( 'Rank' ),
+            Games: sql<number>`${ schema.leagueScorers.games }`.as( 'Games' ),
+            ScorerId: sql<number>`${ schema.leagueScorers.id }`.as( 'ScorerId' ),
         } )
         .from( schema.leagueScorers )
         .where( eq( schema.leagueScorers.playerId, playerId ) )

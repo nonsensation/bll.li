@@ -85,6 +85,7 @@ async function getLeagueTable( serverLoadEvent: PageServerLoadEvent, leagueId: n
             GoalsScored: sql<number>`${ schema.leagueTableTeams.goalsScored }`.as( 'GoalsScored' ),
             GoalsReceived: sql<number>`${ schema.leagueTableTeams.goalsReceived }`.as( 'GoalsReceived' ),
             OrderKey: sql<string>`${ schema.leagueTableTeams.orderKey }`.as( 'OrderKey' ),
+            LogoUrl: sql<string>`${ schema.teams.logoUrl }`.as( 'LogoUrl' ),
         } )
         .from( schema.leagueTableTeams )
         .leftJoin( schema.teams, eq( schema.teams.id, schema.leagueTableTeams.teamId ) )

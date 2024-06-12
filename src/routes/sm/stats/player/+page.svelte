@@ -17,7 +17,10 @@
     }
 </style>
 
-<h2>{data.player.FirstName} {data.player.LastName}</h2>
+<h2 class="text-center text-4xl">
+    <div class="text-txt2">Spieler</div>
+    <div class="">{data.player.FirstName} {data.player.LastName}</div>
+</h2>
 
 {#await loadData()}
     Lade..
@@ -36,6 +39,14 @@
             </tr>
         </thead>
         <tbody class="">
+            <tr class="border-b font-bold *:text-center *:text-2xl md:*:text-4xl">
+                <td class="max-md:hidden">{seasons.length}</td>
+                <td class="my-4 pl-4 text-sm md:pl-8 md:text-2xl"><div class="my-6">Gesamt</div></td>
+                <td class="hidden md:table-cell">{totalGames}</td>
+                <td class="hidden md:table-cell">{totalGoals}</td>
+                <td class="hidden md:table-cell">{totalAssists}</td>
+                <td class="md:hidden">{totalGames} • {totalGoals} • {totalAssists}</td>
+            </tr>
             {#each seasons as s, seasonIndex}
                 {#each s.values as t, teamIndex}
                     {#if t.values}
@@ -62,7 +73,10 @@
                                     <td class="pt-8 text-left">
                                         <!-- img -->
                                         <div class="">
-                                            <a href="/sm/stats/team?id={l.TeamId}" class="font-bold">{l.TeamName}</a>
+                                            <a href="/sm/stats/team?id={l.TeamId}" class="flex gap-2">
+                                                <img src="https://bll.wik.li/{l.ClubLogoUrl}" alt="Logo" class="h-6" />
+                                                <div class="font-bold">{l.TeamName}</div>
+                                            </a>
                                         </div>
                                     </td>
                                     <td class="md:hidden"></td>
@@ -73,18 +87,17 @@
                             {/if}
                             <tr class:border-b={isLast} class="hover:bg-sf3">
                                 <td class="max-md:hidden"></td>
-                                <td class="pl-4 text-left text-sm md:pl-8 md:text-base"
-                                    ><a href="/sm/stats/league?id={l.LeagueId}">{l.LeagueName}</a></td
-                                >
-                                <td class="text-center md:hidden">
-                                    <a href="/sm/stats/league?id={l.LeagueId}" class="px-4"
-                                        >{l.Games} • {l.Goals} • {l.Assists}</a
-                                    >
+                                <td class="pl-4 text-left text-sm md:pl-8 md:text-base">
+                                    <a href="/sm/stats/league?id={l.LeagueId}">{l.LeagueName}</a>
                                 </td>
-                                <td class="hidden text-center md:table-cell"><a href="" class="px-4">{l.Games}</a></td>
-                                <td class="hidden text-center md:table-cell"><a href="" class="px-4">{l.Goals}</a></td>
-                                <td class="hidden text-center md:table-cell"><a href="" class="px-4">{l.Assists}</a></td
-                                >
+                                <td class="text-center md:hidden">
+                                    <a href="/sm/stats/league?id={l.LeagueId}" class="px-4">
+                                        {l.Games} • {l.Goals} • {l.Assists}
+                                    </a>
+                                </td>
+                                <td class="hidden text-center md:table-cell">{l.Games}</td>
+                                <td class="hidden text-center md:table-cell">{l.Goals}</td>
+                                <td class="hidden text-center md:table-cell">{l.Assists}</td>
                             </tr>
                         {/each}
                     {/if}
@@ -99,12 +112,20 @@
 
     export let data;
 
+    $: totalGames = 0;
+    $: totalGoals = 0;
+    $: totalAssists = 0;
+
     async function loadData() {
         const s = await data.seasons;
 
         const k = groupBy(s, 'SeasonName').map(x => {
             return { ...x, values: groupBy(x.values!, 'TeamId') };
         });
+
+        s.forEach(x => (totalGames += Number(x.Games)));
+        s.forEach(x => (totalGoals += Number(x.Goals)));
+        s.forEach(x => (totalAssists += Number(x.Assists)));
 
         return k;
     }

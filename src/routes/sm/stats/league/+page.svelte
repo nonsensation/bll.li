@@ -4,8 +4,11 @@
     }
 </style>
 
-<h2 class="text-center text-3xl">{data.leagueName}</h2>
-<h3 class="text-center">{data.seasonName}</h3>
+<h2 class="text-center text-4xl">
+    <div class="text-txt2">Liga</div>
+    <div class="">{data.leagueName}</div>
+    <div class="text-txt2 text-lg">{data.seasonName}</div>
+</h2>
 
 {#if data.leagueTable && data.leagueTable.length > 0}
     <h3>Tabelle</h3>
@@ -29,35 +32,40 @@
             <div class="grid grid-cols-[1fr,2fr,3fr,1fr] items-center justify-center text-center">
                 <div class="font-bold">{s.Position}.</div>
                 <a href="/sm/stats/player?id={s.PlayerId}" class="font-bold">{s.FirstName} {s.LastName}</a>
-                <a href="/sm/stats/teams?id={s.TeamId}" class="flex items-center sm:justify-start justify-center">
+                <a href="/sm/stats/teams?id={s.TeamId}" class="flex items-center justify-center sm:justify-start">
                     <img src="https://bll.wik.li/{s.LogoUrl}" alt="Logo" class="m-2 w-12" />
-                    <div class="teamname text-left hidden sm:inline">{s.TeamName}</div>
+                    <div class="teamname hidden text-left sm:inline">{s.TeamName}</div>
                 </a>
                 <div class="">{s.Games} • {s.Goals} • {s.Assists}</div>
             </div>
         {/each}
     </div>
-    <details>
-        <summary class="cursor-pointer rounded border border-txt2 p-2 text-txt2">Zeige alle Scorer an</summary>
-        <div class="*:rounded odd:*:bg-sf3">
-            {#each data.leagueScorer.slice(10) as s}
-                <div class="grid grid-cols-[1fr,2fr,3fr,1fr] items-center justify-center text-center">
-                    <div class="font-bold">{s.Position}.</div>
-                    <a href="/sm/stats/player?id={s.PlayerId}" class="font-bold">{s.FirstName} {s.LastName}</a>
-                    <a href="/sm/stats/teams?id={s.TeamId}" class="flex items-center sm:justify-start justify-center">
-                        <img src="https://bll.wik.li/{s.LogoUrl}" alt="Logo" class="m-2 w-12" />
-                        <div class="teamname text-left hidden sm:inline">{s.TeamName}</div>
-                    </a>
-                    <div class="">{s.Games} • {s.Goals} • {s.Assists}</div>
-                </div>
-            {/each}
-        </div>
-    </details>
+    {#if data.leagueScorer.length > 10}
+        <details>
+            <summary class="cursor-pointer rounded border border-txt2 p-2 text-txt2">Zeige alle Scorer an</summary>
+            <div class="*:rounded odd:*:bg-sf3">
+                {#each data.leagueScorer.slice(10) as s}
+                    {#if s != null}
+                        <div class="grid grid-cols-[1fr,2fr,3fr,1fr] items-center justify-center text-center">
+                            <div class="font-bold">{s.Position}.</div>
+                            <a href="/sm/stats/player?id={s.PlayerId}" class="font-bold">{s.FirstName} {s.LastName}</a>
+                            <a
+                                href="/sm/stats/teams?id={s.TeamId}"
+                                class="flex items-center justify-center sm:justify-start"
+                            >
+                                <img src="https://bll.wik.li/{s.LogoUrl}" alt="Logo" class="m-2 w-12" />
+                                <div class="teamname hidden text-left sm:inline">{s.TeamName}</div>
+                            </a>
+                            <div class="">{s.Games} • {s.Goals} • {s.Assists}</div>
+                        </div>
+                    {/if}
+                {/each}
+            </div>
+        </details>
+    {/if}
 {/if}
 
-
 {#if data.games && data.games.length > 0}
-
     <h3>Spieltage</h3>
     <div class="rounded even:*:bg-sf3">
         {#each groupBy(data.games, 'GameDay') as gd}

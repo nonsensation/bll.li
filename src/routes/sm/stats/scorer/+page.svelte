@@ -40,6 +40,10 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
+<h2 class="text-center text-4xl">
+    <div class="">Topscorer</div>
+</h2>
+
 <div class="*:focus:outline-prim">
     <form method="GET" class="my-8 flex w-full flex-wrap justify-center gap-2">
         <div class="">
