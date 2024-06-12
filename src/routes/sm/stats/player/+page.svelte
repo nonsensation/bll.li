@@ -22,7 +22,6 @@
 {#await loadData()}
     Lade..
 {:then seasons}
-
     <h3>Karriere</h3>
     <table class="w-full table-auto border-separate border-spacing-0 break-keep md:text-base">
         <thead class="sticky top-0 bg-sf">
@@ -60,7 +59,7 @@
                                             </div>
                                         {/if}
                                     </td>
-                                    <td class="text-left pt-8">
+                                    <td class="pt-8 text-left">
                                         <!-- img -->
                                         <div class="">
                                             <a href="/sm/stats/team?id={l.TeamId}" class="font-bold">{l.TeamName}</a>
@@ -74,9 +73,13 @@
                             {/if}
                             <tr class:border-b={isLast} class="hover:bg-sf3">
                                 <td class="max-md:hidden"></td>
-                                <td class="text-left pl-4 md:pl-8 md:text-base text-sm"><a href="/sm/stats/league?id={l.LeagueId}">{l.LeagueName}</a></td>
+                                <td class="pl-4 text-left text-sm md:pl-8 md:text-base"
+                                    ><a href="/sm/stats/league?id={l.LeagueId}">{l.LeagueName}</a></td
+                                >
                                 <td class="text-center md:hidden">
-                                    <a href="/sm/stats/league?id={l.LeagueId}" class="px-4">{l.Games} • {l.Goals} • {l.Assists}</a>
+                                    <a href="/sm/stats/league?id={l.LeagueId}" class="px-4"
+                                        >{l.Games} • {l.Goals} • {l.Assists}</a
+                                    >
                                 </td>
                                 <td class="hidden text-center md:table-cell"><a href="" class="px-4">{l.Games}</a></td>
                                 <td class="hidden text-center md:table-cell"><a href="" class="px-4">{l.Goals}</a></td>
@@ -92,6 +95,8 @@
 {/await}
 
 <script lang="ts">
+    import { groupBy } from '$lib/utils.js';
+
     export let data;
 
     async function loadData() {
@@ -100,17 +105,7 @@
         const k = groupBy(s, 'SeasonName').map(x => {
             return { ...x, values: groupBy(x.values!, 'TeamId') };
         });
-        console.dir(k);
 
         return k;
-    }
-
-    function groupBy<T>(array: T[], key: string) {
-        const groups = Object.groupBy(array, (item: T) => item[key]);
-        const groupedArray = Object.keys(groups).map(groupKey => ({
-            key: groupKey,
-            values: groups[groupKey],
-        }));
-        return groupedArray;
     }
 </script>

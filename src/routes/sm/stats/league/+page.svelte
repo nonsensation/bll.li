@@ -55,9 +55,9 @@
     </details>
 {/if}
 
-<!-- {JSON.stringify(data.games)} -->
 
 {#if data.games && data.games.length > 0}
+
     <h3>Spieltage</h3>
     <div class="rounded even:*:bg-sf3">
         {#each groupBy(data.games, 'GameDay') as gd}
@@ -89,14 +89,7 @@
 {/if}
 
 <script lang="ts">
-    export let data;
+    import { groupBy } from '$lib/utils.js';
 
-    function groupBy<T>(array: T[], key: string) {
-        const groups = Object.groupBy(array, (item: T) => item[key]);
-        const groupedArray = Object.keys(groups).map(groupKey => ({
-            key: groupKey,
-            values: groups[groupKey],
-        }));
-        return groupedArray;
-    }
+    export let data;
 </script>

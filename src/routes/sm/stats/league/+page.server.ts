@@ -2,8 +2,7 @@ import * as schema from '$mysql/schema'
 import { and, asc, desc, eq, getTableColumns, gt, inArray, like, or } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { db, fetchFromMyDb, qb } from '$mysql/db'
-import { QueryBuilder, alias, type MySqlSelectBase, type MySqlSelectQueryBuilderBase } from 'drizzle-orm/mysql-core'
-import { SocketAddress } from 'net'
+import { QueryBuilder, alias } from 'drizzle-orm/mysql-core'
 import type { PageServerLoadEvent } from './$types'
 
 export async function load( serverLoadEvent: PageServerLoadEvent )

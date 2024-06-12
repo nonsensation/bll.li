@@ -1,9 +1,8 @@
 import * as schema from '$mysql/schema'
-import { and, asc, desc, eq, getTableColumns, gt, inArray, like, or } from 'drizzle-orm'
+import { and, asc, desc, eq, getTableColumns, gt, inArray, isNotNull, like, or } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
-import { db, fetchFromMyDb, qb } from '$mysql/db'
-import { QueryBuilder, alias, type MySqlSelectBase, type MySqlSelectQueryBuilderBase } from 'drizzle-orm/mysql-core'
-import { SocketAddress } from 'net'
+import { fetchFromMyDb, qb } from '$mysql/db'
+import { QueryBuilder } from 'drizzle-orm/mysql-core'
 import type { PageServerLoadEvent } from './$types'
 
 export async function load( serverLoadEvent: PageServerLoadEvent )
@@ -19,7 +18,6 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
 
 async function getClub( serverLoadEvent: PageServerLoadEvent, clubId: number )
 {
-    const qb = new QueryBuilder()
     let query = qb
         .select( {
             Name: sql`${ schema.clubs.name }`.as( 'Name' ),
@@ -31,12 +29,11 @@ async function getClub( serverLoadEvent: PageServerLoadEvent, clubId: number )
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
 
-    return (data as unknown as typeof data._.result)[0]
+    return ( data as unknown as typeof data._.result )[ 0 ]
 }
 
 async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
 {
-    const qb = new QueryBuilder()
     let query = qb
         .select( {
             Id: sql`${ schema.teams.id }`.as( 'Id' ),
@@ -50,12 +47,23 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueTableTeams.leagueId ) )
         .leftJoin( schema.seasons, eq( schema.seasons.id, schema.leagues.seasonId ) )
         .leftJoin( schema.gameOperations, eq( schema.gameOperations.id, schema.leagues.gameOperationId ) )
-        .where( or( eq( schema.teams.clubId, clubId ) , like( schema.teams.syndicateClubIds, `%${clubId}%` ) ) )
-        .groupBy( schema.seasons.id , schema.gameOperations.id , schema.leagueTableTeams.id , schema.leagues.id , schema.teams.id )
-        .orderBy( desc( schema.seasons.id ) , asc( schema.gameOperations.id ) , asc( schema.leagues.orderKey ) )
+        .where(
+            and(
+                or( eq( schema.teams.clubId, clubId ), like( schema.teams.syndicateClubIds, `%${ clubId }%` ) ),
+                isNotNull( schema.leagueTableTeams.leagueId )
+            )
+        )
+        .groupBy(
+            schema.seasons.id,
+            schema.gameOperations.id,
+            schema.leagueTableTeams.id,
+            schema.leagues.id,
+            schema.teams.id
+        )
+        .orderBy( desc( schema.seasons.id ), asc( schema.gameOperations.id ), asc( schema.leagues.orderKey ) )
         .$dynamic()
 
-    console.log(query.toSQL().sql)
+    // console.log( query.toSQL().sql )
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
     return data as unknown as typeof data._.result
