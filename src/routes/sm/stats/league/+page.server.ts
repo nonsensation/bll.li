@@ -31,7 +31,7 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
         seasonName: league.SeasonName,
         leagueTable: isCup ? [] : await getLeagueTable( serverLoadEvent, leagueId ),
         leagueScorer: await getLeagueScorer( serverLoadEvent, leagueId ),
-        games: await getGames( serverLoadEvent, leagueId , isCup ),
+        games: await getGames( serverLoadEvent, leagueId, isCup ),
     }
 }
 
@@ -54,6 +54,7 @@ async function getLeagueTable( serverLoadEvent: PageServerLoadEvent, leagueId: n
             GoalsScored: sql<number>`${ schema.leagueTableTeams.goalsScored }`.as( 'GoalsScored' ),
             GoalsReceived: sql<number>`${ schema.leagueTableTeams.goalsReceived }`.as( 'GoalsReceived' ),
             OrderKey: sql<string>`${ schema.leagueTableTeams.orderKey }`.as( 'OrderKey' ),
+            LogoUrl: sql<string>`${ schema.teams.logoUrl }`.as( 'LogoUrl' ),
         } )
         .from( schema.leagueTableTeams )
         .leftJoin( schema.teams, eq( schema.teams.id, schema.leagueTableTeams.teamId ) )
@@ -80,6 +81,7 @@ async function getLeagueScorer( serverLoadEvent: PageServerLoadEvent, leagueId: 
             Goals: sql<number>`${ schema.leagueScorers.goals }`.as( 'Goals' ),
             Assists: sql<number>`${ schema.leagueScorers.assists }`.as( 'Assists' ),
             Position: sql<number>`${ schema.leagueScorers.position }`.as( 'Position' ),
+            LogoUrl: sql<string>`${ schema.teams.logoUrl }`.as( 'LogoUrl' ),
             OrderKey: sql<string>`${ schema.leagueScorers.orderKey }`.as( 'OrderKey' ),
         } )
         .from( schema.leagueScorers )
@@ -94,7 +96,7 @@ async function getLeagueScorer( serverLoadEvent: PageServerLoadEvent, leagueId: 
     return data as unknown as typeof data._.result
 }
 
-async function getGames( serverLoadEvent: PageServerLoadEvent, leagueId: number , isCup: boolean = false )
+async function getGames( serverLoadEvent: PageServerLoadEvent, leagueId: number, isCup: boolean = false )
 {
     const qb = new QueryBuilder()
     const orderFunc = isCup ? desc : asc
@@ -110,15 +112,20 @@ async function getGames( serverLoadEvent: PageServerLoadEvent, leagueId: number 
             HomeTeamName: sql<number>`${ homeTeams.name }`.as( 'HomeTeamName' ),
             GuestTeamId: sql<number>`${ schema.games.guestTeamId }`.as( 'GuestTeamId' ),
             GuestTeamName: sql<number>`${ guestTeams.name }`.as( 'GuestTeamName' ),
+            HomeTeamLogoUrl: sql<string>`${ homeTeams.logoUrl }`.as( 'HomeTeamLogoUrl' ),
+            GuestTeamLogoUrl: sql<string>`${ guestTeams.logoUrl }`.as( 'GuestTeamLogoUrl' ),
+            GameDay: sql<string>`${ schema.games.gameDay }`.as( 'GameDay' ),
         } )
         .from( schema.games )
-        // TODO: leagueSchedule to get GameDays and groupBy() it
+        .leftJoin( schema.leagues, eq( schema.leagues.id, schema.games.leagueId ) )
         .leftJoin( homeTeams, eq( homeTeams.id, schema.games.homeTeamId ) )
         .leftJoin( guestTeams, eq( guestTeams.id, schema.games.guestTeamId ) )
         .where( eq( schema.games.leagueId, leagueId ) )
-        .groupBy( schema.games.gameNumber )
+        .groupBy( schema.games.gameDay , schema.games.gameNumber )
         .orderBy( orderFunc( schema.games.gameNumber ) )
         .$dynamic()
+
+    // console.log(query.toSQL().sql)
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
 

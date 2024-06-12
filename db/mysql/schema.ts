@@ -29,6 +29,7 @@ export const games = Table('Game', {
   homeTeamId: integer('HomeTeamId').notNull(),
   guestTeamId: integer('GuestTeamId').notNull(),
   date: text('Date').notNull(),
+  gameDay: integer('GameDay').notNull(),
   gameNumber: text('GameNumber').notNull(),
   startTime: text('StartTime').notNull(),
   audience: integer('Audience').notNull(),

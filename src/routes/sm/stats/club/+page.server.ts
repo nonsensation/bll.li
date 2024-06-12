@@ -55,7 +55,8 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
         .orderBy( desc( schema.seasons.id ) , asc( schema.gameOperations.id ) , asc( schema.leagues.orderKey ) )
         .$dynamic()
 
-    const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
+    console.log(query.toSQL().sql)
 
+    const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
     return data as unknown as typeof data._.result
 }

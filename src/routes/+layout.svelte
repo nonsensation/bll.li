@@ -22,10 +22,10 @@
             </a>
             <div class="flex gap-4 pb-2 *:font-bold hover:*:text-prim md:justify-end md:pb-0">
                 <DarkMode class="w-6 md:hidden" />
-                <div class=""><a class="" href="/scorer" title="Scorer"><Icon icon="STATS" /></a></div>
-                <div class=""><a class="" href="/" title="Scorer">Start</a></div>
-                <div class=""><a class="" href="/wiki" title="Scorer">Wiki</a></div>
-                <div class=""><a class="" href="/info" title="Scorer">Info</a></div>
+                <div class=""><a class="" href="/sm/stats/scorer" title="Scorer"><Icon icon="STATS" /></a></div>
+                <div class=""><a class="" href="/" title="Start">Start</a></div>
+                <div class=""><a class="" href="/wiki" title="Wiki">Wiki</a></div>
+                <div class=""><a class="" href="/info" title="Info">Info</a></div>
             </div>
         </div>
     </header>
