@@ -69,11 +69,11 @@
     {#each [1, 2, 3] as period}
         <div class="period">
             {#each data.goals.goalsScored.filter(g => +g.Period === period) as g}
-                <div class="goal goal-s {g.GoalType}" style="left: {calculatePosition(g.Time)}%">{g.Period}</div>
+                <div class="goal goal-s {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
             {/each}
 
             {#each data.goals.goalsRecieved.filter(g => +g.Period === period) as g}
-                <div class="goal goal-r {g.GoalType}" style="left: {calculatePosition(g.Time)}%">{g.Period}</div>
+                <div class="goal goal-r {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
             {/each}
         </div>
     {/each}
@@ -140,7 +140,7 @@
     // Calculate the position of each goal within its period
     function calculatePosition(time) {
         const totalMinutes = 20; // Each period is 20 minutes
-        const minutes = timeToMinutes(time);
+        const minutes = timeToMinutes(time) % totalMinutes;
         return (minutes / totalMinutes) * 100;
     }
 </script>
