@@ -53,10 +53,6 @@
         height: 100%;
     }
 
-    .timeline2 {
-        width: 100%;
-        height: auto;
-    }
 </style>
 
 <h2 class="text-center text-4xl">
@@ -91,48 +87,6 @@
     {/each}
 </div>
 
-<svg viewBox={`0 0 ${width} ${height}`} class="timeline2">
-    <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="black" />
-    <line x1={(width / 3) * 1} y1={height / 2 + 5} x2={(width / 3) * 1} y2={height / 2 - 5} stroke="black" />
-    <line x1={(width / 3) * 2} y1={height / 2 + 5} x2={(width / 3) * 2} y2={height / 2 - 5} stroke="black" />
-
-    {#each new Array(20 * 3) as m, i}
-        <line
-            x1={(width / 20 / 3) * i}
-            y1={height / 2 + 1}
-            x2={(width / 20 / 3) * i}
-            y2={height / 2 - 1}
-            stroke="black"
-        />
-    {/each}
-
-    <polyline
-        points={_data_s
-            .map((g, i) => `${i * interval + interval / 2 - 5},${height / 2 - (g / maxGoals_s) * (height / 2)}`)
-            .join(' ')}
-        fill="none"
-        stroke="teal"
-        stroke-width="1"
-    />
-
-    <polyline
-        points={_data_r
-            .map((g, i) => `${i * interval + interval / 2 - 5},${height / 2 + (g / maxGoals_r) * (height / 2)}`)
-            .join(' ')}
-        fill="none"
-        stroke="crimson"
-        stroke-width="1"
-    />
-
-    <!-- <path
-        d="{_data_r.map((g, i) => (i===0?'M':'L')+`${i * interval + 20 + interval / 2},${height / 2 + (g / maxGoals_r) * (height /2)}`).join(' ')}"
-        fill="none"
-        stroke="blue"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-    /> -->
-</svg>
 
 {#if data.clubs && data.clubs.length > 0}
     <h3>Verein</h3>
@@ -188,6 +142,7 @@
     export let data;
 
     const periodLength = 20; // TODO: from league
+    
 
     function timeToMinutes(timeStr: string) {
         const [minutes, seconds] = timeStr.split(':').map(Number);
@@ -198,29 +153,4 @@
         const minutes = timeToMinutes(timeStr);
         return (minutes / periodLength) * 100;
     }
-
-    let _data_s = new Array((3 * 20) / 1).fill(0);
-    let _data_r = new Array((3 * 20) / 1).fill(0);
-
-    $: data.goals.goalsScored.forEach(goal => {
-            let [minutes, seconds] = goal.Time.split(':').map(Number);
-            let period = Number(goal.Period);
-            let totalMinutes = (period - 1) * 20 + (minutes % 20);
-            let intervalIndex = Math.floor(totalMinutes / 1);
-            _data_s[intervalIndex]++;
-        });
-    $: data.goals.goalsRecieved.forEach(goal => {
-            let [minutes, seconds] = goal.Time.split(':').map(Number);
-            let period = Number(goal.Period);
-            let totalMinutes = (period - 1) * 20 + (minutes % 20);
-            let intervalIndex = Math.floor(totalMinutes / 1);
-            _data_r[intervalIndex]++;
-        });
-
-
-    const width = 756;
-    $: height = maxGoals_s + 50;
-    const interval = width / _data_s.length;
-    $: maxGoals_s = Math.max(..._data_s);
-    $: maxGoals_r = Math.max(..._data_r);
 </script>
