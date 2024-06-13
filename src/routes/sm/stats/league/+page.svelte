@@ -13,7 +13,7 @@
 {#if data.leagueTable && data.leagueTable.length > 0}
     <h3>Tabelle</h3>
     <div class="*:rounded odd:*:bg-sf3">
-        {#each data.leagueTable.slice(0, 3) as team}
+        {#each data.leagueTable as team}
             <div class="flex items-center gap-4 pl-4">
                 <div class="pr-4">{team.Position}. Platz</div>
                 <a href="/sm/stats/team?id={team.Id}" class="flex items-center gap-4">
@@ -22,23 +22,6 @@
                 </a>
             </div>
         {/each}
-
-        <details>
-            <summary class="cursor-pointer rounded border border-txt2 p-2 text-txt2">Zeige gesamte Platzierung an</summary>
-            <div class="*:rounded odd:*:bg-sf3">
-                {#each data.leagueTable.slice(3) as team}
-                    {#if team != null}
-                        <div class="flex items-center gap-4 pl-4">
-                            <div class="pr-4">{team.Position}. Platz</div>
-                            <a href="/sm/stats/team?id={team.Id}" class="flex items-center gap-4">
-                                <img src="https://bll.wik.li/{team.LogoUrl}" alt="Logo" class="m-2 w-12" />
-                                <div class="font-bold">{team.Name}</div>
-                            </a>
-                        </div>
-                    {/if}
-                {/each}
-            </div>
-        </details>
     </div>
 {/if}
 
@@ -87,7 +70,7 @@
 {#if data.games && data.games.length > 0}
     <h3>Spieltage</h3>
     <div class="rounded even:*:bg-sf3">
-        {#each groupBy(data.games, 'GameDay').toSorted( x => x.key ) as gd}
+        {#each groupBy(data.games, 'GameDay').toSorted(x => x.key) as gd}
             <div class="col-span-full py-4 text-center font-bold">
                 {gd.key}. Spieltag
             </div>

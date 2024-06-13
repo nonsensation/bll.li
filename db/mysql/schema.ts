@@ -97,7 +97,8 @@ export const gameStats = Table('GameStat', {
 export const goals = Table('Goal', {
   id: integer('Id').primaryKey(),
   eventId: integer('EventId').notNull(),
-  teamId: integer('TeamId').notNull(),
+  scoringTeamId: integer('ScoringTeamId').notNull(),
+  oponentTeamId: integer('OponentTeamId').notNull(),
   gameId: integer('GameId').notNull(),
   period: integer('Period').notNull(),
   time: text('Time').notNull(),
