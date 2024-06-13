@@ -29,17 +29,17 @@
 
     .goal-r {
         top: 15px;
-        background-color: darkviolet;
+        background-color: crimson;
         /* @apply bg-prim; */
     }
 
     .penalty_shot {
-        background-color: blue;
+        background-color: yellow;
         z-index: 10;
     }
 
     .owngoal {
-        background-color: violet;
+        background-color: orange;
         z-index: 10;
     }
 
@@ -111,7 +111,7 @@
             .map((g, i) => `${i * interval + interval / 2 - 5},${height / 2 - (g / maxGoals_s) * (height / 2)}`)
             .join(' ')}
         fill="none"
-        stroke="green"
+        stroke="teal"
         stroke-width="1"
     />
 
@@ -120,7 +120,7 @@
             .map((g, i) => `${i * interval + interval / 2 - 5},${height / 2 + (g / maxGoals_r) * (height / 2)}`)
             .join(' ')}
         fill="none"
-        stroke="red"
+        stroke="crimson"
         stroke-width="1"
     />
 
@@ -199,30 +199,24 @@
         return (minutes / periodLength) * 100;
     }
 
-    import { onMount } from 'svelte';
-
-    onMount(() => {
-        processGoals();
-    });
-
     let _data_s = new Array((3 * 20) / 1).fill(0);
     let _data_r = new Array((3 * 20) / 1).fill(0);
-    function processGoals() {
-        data.goals.goalsScored.forEach(goal => {
+
+    $: data.goals.goalsScored.forEach(goal => {
             let [minutes, seconds] = goal.Time.split(':').map(Number);
             let period = Number(goal.Period);
             let totalMinutes = (period - 1) * 20 + (minutes % 20);
             let intervalIndex = Math.floor(totalMinutes / 1);
             _data_s[intervalIndex]++;
         });
-        data.goals.goalsRecieved.forEach(goal => {
+    $: data.goals.goalsRecieved.forEach(goal => {
             let [minutes, seconds] = goal.Time.split(':').map(Number);
             let period = Number(goal.Period);
             let totalMinutes = (period - 1) * 20 + (minutes % 20);
             let intervalIndex = Math.floor(totalMinutes / 1);
             _data_r[intervalIndex]++;
         });
-    }
+
 
     const width = 756;
     $: height = maxGoals_s + 50;
