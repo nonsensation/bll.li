@@ -37,11 +37,16 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
 {
     let query = qb
         .select( {
-            Id: sql`${ schema.teams.id }`.as( 'Id' ),
-            Name: sql`${ schema.teams.name }`.as( 'Name' ),
-            LeagueId: sql`${ schema.leagues.id }`.as( 'LeagueId' ),
-            LeagueName: sql`${ schema.leagues.name }`.as( 'LeagueName' ),
-            SeasonName: sql`${ schema.seasons.name }`.as( 'SeasonName' ),
+            Id: sql<number>`${ schema.teams.id }`.as( 'Id' ),
+            Name: sql<string>`${ schema.teams.name }`.as( 'Name' ),
+            LogoUrl: sql<string>`${ schema.teams.logoUrl }`.as( 'LogoUrl' ),
+            LeagueId: sql<number>`${ schema.leagues.id }`.as( 'LeagueId' ),
+            LeagueName: sql<string>`${ schema.leagues.name }`.as( 'LeagueName' ),
+            IsFemale: sql<boolean>`${ schema.leagues.isFemale }`.as( 'IsFemale' ),
+            IsJunior: sql<boolean>`${ schema.leagues.isJunior }`.as( 'IsJunior' ),
+            FieldSize: sql<string>`${ schema.leagues.fieldSize }`.as( 'FieldSize' ),
+            LeagueType: sql<string>`${ schema.leagues.leagueType }`.as( 'LeagueType' ),
+            SeasonName: sql<string>`${ schema.seasons.name }`.as( 'SeasonName' ),
         } )
         .from( schema.teams )
         .leftJoin( schema.leagueTableTeams, eq( schema.leagueTableTeams.teamId, schema.teams.id ) )
@@ -50,8 +55,11 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
         .leftJoin( schema.gameOperations, eq( schema.gameOperations.id, schema.leagues.gameOperationId ) )
         .where(
             and(
-                or( eq( schema.teams.clubId, clubId ), like( schema.teams.syndicateClubIds, `%${ clubId }%` ) ),
-                isNotNull( schema.leagueTableTeams.leagueId )
+                or(
+                    eq( schema.teams.clubId, clubId ),
+                    sql`JSON_CONTAINS( ${ schema.teams.syndicateClubIds } , '${ clubId }', '$' )`
+                ),
+                // isNotNull( schema.leagueTableTeams.leagueId )
             )
         )
         .groupBy(
@@ -59,9 +67,14 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
             schema.gameOperations.id,
             schema.leagueTableTeams.id,
             schema.leagues.id,
+            schema.leagues.leagueType,
             schema.teams.id
         )
-        .orderBy( desc( schema.seasons.id ), asc( schema.gameOperations.id ), asc( schema.leagues.orderKey ) )
+        .orderBy(
+            desc( schema.seasons.id ), 
+            asc( schema.gameOperations.id ),
+            asc( schema.leagues.orderKey )
+            )
         .$dynamic()
 
     // console.log( query.toSQL().sql )
@@ -88,8 +101,12 @@ async function getScorer( serverLoadEvent: PageServerLoadEvent, clubId: number )
         .leftJoin( schema.players, eq( schema.players.id, schema.leagueScorers.playerId ) )
         .leftJoin( schema.seasons, eq( schema.seasons.id, schema.leagues.seasonId ) )
         // .where( and( eq( schema.teams.clubId, clubId ) , eq( schema.leagues.isJunior , false ),eq( schema.leagues.fieldSize , "GF" ) ) )
-        .where( eq( schema.teams.clubId, clubId ) )
-        // .where( or( eq( schema.teams.clubId, clubId ), like( schema.teams.syndicateClubIds, `%${ clubId }%` ) ) )
+        .where(
+            or(
+                eq( schema.teams.clubId, clubId ),
+                sql`JSON_CONTAINS( ${ schema.teams.syndicateClubIds } , '${ clubId }', '$' )`
+            )
+        )
         .groupBy( schema.players.id )
         .orderBy(
             desc( sql`SUM( ${ schema.leagueScorers.games }`.as( 'Games' ) ),
@@ -99,7 +116,7 @@ async function getScorer( serverLoadEvent: PageServerLoadEvent, clubId: number )
         )
         .$dynamic()
 
-    console.log( query.toSQL().sql )
+    // console.log( query.toSQL().sql )
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
     return data as unknown as typeof data._.result

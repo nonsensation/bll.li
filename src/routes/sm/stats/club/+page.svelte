@@ -11,30 +11,59 @@
 </div>
 
 {#if data.teams && data.teams.length > 0}
-    <h3 class="">Spielbetrieb</h3>
-    {#each groupBy(data.teams, 'SeasonName') as g}
-        {#if g.key != null}
-            <h4 class="py-4 font-bold">Saison {g.key}</h4>
-            {#if g.values}
-                <div class="text-sm even:*:bg-sf3 *:md:text-base">
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="font-bold">Liga</div>
-                        <div class="font-bold">Team</div>
-                    </div>
-                    {#each g.values as t}
-                        <div class="grid grid-cols-2 gap-2 rounded border border-transparent p-1">
-                            <div class=""><a href="/sm/stats/league?id={t.LeagueId}">{t.LeagueName}</a></div>
-                            <div class=""><a href="/sm/stats/team?id={t.Id}">{t.Name}</a></div>
+    <h3 class="py-8 text-center">Spielbetrieb</h3>
+    <div class="flex flex-col gap-2">
+        {#each groupBy(data.teams, 'SeasonName') as g, groupIndex}
+            {#if g.key != null}
+                <details open={groupIndex == 0} class="">
+                    <summary class="cursor-pointer rounded border border-dashed border-sf2 p-2 hover:border-prim">
+                        <span class="font-bold">Saison {g.key}</span>
+                    </summary>
+                    <div class="py-4 text-sm even:*:bg-sf3 *:md:text-base flex flex-col gap-2">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="font-bold">Liga</div>
+                            <div class="font-bold">Team</div>
                         </div>
-                    {/each}
-                </div>
+                        {#each g.values as t}
+                            <div class="grid grid-cols-2 gap-4 rounded border border-transparent p-2">
+                                <div class="">
+                                    <a href="/sm/stats/league?id={t.LeagueId}" class="flex justify-between">
+                                        <div class="">{t.LeagueName}</div>
+                                        <div class="hidden md:flex opacity-25">
+                                            <!-- {#if t.IsFemale == true}
+                                                <Icon icon="PLAYER" />
+                                            {/if}
+                                            {#if t.IsJunior == true}
+                                                <Icon icon="WHISTLE" />
+                                            {/if}
+                                            {#if t.LeagueType == 'League'}
+                                                <Icon icon="DISCORD" />
+                                            {:else if t.LeagueType == 'Cup'}
+                                                <Icon icon="HELMET" />
+                                            {:else if t.LeagueType == 'Champ'}
+                                                <Icon icon="STICKS_FULL" />
+                                            {/if} -->
+                                            <span class="font-bold px-1">{t.FieldSize}</span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="">
+                                    <a href="/sm/stats/team?id={t.Id}" class="flex gap-2">
+                                        <img class="h-6" src="http://bll.wik.li/{t.LogoUrl}" alt="Logo" />
+                                        <div class="">{t.Name}</div>
+                                    </a>
+                                </div>
+                            </div>
+                        {/each}
+                    </div>
+                </details>
             {/if}
-        {/if}
-    {/each}
+        {/each}
+    </div>
 {/if}
 
 {#if data.scorer && data.scorer.length > 0}
-    <h3 class="">Ewige Bestenliste</h3>
+    <h3 class="py-8 text-center">Ewige Bestenliste</h3>
     <div class="text-sm odd:*:bg-sf3 *:md:text-base">
         <div class="grid grid-cols-[4fr,1fr,1fr,1fr,1fr] gap-2 border-b p-2 *:text-center">
             <div class="text-center font-bold">Spieler</div>
@@ -57,7 +86,9 @@
         {/each}
         {#if data.scorer.length > 10}
             <details class="py-2 text-sm odd:*:bg-sf3 *:md:text-base">
-                <summary class="cursor-pointer rounded border border-txt2 p-2 text-txt2">Zeige alle Spieler an</summary>
+                <summary class="cursor-pointer rounded border border-txt2 p-2 text-txt2 hover:border-prim"
+                    >Zeige alle Spieler an</summary
+                >
                 {#each data.scorer.slice(10) as s}
                     {#if s != null && s.LastName != null}
                         <a
@@ -79,6 +110,7 @@
 
 <script lang="ts">
     import { groupBy } from '$lib/utils.js';
+    import Icon from '$lib/components/Icon.svelte';
 
     export let data;
 

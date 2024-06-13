@@ -74,7 +74,7 @@
                                         <!-- img -->
                                         <div class="">
                                             <a href="/sm/stats/team?id={l.TeamId}" class="flex gap-2">
-                                                <img src="https://bll.wik.li/{l.ClubLogoUrl}" alt="Logo" class="h-6" />
+                                                <img src="https://bll.wik.li/{l.TeamLogoUrl}" alt="Logo" class="h-6" />
                                                 <div class="font-bold">{l.TeamName}</div>
                                             </a>
                                         </div>

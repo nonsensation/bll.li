@@ -67,7 +67,7 @@
     }
 
     .score {
-        font-size: min(15vw, 500%);
+        font-size: min(10vw, 5rem);
         line-height: 75%;
     }
     .sc {

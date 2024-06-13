@@ -15,6 +15,7 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
         .select( {
             Name: sql<string>`${ schema.leagues.name }`.as( 'Name' ),
             SeasonName: sql<string>`${ schema.seasons.name }`.as( 'SeasonName' ),
+            LeagueType: sql<string>`${ schema.leagues.leagueType }`.as( 'LeagueType' ),
         } )
         .from( schema.leagues )
         .leftJoin( schema.seasons, eq( schema.seasons.id, schema.leagues.seasonId ) )
@@ -24,17 +25,18 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
 
     const league = ( data as unknown as typeof data._.result )[ 0 ]
-    const isCup = league.Name.includes( 'Pokal' )
+    const isLeague = league.Name.includes( 'League' )
     return {
         leagueName: league.Name,
         seasonName: league.SeasonName,
-        leagueTable: isCup ? [] : await getLeagueTable( serverLoadEvent, leagueId ),
+        leagueType: league.LeagueType,
+        leagueTable: await getLeagueTable( serverLoadEvent, leagueId ),
         leagueScorer: await getLeagueScorer( serverLoadEvent, leagueId ),
-        games: await getGames( serverLoadEvent, leagueId, isCup ),
+        games: await getGames( serverLoadEvent, leagueId, isLeague ),
     }
 }
 
-// doesnt exists on leage_type="cup"
+
 async function getLeagueTable( serverLoadEvent: PageServerLoadEvent, leagueId: number )
 {
     const qb = new QueryBuilder()
@@ -71,7 +73,7 @@ async function getLeagueScorer( serverLoadEvent: PageServerLoadEvent, leagueId: 
     const qb = new QueryBuilder()
     let query = qb
         .select( {
-            TeamId: sql<number>`${ schema.leagueScorers.teamId }`.as( 'Date' ),
+            TeamId: sql<number>`${ schema.leagueScorers.teamId }`.as( 'TeamId' ),
             TeamName: sql<string>`${ schema.teams.name }`.as( 'TeamName' ),
             PlayerId: sql<number>`${ schema.leagueScorers.playerId }`.as( 'PlayerId' ),
             FirstName: sql<string>`${ schema.players.firstName }`.as( 'FirstName' ),
@@ -95,10 +97,9 @@ async function getLeagueScorer( serverLoadEvent: PageServerLoadEvent, leagueId: 
     return data as unknown as typeof data._.result
 }
 
-async function getGames( serverLoadEvent: PageServerLoadEvent, leagueId: number, isCup: boolean = false )
+async function getGames( serverLoadEvent: PageServerLoadEvent, leagueId: number, isLeague: boolean = false )
 {
     const qb = new QueryBuilder()
-    const orderFunc = isCup ? desc : asc
     const homeTeams = alias( schema.teams, 'homeTeams' )
     const guestTeams = alias( schema.teams, 'guestTeams' )
     let query = qb
@@ -121,7 +122,7 @@ async function getGames( serverLoadEvent: PageServerLoadEvent, leagueId: number,
         .leftJoin( guestTeams, eq( guestTeams.id, schema.games.guestTeamId ) )
         .where( eq( schema.games.leagueId, leagueId ) )
         .groupBy( schema.games.gameDay , schema.games.gameNumber )
-        .orderBy( orderFunc( schema.games.gameNumber ) )
+        .orderBy( asc( schema.games.gameDay ) )
         .$dynamic()
 
     // console.log(query.toSQL().sql)

@@ -169,11 +169,10 @@ function filter( serverLoadEvent: PageServerLoadEvent )
 
     if( enableFieldSize != null )
     {
-        // TODO: use .FieldSize column
         if( enableFieldSize == 'KF' )
-            filters.push( or( like( schema.leagues.name, '%Kleinfeld%' ), like( schema.leagues.name, '%KF%' ) ) )
+            filters.push( eq( schema.leagues.fieldSize, 'KF' ) )
         else if( enableFieldSize == 'GF' )
-            filters.push( and( notLike( schema.leagues.name, '%Kleinfeld%' ), notLike( schema.leagues.name, '%KF%' ) ) )
+            filters.push( eq( schema.leagues.fieldSize, 'GF' ) )
     }
 
     if( enableJuniorLeagues != null )
