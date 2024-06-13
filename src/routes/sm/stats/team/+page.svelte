@@ -7,34 +7,35 @@
 
     .period {
         position: relative;
-        height: 10px; /* Adjust as needed */
-        border-bottom: 2px solid #000;
-        margin-bottom: 50px;
+        height: 8px; /* Adjust as needed */
+        border-bottom: 2px solid var(--color-text);
     }
 
     .goal {
         position: absolute;
         top: 0;
-        width: 5px;
-        height: 5px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
-        /* border: 1px solid; */
+        border: 1px solid var(--color-text);
     }
 
     .goal-s {
         top: -5px;
-        background-color: teal;
+        border-color: teal;
+        background-color: var(--color-surface);
         /* @apply bg-prim2; */
     }
 
     .goal-r {
         top: 15px;
-        background-color: crimson;
+        border-color: crimson;
+        background-color: var(--color-surface);
         /* @apply bg-prim; */
     }
 
     .penalty_shot {
-        background-color: yellow;
+        background-color: violet;
         z-index: 10;
     }
 
@@ -46,12 +47,6 @@
     .regular {
     }
 
-    .goal-bar {
-        position: absolute;
-        bottom: 0;
-        width: 4px; /* Adjust width as needed */
-        height: 100%;
-    }
 
 </style>
 
@@ -71,7 +66,7 @@
 
 <!-- {data.goals.goalsScored.length}/{data.goals.goalsRecieved.length} -->
 
-<div class="timeline grid grid-cols-3 gap-0">
+<div class="timeline flex flex-col md:grid md:grid-cols-3 gap-12">
     <!-- TODO: extratime & penaltyshots -->
     <!-- TODO: link to game#eventIndex -->
     {#each [1, 2, 3] as period}
@@ -142,7 +137,7 @@
     export let data;
 
     const periodLength = 20; // TODO: from league
-    
+
 
     function timeToMinutes(timeStr: string) {
         const [minutes, seconds] = timeStr.split(':').map(Number);
