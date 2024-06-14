@@ -48,33 +48,26 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
             LeagueType: sql<string>`${ schema.leagues.leagueType }`.as( 'LeagueType' ),
             SeasonName: sql<string>`${ schema.seasons.name }`.as( 'SeasonName' ),
         } )
-        .from( schema.teams )
+        .from( schema.clubs )
+        .leftJoin(
+            schema.teams,
+            or(
+                eq( schema.teams.clubId, clubId ),
+                sql`JSON_CONTAINS( ${ schema.teams.syndicateClubIds } , '${ clubId }', '$' )`
+            )
+        )
         .leftJoin( schema.leagueTableTeams, eq( schema.leagueTableTeams.teamId, schema.teams.id ) )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueTableTeams.leagueId ) )
         .leftJoin( schema.seasons, eq( schema.seasons.id, schema.leagues.seasonId ) )
         .leftJoin( schema.gameOperations, eq( schema.gameOperations.id, schema.leagues.gameOperationId ) )
-        .where(
-            and(
-                or(
-                    eq( schema.teams.clubId, clubId ),
-                    sql`JSON_CONTAINS( ${ schema.teams.syndicateClubIds } , '${ clubId }', '$' )`
-                ),
-                // isNotNull( schema.leagueTableTeams.leagueId )
-            )
-        )
+        .where( eq( schema.clubs.id , clubId ) )
         .groupBy(
+            schema.leagues.id,
+            schema.teams.id,
             schema.seasons.id,
             schema.gameOperations.id,
-            // schema.leagueTableTeams.id,
-            schema.leagues.id,
-            schema.leagues.leagueType,
-            schema.teams.id
         )
-        .orderBy(
-            desc( schema.seasons.id ), 
-            asc( schema.gameOperations.id ),
-            asc( schema.leagues.orderKey )
-            )
+        .orderBy( desc( schema.seasons.id ), asc( schema.gameOperations.id ), asc( schema.leagues.orderKey ) )
         .$dynamic()
 
     // console.log( query.toSQL().sql )

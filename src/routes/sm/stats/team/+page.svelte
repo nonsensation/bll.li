@@ -46,98 +46,102 @@
 
     .regular {
     }
-
-
 </style>
 
-<h2 class="text-center text-4xl">
-    <div class="text-txt2">Mannschaft</div>
-    <div class="">{data.team.TeamName}</div>
-    <div class="text-lg text-txt2">{data.team.SeasonName}</div>
-</h2>
+{#each data.teams as d, idx}
+    {#await d then d}
+        {#if idx == 0}
+            <h2 class="text-center text-4xl">
+                <div class="text-txt2">Mannschaft</div>
+                <div class="">{d.team.TeamName}</div>
+                <div class="text-lg text-txt2">{d.team.SeasonName}</div>
+            </h2>
 
-<div class="flex w-full justify-center">
-    <img src="https://bll.wik.li/{data.team.LogoUrl}" alt="Logo" class="max-w-[20%] text-center" />
-</div>
+            <div class="flex w-full justify-center">
+                <img src="https://bll.wik.li/{d.team.LogoUrl}" alt="Logo" class="max-w-[20%] text-center" />
+            </div>
+        {/if}
 
-<h3 class="text-center"><a href="/sm/stats/league?id={data.team.LeagueId}">{data.team.LeagueName}</a></h3>
+        <h2 class="py-16">
+            <a href="/sm/stats/league?id={d.team.LeagueId}">{d.team.LeagueName}</a>
+        </h2>
 
-<!-- {JSON.stringify(data.goals.goalsScored)} -->
+        <!-- {JSON.stringify(data.goals.goalsScored)} -->
 
-<!-- {data.goals.goalsScored.length}/{data.goals.goalsRecieved.length} -->
+        <!-- {data.goals.goalsScored.length}/{data.goals.goalsRecieved.length} -->
 
-<div class="timeline flex flex-col md:grid md:grid-cols-3 gap-12">
-    <!-- TODO: extratime & penaltyshots -->
-    <!-- TODO: link to game#eventIndex -->
-    {#each [1, 2, 3] as period}
-        <div class="period">
-            {#each data.goals.goalsScored.filter(g => +g.Period === period) as g}
-                <div class="goal goal-s {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
-            {/each}
+        <div class="timeline flex flex-col gap-12 md:grid md:grid-cols-3">
+            <!-- TODO: extratime & penaltyshots -->
+            <!-- TODO: link to game#eventIndex -->
+            {#each [1, 2, 3] as period}
+                <div class="period">
+                    {#each d.goals.goalsScored.filter(g => +g.Period === period) as g}
+                        <div class="goal goal-s {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
+                    {/each}
 
-            {#each data.goals.goalsRecieved.filter(g => +g.Period === period) as g}
-                <div class="goal goal-r {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
+                    {#each d.goals.goalsRecieved.filter(g => +g.Period === period) as g}
+                        <div class="goal goal-r {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
+                    {/each}
+                </div>
             {/each}
         </div>
-    {/each}
-</div>
 
+        {#if d.clubs && d.clubs.length > 0}
+            <h3>Verein</h3>
+            <div class="*:rounded odd:*:bg-sf3">
+                {#each d.clubs as club}
+                    <a href="/sm/stats/club?id={club.Id}" class="flex items-center gap-4 pl-4">
+                        <div class="flex items-center gap-4">
+                            <img src="https://bll.wik.li/{club.LogoUrl}" alt="Logo" class="m-2 w-12" />
+                            <div class="font-bold">{club.Name}</div>
+                        </div>
+                    </a>
+                {/each}
+            </div>
+        {/if}
 
-{#if data.clubs && data.clubs.length > 0}
-    <h3>Verein</h3>
-    <div class="*:rounded odd:*:bg-sf3">
-        {#each data.clubs as club}
-            <a href="/sm/stats/club?id={club.Id}" class="flex items-center gap-4 pl-4">
-                <div class="flex items-center gap-4">
-                    <img src="https://bll.wik.li/{club.LogoUrl}" alt="Logo" class="m-2 w-12" />
-                    <div class="font-bold">{club.Name}</div>
+        {#if d.leagueTable && d.leagueTable.length > 0}
+            <h3>Tabelle</h3>
+            <div class="*:rounded odd:*:bg-sf3">
+                {#each d.leagueTable as team}
+                    <a href="/sm/stats/team?id={team.Id}" class="flex items-center gap-4 pl-4">
+                        <div class="pr-4">{team.Position}. Platz</div>
+                        <div class="flex items-center gap-4">
+                            <img src="https://bll.wik.li/{team.LogoUrl}" alt="Logo" class="m-2 w-12" />
+                            <div class="font-bold">{team.Name}</div>
+                        </div>
+                        <div class="">{team.GamesWon} - {team.GamesLost} ({team.GoalsScored}/{team.GoalsReceived})</div>
+                    </a>
+                {/each}
+            </div>
+        {/if}
+
+        {#if d.scorer && d.scorer.length > 0}
+            <h3 class="">Spieler</h3>
+            <div class="*:p-2 odd:*:bg-sf3">
+                <div class="grid grid-cols-[5fr,1fr,1fr,1fr] rounded-t border-b">
+                    <div class="">Spieler</div>
+                    <div class="text-center">Spiele</div>
+                    <div class="text-center">Tore</div>
+                    <div class="text-center">Vorlagen</div>
                 </div>
-            </a>
-        {/each}
-    </div>
-{/if}
-
-{#if data.leagueTable && data.leagueTable.length > 0}
-    <h3>Tabelle</h3>
-    <div class="*:rounded odd:*:bg-sf3">
-        {#each data.leagueTable as team}
-            <a href="/sm/stats/team?id={team.Id}" class="flex items-center gap-4 pl-4">
-                <div class="pr-4">{team.Position}. Platz</div>
-                <div class="flex items-center gap-4">
-                    <img src="https://bll.wik.li/{team.LogoUrl}" alt="Logo" class="m-2 w-12" />
-                    <div class="font-bold">{team.Name}</div>
-                </div>
-                <div class="">{team.GamesWon} - {team.GamesLost} ({team.GoalsScored}/{team.GoalsReceived})</div>
-            </a>
-        {/each}
-    </div>
-{/if}
-
-{#if data.scorer && data.scorer.length > 0}
-    <h3 class="">Spieler</h3>
-    <div class="*:p-2 odd:*:bg-sf3">
-        <div class="grid grid-cols-[5fr,1fr,1fr,1fr] rounded-t border-b">
-            <div class="">Spieler</div>
-            <div class="text-center">Spiele</div>
-            <div class="text-center">Tore</div>
-            <div class="text-center">Vorlagen</div>
-        </div>
-        {#each data.scorer as s}
-            <a href="/sm/stats/player?id={s.PlayerId}" class="grid grid-cols-[5fr,1fr,1fr,1fr] rounded">
-                <div class="font-bold">{s.FirstName} {s.LastName}</div>
-                <div class="text-center">{s.Games}</div>
-                <div class="text-center">{s.Goals}</div>
-                <div class="text-center">{s.Assists}</div>
-            </a>
-        {/each}
-    </div>
-{/if}
+                {#each d.scorer as s}
+                    <a href="/sm/stats/player?id={s.PlayerId}" class="grid grid-cols-[5fr,1fr,1fr,1fr] rounded">
+                        <div class="font-bold">{s.FirstName} {s.LastName}</div>
+                        <div class="text-center">{s.Games}</div>
+                        <div class="text-center">{s.Goals}</div>
+                        <div class="text-center">{s.Assists}</div>
+                    </a>
+                {/each}
+            </div>
+        {/if}
+    {/await}
+{/each}
 
 <script lang="ts">
     export let data;
 
     const periodLength = 20; // TODO: from league
-
 
     function timeToMinutes(timeStr: string) {
         const [minutes, seconds] = timeStr.split(':').map(Number);

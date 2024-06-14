@@ -32,20 +32,23 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
         .$dynamic()
 
     const teamResult = await fetchFromMyDb( query, serverLoadEvent.fetch )
-    const teamData = ( teamResult as unknown as typeof teamResult._.result )[ 0 ]
-
-    let clubIds = JSON.parse( teamData.ClubIds ) as number[]
-
-    if( clubIds.length <= 0 ) clubIds = [ teamData.ClubId ]
+    const teamData = teamResult as unknown as typeof teamResult._.result
 
     return {
-        team: teamData,
-        clubs: await getClubs( serverLoadEvent, clubIds ),
-        leagueTable: teamData.LeagueName.includes( 'Pokal' )
-            ? []
-            : await getLeagueTable( serverLoadEvent, teamData.LeagueId ),
-        scorer: await getScorer( serverLoadEvent, teamData.LeagueId, teamId ),
-        goals: await getGoals( serverLoadEvent, teamData.LeagueId, teamId ),
+        teams: teamData.map( async x =>
+        {
+            let clubIds = JSON.parse( x.ClubIds ) as number[]
+
+            if( clubIds.length <= 0 ) clubIds = [ x.ClubId ]
+
+            return {
+                team: x,
+                clubs: await getClubs( serverLoadEvent, clubIds ),
+                leagueTable: x.LeagueName.includes( 'Pokal' ) ? [] : await getLeagueTable( serverLoadEvent, x.LeagueId ),
+                scorer: await getScorer( serverLoadEvent, x.LeagueId, teamId ),
+                goals: await getGoals( serverLoadEvent, x.LeagueId, teamId ),
+            }
+        } ),
     }
 }
 
@@ -139,8 +142,8 @@ async function getGoals( serverLoadEvent: PageServerLoadEvent, leagueId: number,
         .from( schema.goals )
         .leftJoin( schema.games, eq( schema.goals.gameId, schema.games.id ) )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.games.leagueId ) )
-        .where( and( eq( schema.goals.scoringTeamId, teamId ) , eq( schema.games.leagueId, leagueId ) ) )
-        .orderBy( asc( schema.goals.period ) , asc( schema.goals.time ) )
+        .where( and( eq( schema.goals.scoringTeamId, teamId ), eq( schema.games.leagueId, leagueId ) ) )
+        .orderBy( asc( schema.goals.period ), asc( schema.goals.time ) )
         .$dynamic()
 
     let recieved_query = qb
@@ -153,8 +156,8 @@ async function getGoals( serverLoadEvent: PageServerLoadEvent, leagueId: number,
         .from( schema.goals )
         .leftJoin( schema.games, eq( schema.goals.gameId, schema.games.id ) )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.games.leagueId ) )
-        .where( and( eq( schema.goals.oponentTeamId, teamId ) , eq( schema.games.leagueId, leagueId ) ) )
-        .orderBy( asc( schema.goals.period ) , asc( schema.goals.time ) )
+        .where( and( eq( schema.goals.oponentTeamId, teamId ), eq( schema.games.leagueId, leagueId ) ) )
+        .orderBy( asc( schema.goals.period ), asc( schema.goals.time ) )
         .$dynamic()
 
     // console.log(scored_query.toSQL().sql)
@@ -165,7 +168,7 @@ async function getGoals( serverLoadEvent: PageServerLoadEvent, leagueId: number,
     const recieved_data = await fetchFromMyDb( recieved_query, serverLoadEvent.fetch )
 
     return {
-        goalsScored: scored_data as unknown as typeof scored_data._.result ,
-        goalsRecieved: recieved_data as unknown as typeof recieved_data._.result ,
+        goalsScored: scored_data as unknown as typeof scored_data._.result,
+        goalsRecieved: recieved_data as unknown as typeof recieved_data._.result,
     }
 }

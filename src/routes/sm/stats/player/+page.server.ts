@@ -27,6 +27,7 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
     return {
         player,
         seasons: getAllSeasons( serverLoadEvent, playerId ),
+        goals: await getGoals( serverLoadEvent, playerId ) ,
     }
 }
 
@@ -66,4 +67,43 @@ async function getAllSeasons( serverLoadEvent: PageServerLoadEvent, playerId: nu
     const d = data as unknown as typeof data._.result
 
     return d ?? []
+}
+
+async function getGoals( serverLoadEvent: PageServerLoadEvent, playerId: number )
+{
+    let scored_query = qb
+        .select( {
+            Time: sql<string>`${ schema.goals.time }`.as( 'Time' ),
+            Period: sql<string>`${ schema.goals.period }`.as( 'Period' ),
+            GoalType: sql<string>`${ schema.goals.goalType }`.as( 'GoalType' ),
+            // Id: sql<number>`${ schema.goals.id }`.as( 'Id' ),
+        } )
+        .from( schema.goals )
+        .where( eq( schema.goals.scoringPlayerId, playerId ) )
+        .orderBy( asc( schema.goals.period ), asc( schema.goals.time ) )
+        .$dynamic()
+
+    let recieved_query = qb
+        .select( {
+            Time: sql<string>`${ schema.goals.time }`.as( 'Time' ),
+            Period: sql<string>`${ schema.goals.period }`.as( 'Period' ),
+            GoalType: sql<string>`${ schema.goals.goalType }`.as( 'GoalType' ),
+            // Id: sql<number>`${ schema.goals.id }`.as( 'Id' ),
+        } )
+        .from( schema.goals )
+        .where( eq( schema.goals.assistPlayerId, playerId ) )
+        .orderBy( asc( schema.goals.period ), asc( schema.goals.time ) )
+        .$dynamic()
+
+    // console.log(scored_query.toSQL().sql)
+    // console.log(teamId)
+    // console.log(leagueId)
+
+    const scored_data = await fetchFromMyDb( scored_query, serverLoadEvent.fetch )
+    const recieved_data = await fetchFromMyDb( recieved_query, serverLoadEvent.fetch )
+
+    return {
+        goalsScored: ( scored_data as unknown as typeof scored_data._.result ) ?? [],
+        goalsRecieved: ( recieved_data as unknown as typeof recieved_data._.result ) ?? [],
+    };
 }

@@ -97,7 +97,7 @@ export const goals = Table('Goal', {
   oponentTeamId: integer('OponentTeamId').notNull(),
   period: integer('Period').notNull(),
   time: text('Time').notNull(),
-  playerId: integer('PlayerId'),
+  scoringPlayerId: integer('ScoringPlayerId'),
   assistPlayerId: integer('AssistPlayerId'),
   goalType: text('GoalType').notNull(),
 });
