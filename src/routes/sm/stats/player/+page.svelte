@@ -46,7 +46,7 @@
 
     .goal-r {
         top: 15px;
-        border-color: crimson;
+        border-color: teal;
         background-color: var(--color-surface);
         /* @apply bg-prim; */
     }
@@ -74,10 +74,10 @@
     {#each [1, 2, 3] as period}
         <div class="period">
             {#each data.goals.goalsScored.filter(g => +g.Period === period) as g}
-                <div class="goal goal-s {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
+                <div class="goal goal-s {g.GoalType}" style="left: {calculatePosition(g.Time)}%" title="Tor"></div>
             {/each}
             {#each data.goals.goalsRecieved.filter(g => +g.Period === period) as g}
-                <div class="goal goal-r {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
+                <div class="goal goal-r {g.GoalType}" style="left: {calculatePosition(g.Time)}%" title="Vorlage"></div>
             {/each}
         </div>
     {/each}

@@ -104,13 +104,19 @@
             <h3>Tabelle</h3>
             <div class="*:rounded odd:*:bg-sf3">
                 {#each d.leagueTable as team}
-                    <a href="/sm/stats/team?id={team.Id}" class="flex items-center gap-4 pl-4">
-                        <div class="pr-4">{team.Position}. Platz</div>
-                        <div class="flex items-center gap-4">
+                    <a
+                        href="/sm/stats/team?id={team.Id}"
+                        class="grid grid-cols-[1fr,7fr,2fr] items-center justify-center gap-2 pl-4"
+                    >
+                        <div class="pr-4 text-center">{team.Position}.</div>
+                        <div class="grid w-full grid-cols-[auto,1fr] items-center justify-start gap-4">
                             <img src="https://bll.wik.li/{team.LogoUrl}" alt="Logo" class="m-2 w-12" />
                             <div class="font-bold">{team.Name}</div>
                         </div>
-                        <div class="">{team.GamesWon} - {team.GamesLost} ({team.GoalsScored}/{team.GoalsReceived})</div>
+                        <div class="flex flex-col items-center">
+                            <div class="">{team.GamesWon} - {team.GamesLost}</div>
+                            <div class="">({team.GoalsScored}/{team.GoalsReceived})</div>
+                        </div>
                     </a>
                 {/each}
             </div>
