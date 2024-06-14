@@ -74,10 +74,20 @@
     {#each [1, 2, 3] as period}
         <div class="period">
             {#each data.goals.goalsScored.filter(g => +g.Period === period) as g}
-                <div class="goal goal-s {g.GoalType}" style="left: {calculatePosition(g.Time)}%" title="Tor"></div>
+                <a
+                    href="/sm/match?gameId={g.GameId}#event-{g.EventId}"
+                    class="goal goal-s {g.GoalType}"
+                    style="left: {calculatePosition(g.Time)}%"
+                    title="Tor - {g.Period}. Drittel {g.Time}"
+            ><span></span></a>
             {/each}
             {#each data.goals.goalsRecieved.filter(g => +g.Period === period) as g}
-                <div class="goal goal-r {g.GoalType}" style="left: {calculatePosition(g.Time)}%" title="Vorlage"></div>
+                <a
+                    href="/sm/match?gameId={g.GameId}#event-{g.EventId}"
+                    class="goal goal-r {g.GoalType}"
+                    style="left: {calculatePosition(g.Time)}%"
+                    title="Vorlage - {g.Period}. Drittel {g.Time}"
+            ><span></span></a>
             {/each}
         </div>
     {/each}

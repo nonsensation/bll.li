@@ -23,7 +23,7 @@ export async function load( {fetch,url} )
         const getGame = async () => await getData<SM.Game>( fetch , `games/${ gameId }.json` )
         return {
             gameId,
-            game: getData<SM.Game>( fetch , `games/${ gameId }.json` ),
+            game: await getData<SM.Game>( fetch , `games/${ gameId }.json` ),
         }
     } catch( err )
     {

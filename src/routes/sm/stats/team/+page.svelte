@@ -76,11 +76,29 @@
             {#each [1, 2, 3] as period}
                 <div class="period">
                     {#each d.goals.goalsScored.filter(g => +g.Period === period) as g}
-                        <div class="goal goal-s {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
+                        <a
+                            href="/sm/match?gameId={g.GameId}#event-{g.EventId}"
+                            class="goal goal-s {g.GoalType}"
+                            style="left: {calculatePosition(g.Time)}%"
+                            title="{g.GoalType == 'penalty_shot'
+                                ? 'Strafschuss'
+                                : g.GoalType == 'owngoal'
+                                  ? 'Eigentor'
+                                  : 'Tor'} - {g.Period}. Drittel {g.Time}"
+                        ><span></span></a>
                     {/each}
 
                     {#each d.goals.goalsRecieved.filter(g => +g.Period === period) as g}
-                        <div class="goal goal-r {g.GoalType}" style="left: {calculatePosition(g.Time)}%"></div>
+                        <a
+                            href="/sm/match?gameId={g.GameId}#event-{g.EventId}"
+                            class="goal goal-r {g.GoalType}"
+                            style="left: {calculatePosition(g.Time)}%"
+                            title="{g.GoalType == 'penalty_shot'
+                                ? 'Strafschuss'
+                                : g.GoalType == 'owngoal'
+                                  ? 'Eigentor'
+                                  : 'Tor'} - {g.Period}. Drittel {g.Time}"
+                        ><span></span></a>
                     {/each}
                 </div>
             {/each}
@@ -145,13 +163,15 @@
 {/each}
 
 <script lang="ts">
+    import { GoalType } from 'floorball-saisonmanager/lib/Saisonmanager/Event';
+
     export let data;
 
     const periodLength = 20; // TODO: from league
 
     function timeToMinutes(timeStr: string) {
         const [minutes, seconds] = timeStr.split(':').map(Number);
-        return (minutes % periodLength) + seconds / 60;
+        return (minutes % 21) - 0.5 + seconds / 60;
     }
 
     function calculatePosition(timeStr: string) {

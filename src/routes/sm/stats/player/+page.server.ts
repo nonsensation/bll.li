@@ -75,7 +75,8 @@ async function getGoals( serverLoadEvent: PageServerLoadEvent, playerId: number 
             Time: sql<string>`${ schema.goals.time }`.as( 'Time' ),
             Period: sql<string>`${ schema.goals.period }`.as( 'Period' ),
             GoalType: sql<string>`${ schema.goals.goalType }`.as( 'GoalType' ),
-            // Id: sql<number>`${ schema.goals.id }`.as( 'Id' ),
+            GameId: sql<number>`${ schema.goals.gameId }`.as( 'GameId' ),
+            EventId: sql<number>`${ schema.goals.eventId }`.as( 'EventId' ),
         } )
         .from( schema.goals )
         .where( eq( schema.goals.scoringPlayerId, playerId ) )
@@ -87,7 +88,8 @@ async function getGoals( serverLoadEvent: PageServerLoadEvent, playerId: number 
             Time: sql<string>`${ schema.goals.time }`.as( 'Time' ),
             Period: sql<string>`${ schema.goals.period }`.as( 'Period' ),
             GoalType: sql<string>`${ schema.goals.goalType }`.as( 'GoalType' ),
-            // Id: sql<number>`${ schema.goals.id }`.as( 'Id' ),
+            GameId: sql<number>`${ schema.goals.gameId }`.as( 'GameId' ),
+            EventId: sql<number>`${ schema.goals.eventId }`.as( 'EventId' ),
         } )
         .from( schema.goals )
         .where( eq( schema.goals.assistPlayerId, playerId ) )
