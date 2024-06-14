@@ -65,7 +65,7 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
         .groupBy(
             schema.seasons.id,
             schema.gameOperations.id,
-            schema.leagueTableTeams.id,
+            // schema.leagueTableTeams.id,
             schema.leagues.id,
             schema.leagues.leagueType,
             schema.teams.id

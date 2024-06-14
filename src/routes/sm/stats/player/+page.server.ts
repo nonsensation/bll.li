@@ -49,7 +49,7 @@ async function getAllSeasons( serverLoadEvent: PageServerLoadEvent, playerId: nu
             Assists: sql<number>`${ schema.leagueScorers.assists }`.as( 'Assists' ),
             Rank: sql<number>`${ schema.leagueScorers.position }`.as( 'Rank' ),
             Games: sql<number>`${ schema.leagueScorers.games }`.as( 'Games' ),
-            ScorerId: sql<number>`${ schema.leagueScorers.id }`.as( 'ScorerId' ),
+            // ScorerId: sql<number>`${ schema.leagueScorers.id }`.as( 'ScorerId' ),
         } )
         .from( schema.leagueScorers )
         .where( eq( schema.leagueScorers.playerId, playerId ) )
@@ -57,7 +57,8 @@ async function getAllSeasons( serverLoadEvent: PageServerLoadEvent, playerId: nu
         .leftJoin( schema.seasons, eq( schema.leagues.seasonId, schema.seasons.id ) )
         .leftJoin( schema.teams, eq( schema.leagueScorers.teamId, schema.teams.id ) )
         .leftJoin( schema.clubs, eq( schema.teams.clubId, schema.clubs.id ) ) // TODO: syndicate
-        .groupBy( schema.leagues.seasonId, schema.teams.id, schema.leagueScorers.id )
+        // .groupBy( schema.leagues.seasonId, schema.teams.id, schema.leagueScorers.id )
+        .groupBy( schema.leagues.seasonId, schema.teams.id )
         .orderBy( desc( schema.seasons.id ), desc( schema.leagueScorers.games ) )
         .$dynamic()
 

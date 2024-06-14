@@ -134,7 +134,7 @@ async function getGoals( serverLoadEvent: PageServerLoadEvent, leagueId: number,
             Time: sql<string>`${ schema.goals.time }`.as( 'Time' ),
             Period: sql<string>`${ schema.goals.period }`.as( 'Period' ),
             GoalType: sql<string>`${ schema.goals.goalType }`.as( 'GoalType' ),
-            Id: sql<number>`${ schema.goals.id }`.as( 'Id' ),
+            // Id: sql<number>`${ schema.goals.id }`.as( 'Id' ),
         } )
         .from( schema.goals )
         .leftJoin( schema.games, eq( schema.goals.gameId, schema.games.id ) )
@@ -148,7 +148,7 @@ async function getGoals( serverLoadEvent: PageServerLoadEvent, leagueId: number,
             Time: sql<string>`${ schema.goals.time }`.as( 'Time' ),
             Period: sql<string>`${ schema.goals.period }`.as( 'Period' ),
             GoalType: sql<string>`${ schema.goals.goalType }`.as( 'GoalType' ),
-            Id: sql<number>`${ schema.goals.id }`.as( 'Id' ),
+            // Id: sql<number>`${ schema.goals.id }`.as( 'Id' ),
         } )
         .from( schema.goals )
         .leftJoin( schema.games, eq( schema.goals.gameId, schema.games.id ) )

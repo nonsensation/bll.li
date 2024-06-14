@@ -6,8 +6,7 @@ const Table = mysqlTable
 const integer = int
 
 export const fileStates = Table('FileState', {
-  id: integer('Id').primaryKey(),
-  fileName: text('FileName').notNull(),
+  fileName: text('FileName').primaryKey(),
 });
 
 export const seasons = Table('Season', {
@@ -75,31 +74,27 @@ export const teams = Table('Team', {
 });
 
 export const gameEvents = Table('GameEvent', {
-  id: integer('Id').primaryKey(),
+  gameId: integer('GameId').primaryKey(),
+  eventId: integer('EventId').primaryKey(),
   eventType: text('EventType').notNull(),
   eventIndex: integer('EventIndex').notNull(),
   teamId: integer('TeamId').notNull(),
-  gameId: integer('GameId').notNull(),
   period: integer('Period').notNull(),
   time: text('Time').notNull(),
 });
 
 export const gameStats = Table('GameStat', {
-  id: integer('Id').primaryKey(),
-  key: text('_Key').notNull(),
+  statId: integer('StatId').primaryKey(),
+  gameId: integer('GameId').primaryKey(),
   statType: text('StatType').notNull(),
-  teamId: integer('TeamId'),
-  eventId: integer('EventId'),
-  gameId: integer('GameId').notNull(),
-  foreignId: integer('ForeignId').notNull(),
+  data: text('Data').notNull(),
 });
 
 export const goals = Table('Goal', {
-  id: integer('Id').primaryKey(),
-  eventId: integer('EventId').notNull(),
+  gameId: integer('GameId').primaryKey(),
+  eventId: integer('EventId').primaryKey(),
   scoringTeamId: integer('ScoringTeamId').notNull(),
   oponentTeamId: integer('OponentTeamId').notNull(),
-  gameId: integer('GameId').notNull(),
   period: integer('Period').notNull(),
   time: text('Time').notNull(),
   playerId: integer('PlayerId'),
@@ -108,18 +103,16 @@ export const goals = Table('Goal', {
 });
 
 export const penalties = Table('Penalty', {
-  id: integer('Id').primaryKey(),
-  eventId: integer('EventId').notNull(),
+  eventId: integer('EventId').primaryKey(),
+  gameId: integer('GameId').primaryKey(),
   teamId: integer('TeamId').notNull(),
-  gameId: integer('GameId').notNull(),
   playerId: integer('PlayerId').notNull(),
   penaltyCode: integer('PenaltyCode').notNull(),
   penaltyType: text('PenaltyType').notNull(),
 });
 
 export const referees = Table('Referee', {
-  id: integer('Id').primaryKey(),
-  licenseId: integer('LicenseId').notNull(),
+  licenseId: integer('LicenseId').primaryKey(),
   firstName: text('FirstName').notNull(),
   lastName: text('LastName').notNull(),
 });
@@ -131,11 +124,10 @@ export const players = Table('Player', {
 });
 
 export const leagueTableTeams = Table('LeagueTableTeam', {
-  id: integer('Id').primaryKey(),
+  leagueId: integer('LeagueId').primaryKey(),
+  teamId: integer('TeamId').primaryKey(),
   orderKey: integer('OrderKey').notNull(),
   position: integer('Position').notNull(),
-  teamId: integer('TeamId').notNull(),
-  leagueId: integer('LeagueId').notNull(),
   goalsScored: integer('GoalsScored').notNull(),
   goalsReceived: integer('GoalsReceived').notNull(),
   gamesWon: integer('GamesWon').notNull(),
@@ -148,10 +140,9 @@ export const leagueTableTeams = Table('LeagueTableTeam', {
 });
 
 export const leagueScorers = Table('LeagueScorer', {
-  id: integer('Id').primaryKey(),
-  playerId: integer('PlayerId').notNull(),
+  leagueId: integer('LeagueId').primaryKey(),
+  playerId: integer('PlayerId').primaryKey(),
   teamId: integer('TeamId').notNull(),
-  leagueId: integer('LeagueId').notNull(),
   orderKey: integer('OrderKey').notNull(),
   position: integer('Position').notNull(),
   games: integer('Games').notNull(),
