@@ -32,7 +32,7 @@
 
         & .goal-r {
             top: calc(var(--size) * 0.5);
-            border-color: teal;
+            border-color: darkviolet;
         }
 
         & .penalty_shot {
