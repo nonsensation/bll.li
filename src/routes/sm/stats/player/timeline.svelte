@@ -27,16 +27,16 @@
 
         & .goal-s {
             top: calc(var(--size) * -1.5);
-            border-color: teal;
+            @apply border-teal-500;
         }
 
         & .goal-r {
             top: calc(var(--size) * 0.5);
-            border-color: darkviolet;
+            @apply border-violet-500;
         }
 
         & .penalty_shot {
-            background-color: violet;
+            @apply bg-orange-500;
             z-index: 10;
         }
     }
@@ -45,10 +45,10 @@
         @apply  select-none;
 
         & label {
-            @apply cursor-pointer rounded border-2 px-2 py-1 text-txt bg-sf3;
+            @apply cursor-pointer rounded border px-2 py-1 text-txt bg-sf3;
 
             &:has(input:checked) {
-                @apply border-green-500;
+                @apply border-prim;
             }
             &:has(:not(input:checked)) {
                 @apply border-sf2;
@@ -61,7 +61,7 @@
 </style>
 
 <div class="my-10">
-    <div class="flex flex-wrap justify-center gap-8 gap-y-2 text-sm filter *:flex *:gap-2">
+    <div class=" flex flex-wrap justify-center gap-8 gap-y-2 text-sm filter *:flex *:gap-2">
         <div class="">
             <label><input type="checkbox" bind:checked={isFemale} />Damen</label>
             <label><input type="checkbox" bind:checked={isNotFemale} />Herren</label>
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div class="mb-4 text-sm">{gls.length} Tore</div>
+    <div class="mb-4 text-right text-sm border-r-4 border-teal-500 pr-2">{gls.length} Tore</div>
     <div class="timeline flex flex-col gap-10 md:grid md:grid-cols-{numPeriods}">
         {#each periodsArray as period}
             <div class="period period-{period}">
@@ -101,7 +101,7 @@
             </div>
         {/each}
     </div>
-    <div class="mt-4 text-sm">{ass.length} Vorlagen</div>
+    <div class="mt-4 text-right text-sm border-r-4 border-violet-500 pr-2">{ass.length} Vorlagen</div>
 </div>
 
 <!-- <h1>Periods Information</h1>
