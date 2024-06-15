@@ -15,54 +15,6 @@
         margin-top: 3rem;
         color: red;
     }
-
-    .timeline {
-        position: relative;
-        margin: 20px auto;
-        padding: 10px 0;
-    }
-
-    .period {
-        position: relative;
-        height: 8px; /* Adjust as needed */
-        border-bottom: 2px solid var(--color-text);
-    }
-
-    .goal {
-        position: absolute;
-        top: 0;
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        border: 1px solid var(--color-text);
-    }
-
-    .goal-s {
-        top: -5px;
-        border-color: teal;
-        background-color: var(--color-surface);
-        /* @apply bg-prim2; */
-    }
-
-    .goal-r {
-        top: 15px;
-        border-color: teal;
-        background-color: var(--color-surface);
-        /* @apply bg-prim; */
-    }
-
-    .penalty_shot {
-        background-color: violet;
-        z-index: 10;
-    }
-
-    .owngoal {
-        background-color: orange;
-        z-index: 10;
-    }
-
-    .regular {
-    }
 </style>
 
 <h2 class="text-center text-4xl">
@@ -70,28 +22,7 @@
     <div class="">{data.player.FirstName} {data.player.LastName}</div>
 </h2>
 
-<div class="timeline flex flex-col gap-12 md:grid md:grid-cols-3">
-    {#each [1, 2, 3] as period}
-        <div class="period">
-            {#each data.goals.goalsScored.filter(g => +g.Period === period) as g}
-                <a
-                    href="/sm/match?gameId={g.GameId}#event-{g.EventId}"
-                    class="goal goal-s {g.GoalType}"
-                    style="left: {calculatePosition(g.Time)}%"
-                    title="Tor - {g.Period}. Drittel {g.Time}"
-            ><span></span></a>
-            {/each}
-            {#each data.goals.goalsRecieved.filter(g => +g.Period === period) as g}
-                <a
-                    href="/sm/match?gameId={g.GameId}#event-{g.EventId}"
-                    class="goal goal-r {g.GoalType}"
-                    style="left: {calculatePosition(g.Time)}%"
-                    title="Vorlage - {g.Period}. Drittel {g.Time}"
-            ><span></span></a>
-            {/each}
-        </div>
-    {/each}
-</div>
+<Timeline goals={data.goals} />
 
 {#await loadData()}
     Lade..
@@ -180,6 +111,7 @@
 
 <script lang="ts">
     import { groupBy } from '$lib/utils.js';
+    import Timeline from './timeline.svelte';
 
     export let data;
 
@@ -199,17 +131,5 @@
         s.forEach(x => (totalAssists += Number(x.Assists)));
 
         return k;
-    }
-
-    const periodLength = 20; // TODO: from league
-
-    function timeToMinutes(timeStr: string) {
-        const [minutes, seconds] = timeStr.split(':').map(Number);
-        return (minutes % periodLength) + seconds / 60;
-    }
-
-    function calculatePosition(timeStr: string) {
-        const minutes = timeToMinutes(timeStr);
-        return (minutes / periodLength) * 100;
     }
 </script>

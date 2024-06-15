@@ -1,51 +1,4 @@
 <style lang="postcss">
-    .timeline {
-        position: relative;
-        margin: 20px auto;
-        padding: 10px 0;
-    }
-
-    .period {
-        position: relative;
-        height: 8px; /* Adjust as needed */
-        border-bottom: 2px solid var(--color-text);
-    }
-
-    .goal {
-        position: absolute;
-        top: 0;
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        border: 1px solid var(--color-text);
-    }
-
-    .goal-s {
-        top: -5px;
-        border-color: teal;
-        background-color: var(--color-surface);
-        /* @apply bg-prim2; */
-    }
-
-    .goal-r {
-        top: 15px;
-        border-color: crimson;
-        background-color: var(--color-surface);
-        /* @apply bg-prim; */
-    }
-
-    .penalty_shot {
-        background-color: violet;
-        z-index: 10;
-    }
-
-    .owngoal {
-        background-color: orange;
-        z-index: 10;
-    }
-
-    .regular {
-    }
 </style>
 
 {#each data.teams as d, idx}
@@ -70,39 +23,7 @@
 
         <!-- {data.goals.goalsScored.length}/{data.goals.goalsRecieved.length} -->
 
-        <div class="timeline flex flex-col gap-12 md:grid md:grid-cols-3">
-            <!-- TODO: extratime & penaltyshots -->
-            <!-- TODO: link to game#eventIndex -->
-            {#each [1, 2, 3] as period}
-                <div class="period">
-                    {#each d.goals.goalsScored.filter(g => +g.Period === period) as g}
-                        <a
-                            href="/sm/match?gameId={g.GameId}#event-{g.EventId}"
-                            class="goal goal-s {g.GoalType}"
-                            style="left: {calculatePosition(g.Time)}%"
-                            title="{g.GoalType == 'penalty_shot'
-                                ? 'Strafschuss'
-                                : g.GoalType == 'owngoal'
-                                  ? 'Eigentor'
-                                  : 'Tor'} - {g.Period}. Drittel {g.Time}"
-                        ><span></span></a>
-                    {/each}
-
-                    {#each d.goals.goalsRecieved.filter(g => +g.Period === period) as g}
-                        <a
-                            href="/sm/match?gameId={g.GameId}#event-{g.EventId}"
-                            class="goal goal-r {g.GoalType}"
-                            style="left: {calculatePosition(g.Time)}%"
-                            title="{g.GoalType == 'penalty_shot'
-                                ? 'Strafschuss'
-                                : g.GoalType == 'owngoal'
-                                  ? 'Eigentor'
-                                  : 'Tor'} - {g.Period}. Drittel {g.Time}"
-                        ><span></span></a>
-                    {/each}
-                </div>
-            {/each}
-        </div>
+        <TimeLine goals={d.goals}></TimeLine>
 
         {#if d.clubs && d.clubs.length > 0}
             <h3>Verein</h3>
@@ -163,19 +84,7 @@
 {/each}
 
 <script lang="ts">
-    import { GoalType } from 'floorball-saisonmanager/lib/Saisonmanager/Event';
+    import TimeLine from './timeline.svelte';
 
     export let data;
-
-    const periodLength = 20; // TODO: from league
-
-    function timeToMinutes(timeStr: string) {
-        const [minutes, seconds] = timeStr.split(':').map(Number);
-        return (minutes % 21) - 0.5 + seconds / 60;
-    }
-
-    function calculatePosition(timeStr: string) {
-        const minutes = timeToMinutes(timeStr);
-        return (minutes / periodLength) * 100;
-    }
 </script>

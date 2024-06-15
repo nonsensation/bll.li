@@ -109,15 +109,17 @@
     }
 </style>
 
+<!-- {JSON.stringify(data)} -->
+
 <div transition:fade class="timeline flex w-full flex-col gap-8 py-8">
     <div class="events mb-8 flex flex-col gap-8">
         <div
             class="header sticky top-0 z-10 mb-4 grid grid-cols-3 border-b border-b-prim bg-sf py-4 *:flex *:flex-col *:place-content-center *:items-center"
         >
-            <div class="home">
+            <a href="/sm/stats/team?id={game.home_team_id}" class="home">
                 <img src="https://saisonmanager.de/{game.home_team_logo}" alt="" class="h-[15vw] max-h-32 max-w-full" />
                 <div class="name pt-4 text-center text-sm sm:font-bold">{game.home_team_name}</div>
-            </div>
+            </a>
             <div class="items-between flex w-full flex-col justify-between">
                 <div
                     class="sc score grid grid-cols-3 text-center font-bold"
@@ -148,14 +150,14 @@
                     {/each}
                 </div>
             </div>
-            <div class="guest">
+            <a href="/sm/stats/team?id={game.guest_team_id}" class="guest">
                 <img
                     src="https://saisonmanager.de/{game.guest_team_logo}"
                     alt=""
                     class="h-[15vw] max-h-32 max-w-full"
                 />
                 <div class="name pt-4 text-center text-sm sm:font-bold">{game.guest_team_name}</div>
-            </div>
+            </a>
         </div>
         <div class="info flex flex-col items-center gap-16 border-b py-8">
             <div class="maps">
