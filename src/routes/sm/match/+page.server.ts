@@ -43,14 +43,23 @@ async function getData<T>( fetch: any, apiUrl: string, useSmApi: boolean = false
 
         if( !response.ok )
         {
+
+            if( !useSmApi )
+            {
+                console.log( `Try reverting to SM because game not yet downloaded in achw` )
+                
+                return getData( fetch, apiUrl, true )
+            }
+
             error( 404, 'saisonmanager.de api not ok - tried: ' + smUrl )
         }
 
         const json = await response.json()
         const game = json as T
 
-        if( 'ended' in game  && game.ended as boolean === false )
+        if( 'ended' in game  && game.ended as boolean === false && !useSmApi )
         {
+            console.log( `Try reverting to SM because game hasent ended yet` )
             return getData( fetch, apiUrl, true )
         }
 
