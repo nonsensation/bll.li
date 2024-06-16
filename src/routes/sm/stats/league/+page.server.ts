@@ -36,7 +36,6 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
     }
 }
 
-
 async function getLeagueTable( serverLoadEvent: PageServerLoadEvent, leagueId: number )
 {
     const qb = new QueryBuilder()
@@ -121,11 +120,12 @@ async function getGames( serverLoadEvent: PageServerLoadEvent, leagueId: number,
         .leftJoin( homeTeams, eq( homeTeams.id, schema.games.homeTeamId ) )
         .leftJoin( guestTeams, eq( guestTeams.id, schema.games.guestTeamId ) )
         .where( eq( schema.games.leagueId, leagueId ) )
-        .groupBy( schema.games.gameDay , schema.games.gameNumber )
+        .groupBy( schema.games.gameDay, schema.games.gameNumber )
         .orderBy( asc( schema.games.gameDay ) )
         .$dynamic()
 
-    // console.log(query.toSQL().sql)
+    console.log( 'leagueId: ' + leagueId )
+    console.log( query.toSQL().sql )
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
 

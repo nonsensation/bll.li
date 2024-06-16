@@ -18,6 +18,7 @@ export default {
 			  sf2: 'var(--color-surface-secondary,#dddddd)',
 			  sf3: 'var(--color-surface-secondary2,#dddddd)',
 			  txt: 'var(--color-text,#dddddd)',
+			  txtinv: 'var(--color-text-inverted,#dddddd)',
 			  txt2: 'var(--color-text-secondary,#dddddd)',
 
 			  primary: {

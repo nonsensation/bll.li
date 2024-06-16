@@ -74,10 +74,6 @@
         font-family: 'Quantico';
     }
 
-    .animate-pulse {
-        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-
     .even {
     }
 
@@ -120,25 +116,32 @@
                 <img src="https://saisonmanager.de/{game.home_team_logo}" alt="" class="h-[15vw] max-h-32 max-w-full" />
                 <div class="name pt-4 text-center text-sm sm:font-bold">{game.home_team_name}</div>
             </a>
-            <div class="items-between flex w-full flex-col justify-between">
+            <div class="items-between flex w-full flex-col justify-between rounded-xl">
                 <div
                     class="sc score grid grid-cols-3 text-center font-bold"
                     class:ingame={(game.game_status ?? SM.GameState.NoRecord) === SM.GameState.Ingame}
                     class:paused={game.ingame_status?.startsWith('pause') ?? false}
                 >
                     <div class="">{game.result?.home_goals ?? 0}</div>
-                    <div class="" class:animate-pulse={game.game_status === SM.GameState.Ingame}>
+                    <div class="">
                         {scoreSep}
                     </div>
                     <div class="">{game.result?.guest_goals ?? 0}</div>
                 </div>
-                <div class="period pt-4 text-xs font-bold md:text-base">
+                <div class="period pt-4 text-xs font-bold md:text-base text-center">
                     {#if !game.ended}
                         {game.current_period_title?.title}
                     {:else if game.result?.postfix?.long && game.result?.postfix?.short}
                         <span class="hidden md:inline">{game.result?.postfix?.long}</span>
                         <span class="md:hidden">{game.result?.postfix?.short}</span>
                     {/if}
+                    <div
+                        class="text-center p-2 px-6 animate-pule rounded bg-prim text-txtinv"
+                        class:hidden={game.game_status !== SM.GameState.Ingame}
+                        class:animate-pulse={game.game_status === SM.GameState.Ingame}
+                    >
+                        LIVE
+                    </div>
                 </div>
                 <div class="sc hidden gap-4 pt-4 text-xs text-txt2 sm:flex md:text-base">
                     {#each range(game.result?.overtime ?? false ? 4 : 3) as p}
@@ -431,7 +434,7 @@
 
     export let data;
 
-    const game = data.game;
+    const game = data.game as SM.Game;
 
     const timeSep = ':';
     const scoreSep = '-';
@@ -501,8 +504,8 @@
     function extractTime(time: string) {
         const parts = time.split(':');
 
-        let min = parts[0] ?? '00';
-        let sec = parts[1] ?? '00';
+        let min = (Number(parts[0]) % 20) + '' ?? '00';
+        let sec = (Number(parts[1]) % 60) + '' ?? '00';
 
         if (min.length < 2) min = '0' + min;
         if (sec.length < 2) sec = '0' + sec;
