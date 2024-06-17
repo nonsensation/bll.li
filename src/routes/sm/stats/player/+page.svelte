@@ -18,7 +18,7 @@
 </style>
 
 <h2 class="text-center text-4xl">
-    <div class="text-txt2">Spieler</div>
+    <div class="text-txt2">Spieler:in</div>
     <div class="">{data.player.FirstName} {data.player.LastName}</div>
 </h2>
 
