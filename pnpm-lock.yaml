@@ -31,7 +31,7 @@ importers:
         version: 0.5.1(drizzle-orm@0.30.10(@neondatabase/serverless@0.7.2)(@planetscale/database@1.18.0)(@types/pg@8.6.6)(@vercel/postgres@0.8.0)(mysql2@3.9.7))(zod@3.23.8)
       floorball-saisonmanager:
         specifier: github:nonsensation/floorball-saisonmanager
-        version: https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/5d5bf2b8474cdf66f3eb735a871e5c25ed66744e
+        version: https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/36cdc527a0793cfdee3266ffee1017c08d9656f3
       highlight.js:
         specifier: 11.9.0
         version: 11.9.0
@@ -1524,8 +1524,8 @@ packages:
   flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
 
-  floorball-saisonmanager@https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/5d5bf2b8474cdf66f3eb735a871e5c25ed66744e:
-    resolution: {tarball: https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/5d5bf2b8474cdf66f3eb735a871e5c25ed66744e}
+  floorball-saisonmanager@https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/36cdc527a0793cfdee3266ffee1017c08d9656f3:
+    resolution: {tarball: https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/36cdc527a0793cfdee3266ffee1017c08d9656f3}
     version: 0.1.2
 
   flowbite-svelte@0.46.1:
@@ -4035,7 +4035,7 @@ snapshots:
 
   flatted@3.3.1: {}
 
-  floorball-saisonmanager@https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/5d5bf2b8474cdf66f3eb735a871e5c25ed66744e: {}
+  floorball-saisonmanager@https://codeload.github.com/nonsensation/floorball-saisonmanager/tar.gz/36cdc527a0793cfdee3266ffee1017c08d9656f3: {}
 
   flowbite-svelte@0.46.1(svelte@4.2.16):
     dependencies:

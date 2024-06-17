@@ -119,7 +119,7 @@
             <div class="items-between flex w-full flex-col justify-between rounded-xl">
                 <div
                     class="sc score grid grid-cols-3 text-center font-bold"
-                    class:ingame={(game.game_status ?? SM.GameState.NoRecord) === SM.GameState.Ingame}
+                    class:ingame={(game.game_status ?? SM.Games.GameState.NoRecord) === SM.Games.GameState.Ingame}
                     class:paused={game.ingame_status?.startsWith('pause') ?? false}
                 >
                     <div class="">{game.result?.home_goals ?? 0}</div>
@@ -128,7 +128,7 @@
                     </div>
                     <div class="">{game.result?.guest_goals ?? 0}</div>
                 </div>
-                <div class="period pt-4 text-xs font-bold md:text-base text-center">
+                <div class="period pt-4 text-center text-xs font-bold md:text-base">
                     {#if !game.ended}
                         {game.current_period_title?.title}
                     {:else if game.result?.postfix?.long && game.result?.postfix?.short}
@@ -136,9 +136,9 @@
                         <span class="md:hidden">{game.result?.postfix?.short}</span>
                     {/if}
                     <div
-                        class="text-center p-2 px-6 animate-pule rounded bg-prim text-txtinv"
-                        class:hidden={game.game_status !== SM.GameState.Ingame}
-                        class:animate-pulse={game.game_status === SM.GameState.Ingame}
+                        class="animate-pule rounded bg-prim p-2 px-6 text-center text-txtinv"
+                        class:hidden={game.game_status !== SM.Games.GameState.Ingame}
+                        class:animate-pulse={game.game_status === SM.Games.GameState.Ingame}
                     >
                         LIVE
                     </div>
@@ -202,15 +202,15 @@
         {#each game.events as e, idx}
             {@const { min, sec } = extractTime(e.time)}
             {@const team = e.event_team}
-            {@const displayGoals = e.event_type == SM.EventType.Goal}
+            {@const displayGoals = e.event_type == SM.Games.EventType.Goal}
             {@const displayNumber =
                 e.number &&
-                ((e.event_type == SM.EventType.Goal && e.goal_type != SM.GoalType.Owngoal) ||
-                    e.event_type == SM.EventType.Penalty)}
+                ((e.event_type == SM.Games.EventType.Goal && e.goal_type != SM.Games.GoalType.Owngoal) ||
+                    e.event_type == SM.Games.EventType.Penalty)}
             {@const displayLogo =
                 displayNumber ||
-                e.event_type == SM.EventType.Timeout ||
-                (e.event_type == SM.EventType.Goal && e.goal_type == SM.GoalType.Owngoal)}
+                e.event_type == SM.Games.EventType.Timeout ||
+                (e.event_type == SM.Games.EventType.Goal && e.goal_type == SM.Games.GoalType.Owngoal)}
 
             {#if checkPeriod(e.period)}
                 <h3 class="w-full py-8 font-normal text-txt2 md:text-center">{getPeriodTitle(game, e)}</h3>
@@ -244,7 +244,7 @@
                 <div
                     class="col-{team}-status text-center *:flex *:flex-col *:items-center *:justify-stretch *:text-sm md:*:text-base"
                 >
-                    {#if e.event_type == SM.EventType.Goal}
+                    {#if e.event_type == SM.Games.EventType.Goal}
                         <div class="">
                             {#if e.goal_type && e.goal_type_string}
                                 <div class="flex flex-col items-center text-xs md:text-sm">
@@ -266,7 +266,7 @@
                                 <div class="">>e.goal_type_string = {e.goal_type_string}</div>
                             {/if}
                         </div>
-                    {:else if e.event_type == SM.EventType.Penalty}
+                    {:else if e.event_type == SM.Games.EventType.Penalty}
                         <div class="">
                             <div class="text-sm md:text-base">
                                 Strafe <span class="font-bold">{e.penalty_type_string}</span>
@@ -275,7 +275,7 @@
                                 {e.penalty_reason_string}
                             </div>
                         </div>
-                    {:else if e.event_type == SM.EventType.Timeout}
+                    {:else if e.event_type == SM.Games.EventType.Timeout}
                         <div class="">
                             <Icon icon="TIMEOUT" />
                             <div class="">Auszeit</div>
@@ -429,12 +429,14 @@
     import Icon from '$lib/components/Icon.svelte';
     import { onMount, afterUpdate } from 'svelte';
     import { fade } from 'svelte/transition';
-    import { SM } from 'floorball-saisonmanager';
+    // import { type SM } from 'floorball-saisonmanager';
     import { page } from '$app/stores';
+
+    import { ApiV2 as SM } from '$lib/sm/ApiV2';
 
     export let data;
 
-    const game = data.game as SM.Game;
+    const game = data.game as SM.Games.Game;
 
     const timeSep = ':';
     const scoreSep = '-';
@@ -450,8 +452,10 @@
         }, 1000);
     });
 
-    function checkPeriod(period: number) {
+    function checkPeriod(period: number | null) {
         // gameId=20114 period is 9..?!
+        if (period == null) return false;
+
         if (period <= 0 || period > 5) return false;
 
         const isCurrentPeriod = period != lastPeriod;
@@ -461,7 +465,7 @@
         return isCurrentPeriod;
     }
 
-    function getPeriodTitle(game: SM.Game, e: SM.Event) {
+    function getPeriodTitle(game: SM.Games.Game, e: SM.Games.Event) {
         // do this in checkPeriod() or some strange bug where it
         // only updates/runs it at consistent random times
         // when using {#if e.period != lastPeriod}
@@ -483,14 +487,14 @@
         return e.period + '. Drittel';
     }
 
-    function sortPlayers(players: SM.Player[]) {
-        players.sort((p1, p2) => p1.trikot_number - p2.trikot_number);
+    function sortPlayers(players: SM.Games.TeamPlayer[]) {
+        players.sort((p1, p2) => (p1.trikot_number ?? 0) - (p2.trikot_number ?? 0));
 
         return players;
     }
 
-    function getPlayerByNumber(game: SM.Game, team: string, num: number) {
-        const teamPlayers: SM.Player[] = game.players[team];
+    function getPlayerByNumber(game: SM.Games.Game, team: string | null, num: number | null) {
+        const teamPlayers: SM.Games.TeamPlayer[] = (team == 'home' ? game?.players?.home : game?.players?.guest) ?? [];
 
         return (
             teamPlayers.filter(p => p.trikot_number == num)[0] ?? {
@@ -501,7 +505,13 @@
         );
     }
 
-    function extractTime(time: string) {
+    function extractTime(time: string | null) {
+        if (time == null)
+            return {
+                min: 0,
+                sec: 0,
+            };
+
         const parts = time.split(':');
 
         let min = (Number(parts[0]) % 20) + '' ?? '00';
@@ -516,19 +526,19 @@
         };
     }
 
-    function getScorer(game: SM.Game, team: string, trikotNumber: number) {
+    function getScorer(game: SM.Games.Game, team: string | null, trikotNumber: number) {
         const teamEvents = game.events.filter(e => e.event_team == team);
         const numberEvents = teamEvents.filter(e => (e.number ?? -1) == trikotNumber);
 
         const penaltiesString = numberEvents
-            .filter(e => e.event_type == SM.EventType.Penalty)
+            .filter(e => e.event_type == SM.Games.EventType.Penalty)
             .filter(e => (e.number ?? -1) == trikotNumber)
             .map(e => e.penalty_type_string ?? '')
             .join(' , ');
 
-        const goals = numberEvents.filter(e => e.event_type == SM.EventType.Goal).length;
+        const goals = numberEvents.filter(e => e.event_type == SM.Games.EventType.Goal).length;
         const assists = teamEvents
-            .filter(e => e.event_type == SM.EventType.Goal)
+            .filter(e => e.event_type == SM.Games.EventType.Goal)
             .filter(e => e.assist && e.assist == trikotNumber).length;
 
         return {

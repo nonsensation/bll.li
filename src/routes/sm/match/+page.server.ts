@@ -30,7 +30,7 @@ export async function load( { fetch, url } )
     }
 }
 
-async function getData<T>( fetch: any, apiUrl: string, useSmApi: boolean = false ): Promise<T | void>
+async function getData<T extends object>( fetch: any, apiUrl: string, useSmApi: boolean = false ): Promise<T | void>
 {
     try
     {
@@ -43,11 +43,10 @@ async function getData<T>( fetch: any, apiUrl: string, useSmApi: boolean = false
 
         if( !response.ok )
         {
-
             if( !useSmApi )
             {
                 console.log( `Try reverting to SM because game not yet downloaded in achw` )
-                
+
                 return getData( fetch, apiUrl, true )
             }
 
@@ -57,7 +56,7 @@ async function getData<T>( fetch: any, apiUrl: string, useSmApi: boolean = false
         const json = await response.json()
         const game = json as T
 
-        if( 'ended' in game  && game.ended as boolean === false && !useSmApi )
+        if( 'ended' in game && ( game.ended as boolean ) === false && !useSmApi )
         {
             console.log( `Try reverting to SM because game hasent ended yet` )
             return getData( fetch, apiUrl, true )
