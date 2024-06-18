@@ -25,6 +25,40 @@
     </div>
 {/if}
 
+{#if data.leagueGroupedTable}
+    <h3>Gruppenphase</h3>
+    <div class="flex flex-col gap-8">
+        {#each getGroups(data.leagueGroupedTable) as grp, grpIdx}
+            <div class="odd:*:bg-sf3 *:p-4">
+                <div class="py-8 text-center font-bold underline" id={grp.group_identifier}>{grp.name}</div>
+                <div
+                    class="grid grid-cols-[1fr,5fr,1fr,1fr,1fr] place-content-center items-center justify-center gap-2"
+                >
+                    <div class="pb-4 font-bold">Platz</div>
+                    <div class="pb-4 font-bold">Team</div>
+                    <div class="pb-4 font-bold">Punkte</div>
+                    <div class="pb-4 font-bold">Spiele</div>
+                    <div class="pb-4 font-bold">Tore</div>
+                </div>
+                {#each grp.values.toSorted(x => x.position).reverse() as team, teamIdx}
+                    <div
+                        class="grid grid-cols-[1fr,5fr,1fr,1fr,1fr] place-content-center items-center justify-center gap-2"
+                    >
+                        <div class="pr-4">{team.position}</div>
+                        <a href="/sm/stats/team?id={team.team_id}" class="flex items-center gap-4">
+                            <img src="https://bll.wik.li/{team.team_logo}" alt="Logo" class="m-2 w-12" />
+                            <div class="font-bold">{team.team_name}</div>
+                        </a>
+                        <div class="">{team.points}</div>
+                        <div class="">{team.won} • {team.draw} • {team.lost}</div>
+                        <div class="">{team.goals_scored} • {team.goals_received} • {team.goals_diff}</div>
+                    </div>
+                {/each}
+            </div>
+        {/each}
+    </div>
+{/if}
+
 {#if data.leagueScorer && data.leagueScorer.length > 0}
     <h3>Top-Scorer</h3>
     <div class="*:rounded odd:*:bg-sf3">
@@ -100,6 +134,14 @@
 
 <script lang="ts">
     import { groupBy } from '$lib/utils.js';
+    import type { Saisonmanager as SM } from 'floorball-saisonmanager';
 
     export let data;
+
+    function getGroups(leagueGroupedTable: SM.GroupedTable) {
+        return Object.entries(leagueGroupedTable).map(([key, value]) => {
+            const { table, ...rest } = value;
+            return { key, ...rest, values: table };
+        });
+    }
 </script>

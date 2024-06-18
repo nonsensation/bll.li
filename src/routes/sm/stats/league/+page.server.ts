@@ -4,6 +4,8 @@ import { sql } from 'drizzle-orm'
 import { db, fetchFromMyDb, qb } from '$mysql/db'
 import { QueryBuilder, alias } from 'drizzle-orm/mysql-core'
 import type { PageServerLoadEvent } from './$types'
+import { Saisonmanager as SM } from 'floorball-saisonmanager'
+import { fetchData } from '$lib/sm/data'
 
 export async function load( serverLoadEvent: PageServerLoadEvent )
 {
@@ -29,11 +31,30 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
     return {
         leagueName: league.Name,
         seasonName: league.SeasonName,
-        leagueType: league.LeagueType,
+        leagueType: league.LeagueType as SM.LeagueType,
         leagueTable: await getLeagueTable( serverLoadEvent, leagueId ),
+        leagueGroupedTable:
+            league.LeagueType == SM.LeagueType.Champ
+                ? await getLeagueGroupedTable( serverLoadEvent, leagueId )
+                : undefined,
         leagueScorer: await getLeagueScorer( serverLoadEvent, leagueId ),
         games: await getGames( serverLoadEvent, leagueId, isLeague ),
     }
+}
+
+async function getLeagueGroupedTable( serverLoadEvent: PageServerLoadEvent, leagueId: number )
+{
+    const data = await fetchData( SM.getLeagueGroupedTableUrl( leagueId , '' ) )
+
+    console.dir(data)
+
+    if( !data ) return
+    if( !data.success ) return
+    if( !data.data ) return
+
+    const lol = data.data as SM.GroupedTable
+
+    return lol
 }
 
 async function getLeagueTable( serverLoadEvent: PageServerLoadEvent, leagueId: number )
