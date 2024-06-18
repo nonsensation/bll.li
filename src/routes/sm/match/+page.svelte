@@ -119,7 +119,7 @@
             <div class="items-between flex w-full flex-col justify-between rounded-xl">
                 <div
                     class="sc score grid grid-cols-3 text-center font-bold"
-                    class:ingame={(game.game_status ?? SM.Games.GameState.NoRecord) === SM.Games.GameState.Ingame}
+                    class:ingame={(game.game_status ?? SM.GameState.NoRecord) === SM.GameState.Ingame}
                     class:paused={game.ingame_status?.startsWith('pause') ?? false}
                 >
                     <div class="">{game.result?.home_goals ?? 0}</div>
@@ -137,8 +137,8 @@
                     {/if}
                     <div
                         class="animate-pule rounded bg-prim p-2 px-6 text-center text-txtinv"
-                        class:hidden={game.game_status !== SM.Games.GameState.Ingame}
-                        class:animate-pulse={game.game_status === SM.Games.GameState.Ingame}
+                        class:hidden={game.game_status !== SM.GameState.Ingame}
+                        class:animate-pulse={game.game_status === SM.GameState.Ingame}
                     >
                         LIVE
                     </div>
@@ -146,9 +146,9 @@
                 <div class="sc hidden gap-4 pt-4 text-xs text-txt2 sm:flex md:text-base">
                     {#each range(game.result?.overtime ?? false ? 4 : 3) as p}
                         <div class="">
-                            {game.result?.home_goals_period[p] ?? 0}
+                            {(game.result?.home_goals_period ?? [])[p] ?? 0}
                             {scoreSep}
-                            {game.result?.guest_goals_period[p] ?? 0}
+                            {(game.result?.guest_goals_period ?? [])[p] ?? 0}
                         </div>
                     {/each}
                 </div>
@@ -199,18 +199,18 @@
         </div>
         <h2 class="grid-cols-3">Spielverlauf</h2>
 
-        {#each game.events as e, idx}
+        {#each game.events ?? [] as e, idx}
             {@const { min, sec } = extractTime(e.time)}
             {@const team = e.event_team}
-            {@const displayGoals = e.event_type == SM.Games.EventType.Goal}
+            {@const displayGoals = e.event_type == SM.EventType.Goal}
             {@const displayNumber =
                 e.number &&
-                ((e.event_type == SM.Games.EventType.Goal && e.goal_type != SM.Games.GoalType.Owngoal) ||
-                    e.event_type == SM.Games.EventType.Penalty)}
+                ((e.event_type == SM.EventType.Goal && e.goal_type != SM.GoalType.Owngoal) ||
+                    e.event_type == SM.EventType.Penalty)}
             {@const displayLogo =
                 displayNumber ||
-                e.event_type == SM.Games.EventType.Timeout ||
-                (e.event_type == SM.Games.EventType.Goal && e.goal_type == SM.Games.GoalType.Owngoal)}
+                e.event_type == SM.EventType.Timeout ||
+                (e.event_type == SM.EventType.Goal && e.goal_type == SM.GoalType.Owngoal)}
 
             {#if checkPeriod(e.period)}
                 <h3 class="w-full py-8 font-normal text-txt2 md:text-center">{getPeriodTitle(game, e)}</h3>
@@ -230,9 +230,9 @@
                     </div>
                     {#if displayGoals}
                         <div class="goals grid grid-cols-[1fr,auto,1fr] text-center text-xl font-bold sm:text-3xl">
-                            <span class="">{e.home_goals}</span>
+                            <span class="">{e.home_goals ?? 0}</span>
                             <span class="">{scoreSep}</span>
-                            <span class="">{e.guest_goals}</span>
+                            <span class="">{e.guest_goals ?? 0}</span>
                         </div>
                     {:else}
                         <div class="flex w-full justify-center">
@@ -244,7 +244,7 @@
                 <div
                     class="col-{team}-status text-center *:flex *:flex-col *:items-center *:justify-stretch *:text-sm md:*:text-base"
                 >
-                    {#if e.event_type == SM.Games.EventType.Goal}
+                    {#if e.event_type == SM.EventType.Goal}
                         <div class="">
                             {#if e.goal_type && e.goal_type_string}
                                 <div class="flex flex-col items-center text-xs md:text-sm">
@@ -266,7 +266,7 @@
                                 <div class="">>e.goal_type_string = {e.goal_type_string}</div>
                             {/if}
                         </div>
-                    {:else if e.event_type == SM.Games.EventType.Penalty}
+                    {:else if e.event_type == SM.EventType.Penalty}
                         <div class="">
                             <div class="text-sm md:text-base">
                                 Strafe <span class="font-bold">{e.penalty_type_string}</span>
@@ -275,7 +275,7 @@
                                 {e.penalty_reason_string}
                             </div>
                         </div>
-                    {:else if e.event_type == SM.Games.EventType.Timeout}
+                    {:else if e.event_type == SM.EventType.Timeout}
                         <div class="">
                             <Icon icon="TIMEOUT" />
                             <div class="">Auszeit</div>
@@ -324,8 +324,8 @@
         {#each ['home', 'guest'] as team}
             <div class="team team-{team}">
                 <h3 class="teamname">{game[team + '_team_name']}</h3>
-                {#each sortPlayers(game.players[team]) as p}
-                    {@const { goals, assists, penaltiesString } = getScorer(game, team, p.trikot_number)}
+                {#each sortPlayers((game.players ?? [])[team]) as p}
+                    {@const { goals, assists, penaltiesString } = getScorer(game, team, p.trikot_number ?? -1)}
                     <div
                         class="player grid grid-cols-[3em,1fr,4em,2em] items-center gap-2 border border-transparent border-b-sf2 py-1 hover:border-l-prim hover:border-r-prim"
                     >
@@ -429,14 +429,12 @@
     import Icon from '$lib/components/Icon.svelte';
     import { onMount, afterUpdate } from 'svelte';
     import { fade } from 'svelte/transition';
-    // import { type SM } from 'floorball-saisonmanager';
     import { page } from '$app/stores';
-
-    import { ApiV2 as SM } from '$lib/sm/ApiV2';
+    import { Saisonmanager as SM } from 'floorball-saisonmanager';
 
     export let data;
 
-    const game = data.game as SM.Games.Game;
+    const game = data.game as SM.Game;
 
     const timeSep = ':';
     const scoreSep = '-';
@@ -465,7 +463,7 @@
         return isCurrentPeriod;
     }
 
-    function getPeriodTitle(game: SM.Games.Game, e: SM.Games.Event) {
+    function getPeriodTitle(game: SM.Game, e: SM.Event) {
         // do this in checkPeriod() or some strange bug where it
         // only updates/runs it at consistent random times
         // when using {#if e.period != lastPeriod}
@@ -487,14 +485,14 @@
         return e.period + '. Drittel';
     }
 
-    function sortPlayers(players: SM.Games.TeamPlayer[]) {
+    function sortPlayers(players: SM.TeamPlayer[]) {
         players.sort((p1, p2) => (p1.trikot_number ?? 0) - (p2.trikot_number ?? 0));
 
         return players;
     }
 
-    function getPlayerByNumber(game: SM.Games.Game, team: string | null, num: number | null) {
-        const teamPlayers: SM.Games.TeamPlayer[] = (team == 'home' ? game?.players?.home : game?.players?.guest) ?? [];
+    function getPlayerByNumber(game: SM.Game, team: string | null, num: number | null) {
+        const teamPlayers: SM.TeamPlayer[] = (team == 'home' ? game?.players?.home : game?.players?.guest) ?? [];
 
         return (
             teamPlayers.filter(p => p.trikot_number == num)[0] ?? {
@@ -526,19 +524,19 @@
         };
     }
 
-    function getScorer(game: SM.Games.Game, team: string | null, trikotNumber: number) {
-        const teamEvents = game.events.filter(e => e.event_team == team);
+    function getScorer(game: SM.Game, team: string | null, trikotNumber: number) {
+        const teamEvents = (game.events ?? []).filter(e => e.event_team == team);
         const numberEvents = teamEvents.filter(e => (e.number ?? -1) == trikotNumber);
 
         const penaltiesString = numberEvents
-            .filter(e => e.event_type == SM.Games.EventType.Penalty)
+            .filter(e => e.event_type == SM.EventType.Penalty)
             .filter(e => (e.number ?? -1) == trikotNumber)
             .map(e => e.penalty_type_string ?? '')
             .join(' , ');
 
-        const goals = numberEvents.filter(e => e.event_type == SM.Games.EventType.Goal).length;
+        const goals = numberEvents.filter(e => e.event_type == SM.EventType.Goal).length;
         const assists = teamEvents
-            .filter(e => e.event_type == SM.Games.EventType.Goal)
+            .filter(e => e.event_type == SM.EventType.Goal)
             .filter(e => e.assist && e.assist == trikotNumber).length;
 
         return {

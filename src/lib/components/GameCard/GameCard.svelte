@@ -69,7 +69,7 @@
 </div>
 
 <script lang="ts">
-    import type { SM } from 'floorball-saisonmanager';
+    import type { Saisonmanager as SM } from 'floorball-saisonmanager';
 
 
     function fetchFullGame(gameId: string) {

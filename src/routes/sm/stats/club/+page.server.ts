@@ -60,7 +60,7 @@ async function getTeams( serverLoadEvent: PageServerLoadEvent, clubId: number )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.leagueTableTeams.leagueId ) )
         .leftJoin( schema.seasons, eq( schema.seasons.id, schema.leagues.seasonId ) )
         .leftJoin( schema.gameOperations, eq( schema.gameOperations.id, schema.leagues.gameOperationId ) )
-        .where( eq( schema.clubs.id , clubId ) )
+        .where( and( eq( schema.clubs.id , clubId ) , isNotNull( schema.seasons.id ) ) )
         .groupBy(
             schema.leagues.id,
             schema.teams.id,
