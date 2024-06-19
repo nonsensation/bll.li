@@ -2,146 +2,51 @@
     .teamname {
         @apply text-xs md:text-base;
     }
+
+    h3 {
+        @apply mt-16 mb-8 text-2xl;
+    }
 </style>
 
 <h2 class="text-center text-4xl">
     <div class="text-txt2">Liga</div>
     <div class="">{data.leagueName}</div>
-    <div class="text-lg text-txt2">{data.seasonName}</div>
+    <div class="text-lg text-txt2">Saison {data.seasonName}</div>
 </h2>
 
-{#if data.leagueTable && data.leagueTable.length > 0}
-    <h3>Tabelle</h3>
-    <div class="*:rounded odd:*:bg-sf3">
-        {#each data.leagueTable as team}
-            <div class="flex items-center gap-4 pl-4">
-                <div class="pr-4">{team.Position}. Platz</div>
-                <a href="/sm/stats/team?id={team.Id}" class="flex items-center gap-4">
-                    <img src="https://bll.wik.li/{team.LogoUrl}" alt="Logo" class="m-2 w-12" />
-                    <div class="font-bold">{team.Name}</div>
-                </a>
-            </div>
-        {/each}
-    </div>
+{#if leagueTable && leagueTable.length > 0}
+    <h3>Platzierung</h3>
+    <TeamTable teams={leagueTable} />
 {/if}
 
-{#if data.leagueGroupedTable}
-    <h3>Gruppenphase</h3>
-    <div class="flex flex-col gap-8">
-        {#each getGroups(data.leagueGroupedTable) as grp, grpIdx}
-            <div class="odd:*:bg-sf3 *:p-4">
-                <div class="py-8 text-center font-bold underline" id={grp.group_identifier}>{grp.name}</div>
-                <div
-                    class="grid grid-cols-[1fr,5fr,1fr,1fr,1fr] place-content-center items-center justify-center gap-2"
-                >
-                    <div class="pb-4 font-bold">Platz</div>
-                    <div class="pb-4 font-bold">Team</div>
-                    <div class="pb-4 font-bold">Punkte</div>
-                    <div class="pb-4 font-bold">Spiele</div>
-                    <div class="pb-4 font-bold">Tore</div>
-                </div>
-                {#each grp.values.toSorted(x => x.position).reverse() as team, teamIdx}
-                    <div
-                        class="grid grid-cols-[1fr,5fr,1fr,1fr,1fr] place-content-center items-center justify-center gap-2"
-                    >
-                        <div class="pr-4">{team.position}</div>
-                        <a href="/sm/stats/team?id={team.team_id}" class="flex items-center gap-4">
-                            <img src="https://bll.wik.li/{team.team_logo}" alt="Logo" class="m-2 w-12" />
-                            <div class="font-bold">{team.team_name}</div>
-                        </a>
-                        <div class="">{team.points}</div>
-                        <div class="">{team.won} • {team.draw} • {team.lost}</div>
-                        <div class="">{team.goals_scored} • {team.goals_received} • {team.goals_diff}</div>
-                    </div>
-                {/each}
-            </div>
-        {/each}
-    </div>
+{#if leagueScorer && leagueScorer.length > 0}
+    <h3>Topscorer</h3>
+    <Scorer scorer={leagueScorer} teamIdLogoMap={logos} />
 {/if}
 
-{#if data.leagueScorer && data.leagueScorer.length > 0}
-    <h3>Top-Scorer</h3>
-    <div class="*:rounded odd:*:bg-sf3">
-        {#each data.leagueScorer.slice(0, 10) as s}
-            <div class="grid grid-cols-[1fr,2fr,3fr,1fr] items-center justify-center text-center">
-                <div class="font-bold">{s.Position}.</div>
-                <a href="/sm/stats/player?id={s.PlayerId}" class="font-bold">{s.FirstName} {s.LastName}</a>
-                <a href="/sm/stats/team?id={s.TeamId}" class="flex items-center justify-center sm:justify-start">
-                    <img src="https://bll.wik.li/{s.LogoUrl}" alt="Logo" class="m-2 w-12" />
-                    <div class="teamname hidden text-left sm:inline">{s.TeamName}</div>
-                </a>
-                <div class="">{s.Games} • {s.Goals} • {s.Assists}</div>
-            </div>
-        {/each}
-    </div>
-    {#if data.leagueScorer.length > 10}
-        <details>
-            <summary class="cursor-pointer rounded border border-txt2 p-2 text-txt2">Zeige alle Scorer an</summary>
-            <div class="*:rounded odd:*:bg-sf3">
-                {#each data.leagueScorer.slice(10) as s}
-                    {#if s != null}
-                        <div class="grid grid-cols-[1fr,2fr,3fr,1fr] items-center justify-center text-center">
-                            <div class="font-bold">{s.Position}.</div>
-                            <a href="/sm/stats/player?id={s.PlayerId}" class="font-bold">{s.FirstName} {s.LastName}</a>
-                            <a
-                                href="/sm/stats/teams?id={s.TeamId}"
-                                class="flex items-center justify-center sm:justify-start"
-                            >
-                                <img src="https://bll.wik.li/{s.LogoUrl}" alt="Logo" class="m-2 w-12" />
-                                <div class="teamname hidden text-left sm:inline">{s.TeamName}</div>
-                            </a>
-                            <div class="">{s.Games} • {s.Goals} • {s.Assists}</div>
-                        </div>
-                    {/if}
-                {/each}
-            </div>
-        </details>
-    {/if}
-{/if}
-
-<!-- {JSON.stringify( groupBy(data.games, 'GameDay') )} -->
-
-{#if data.games && data.games.length > 0}
-    <h3>Spieltage</h3>
-    <div class="rounded even:*:bg-sf3">
-        {#each groupBy(data.games, 'GameDay').toSorted(x => x.key) as gd}
-            <div class="col-span-full py-4 text-center font-bold">
-                {gd.key}. Spieltag
-            </div>
-            {#if gd.values}
-                {#each gd.values as g}
-                    <a
-                        href="/sm/match?gameId={g.GameId}"
-                        class="grid grid-cols-[1fr,auto,1fr] items-center justify-center gap-4 rounded"
-                    >
-                        <div class="flex items-center gap-4 place-self-end">
-                            <div class="teamname text-right">{g.HomeTeamName}</div>
-                            <img src="https://bll.wik.li/{g.HomeTeamLogoUrl}" alt="Logo" class="m-2 w-12" />
-                        </div>
-                        <div class="text-xl font-bold">
-                            {g.HomeGoals} - {g.GuestGoals}
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <img src="https://bll.wik.li/{g.GuestTeamLogoUrl}" alt="Logo" class="m-2 w-12" />
-                            <div class="teamname text-left">{g.GuestTeamName}</div>
-                        </div>
-                    </a>
-                {/each}
-            {/if}
-        {/each}
-    </div>
+{#if leagueGroupedTable}
+    <GroupedTeamTable groupedTable={leagueGroupedTable} scheduledGames={leagueSchedule} />
+{:else if leagueSchedule}
+    <GameDays scheduledGames={leagueSchedule} reverseDays={leagueType == SM.LeagueType.Cup} />
 {/if}
 
 <script lang="ts">
-    import { groupBy } from '$lib/utils.js';
-    import type { Saisonmanager as SM } from 'floorball-saisonmanager';
+    import { Saisonmanager as SM } from 'floorball-saisonmanager';
+    import TeamTable from '$lib/components/sm/TeamTable.svelte';
+    import GroupedTeamTable from '$lib/components/sm/GroupedTeamTable.svelte';
+    import GameDays from '$lib/components/sm/GameDays.svelte';
+    import Scorer from '$lib/components/sm/Scorer.svelte';
 
     export let data;
 
-    function getGroups(leagueGroupedTable: SM.GroupedTable) {
-        return Object.entries(leagueGroupedTable).map(([key, value]) => {
-            const { table, ...rest } = value;
-            return { key, ...rest, values: table };
-        });
-    }
+    const { leagueGroupedTable, leagueScorer, leagueTable, leagueSchedule, leagueType } = data;
+
+    $: logos =
+        leagueTable?.reduce(
+            (map, team) => {
+                map[team.team_id ?? -1] = team.team_logo ?? '';
+                return map;
+            },
+            {} as Record<number, string>
+        ) ?? {};
 </script>
