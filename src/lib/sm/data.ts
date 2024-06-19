@@ -18,19 +18,15 @@ export async function fetchData(
     forceDownload: boolean = false
 )
 {
-    const apiVersion = `api/v2`
-
     const apiUrls = [
-        `https://bll.wik.li/cachedDownload.php?forceDownload=${ forceDownload ? 1 : 0 }&url=https://saisonmanager.de`,
-        `https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data`,
-        `https://saisonmanager.de`,
+        `https://bll.wik.li/cachedDownload.php?forceDownload=${ forceDownload ? 1 : 0 }&url=https://saisonmanager.de/api/v2`,
+        `https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2`,
+        `https://saisonmanager.de/api/v2`,
     ]
 
     for( const apiUrl of apiUrls )
     {
-        const url = `${ apiUrl }/${ apiVersion }/${ requestUrl }`
-
-        console.log( `fetching: ${ url }` )
+        const url = `${ apiUrl }/${ requestUrl }`
 
         try
         {

@@ -12,6 +12,7 @@
     }
 </style>
 
+
 {#if teams && teams.length > 0}
     <div class="even:*:bg-sf3">
         {#if showHeader}

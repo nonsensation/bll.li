@@ -3,9 +3,12 @@
     "tabWidth": 4,
     "singleQuote": true,
     "trailingComma": "es5",
-    "arrowParens":"avoid",
-    "printWidth": 120,
-
+    "arrowParens": "avoid",
+    "printWidth": 100,
+    "bracketSameLine": false,
+    "bracketSpacing": true,
+    "embeddedLanguageFormatting": "auto",
+    "singleAttributePerLine": true,
     "plugins": [
         "prettier-plugin-svelte",
         "prettier-plugin-tailwindcss"
@@ -18,5 +21,9 @@
             }
         }
     ],
+    "svelteAllowShorthand": true,
+    "svelteBracketNewLine": true,
+    "svelteIndentScriptAndStyle": false,
+    "svelteStrictMode": true,
     "svelteSortOrder": "options-styles-markup-scripts"
 }

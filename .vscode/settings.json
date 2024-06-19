@@ -120,7 +120,6 @@
 	"[typescript]": {
 		"editor.defaultFormatter": "Jota0222.multi-formatter"
 	},
-	"editor.fontSize": 22,
 	"[rust]": {
 		"editor.defaultFormatter": null
 	}

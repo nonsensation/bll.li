@@ -33,13 +33,13 @@
     <main class="flex w-full justify-center">
         <div class="flex w-full max-w-screen-xl flex-col gap-2 px-[5%]">
             <div class="page-header">
-                <BreadNav />
+                <!-- <BreadNav /> -->
             </div>
             <div class="page-content w-full flex-grow">
                 <slot />
             </div>
             <div class="page-footer">
-                <BreadNav />
+                <!-- <BreadNav /> -->
             </div>
         </div>
     </main>
