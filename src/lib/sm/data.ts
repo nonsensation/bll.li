@@ -1,3 +1,7 @@
+
+import { Saisonmanager as SM } from 'floorball-saisonmanager'
+
+
 export type ApiGetResponse = {
     success: boolean
 } & ( DataProps | ErrorProps )
@@ -13,10 +17,7 @@ export type ErrorProps = {
     error: string
 }
 
-export async function fetchData(
-    requestUrl: string,
-    forceDownload: boolean = false
-)
+export async function fetchData( requestUrl: string, forceDownload: boolean = false )
 {
     const apiUrls = [
         `https://bll.wik.li/cachedDownload.php?forceDownload=${ forceDownload ? 1 : 0 }&url=https://saisonmanager.de/api/v2`,
@@ -52,4 +53,49 @@ export async function fetchData(
             } as ApiGetResponse
         }
     }
+}
+
+
+export const SmData = {
+    getLeague: async ( leagueId: number ) =>
+    {
+        const data = await fetchData( SM.getLeagueUrl( leagueId ) )
+
+        if( data && data.success && data.data ) return data.data as SM.LeagueWithSimilarLeagues
+    },
+
+    getLeagueGroupedTeamTable: async ( leagueId: number ) =>
+    {
+        const data = await fetchData( SM.getLeagueGroupedTableUrl( leagueId ) )
+
+        if( data && data.success && data.data ) return data.data as SM.GroupedTable
+    },
+
+    getInit: async () =>
+    {
+        const data = await fetchData( SM.getInitUrl() )
+
+        if( data && data.success && data.data ) return data.data as SM.Init
+    },
+
+    getLeagueTeamTable: async ( leagueId: number ) =>
+    {
+        const data = await fetchData( SM.getLeagueTableUrl( leagueId ) )
+
+        if( data && data.success && data.data ) return data.data as SM.Team[]
+    },
+
+    getLeagueSchedule: async ( leagueId: number ) =>
+    {
+        const data = await fetchData( SM.getLeagueScheduleUrl( leagueId ) )
+
+        if( data && data.success && data.data ) return data.data as SM.ScheduledGame[]
+    },
+
+    getLeagueScorer: async ( leagueId: number ) =>
+    {
+        const data = await fetchData( SM.getLeagueScorerUrl( leagueId ) )
+
+        if( data && data.success && data.data ) return data.data as SM.Scorer[]
+    },
 }

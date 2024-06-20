@@ -5,15 +5,15 @@
 </style>
 
 {#if scheduledGames && scheduledGames.length > 0}
-    <div class="rounded">
+    <div class="rounded" class:odd:*:bg-sf3={showGameDayTitle===false}>
         {#each groups as gd}
-            {#if groups.length > 1}
-            <div class="text-center">
-                <div class="text-xl font-bold underline my-12">{gd.key}. Spieltag</div>
-            </div>
+            {#if groups.length > 1 && showGameDayTitle}
+                <div class="text-center">
+                    <div class="my-12 text-xl font-bold underline">{gd.key}. Spieltag</div>
+                </div>
             {/if}
 
-            <div class="odd:*:bg-sf3">
+            <div class="" class:odd:*:bg-sf3={showGameDayTitle===true}>
                 {#if gd.values}
                     {#each gd.values as g}
                         <a
@@ -74,6 +74,7 @@ import type { Saisonmanager as SM } from 'floorball-saisonmanager';
 export let scheduledGames: SM.ScheduledGame[] | undefined = [];
 export let reverseDays: boolean = false;
 export let showArena: boolean = true;
+export let showGameDayTitle: boolean = true;
 
 $: groups = groupBy(scheduledGames ?? [], 'game_day');
 
