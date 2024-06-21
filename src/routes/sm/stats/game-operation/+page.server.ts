@@ -11,6 +11,7 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
     const gameOperation = init?.game_operations?.find( x => x.id == goId )
     const currentSeasonId = init?.current_season_id ?? 15 // TODO: make this configurable in case init.json changes?
     const leagues = await SmData.getGameOperationLeagues( goId )
+    const allLeagues = await SmData.getLeagues()
     const leaguesWithGameDays = leagues.map( async league =>
     {
         const currentGames = await SmData.getLeagueGameDayScheduledGames( league.id, 'current' )
@@ -19,6 +20,7 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
 
     return {
         init,
+        allLeagues,
         currentSeason: init?.seasons?.find( x => x.current ),
         currentSeasonId,
         gameOperation,

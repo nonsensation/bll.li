@@ -74,15 +74,21 @@
 {/if}
 
 <script lang="ts">
-import { groupBy } from '$lib/utils';
+import { groupBy, groupByFn } from '$lib/utils';
 import type { Saisonmanager as SM } from 'floorball-saisonmanager';
 
 export let scheduledGames: SM.ScheduledGame[] | undefined = [];
+export let gameDays: SM.GameDay[] | undefined = [];
 export let reverseDays: boolean = false;
 export let showArena: boolean = true;
 export let showGameDayTitle: boolean = true;
 
-$: groups = groupBy(scheduledGames ?? [], 'game_day');
+$: groups =
+    scheduledGames && scheduledGames.length > 1
+        ? groupBy(scheduledGames, 'game_day')
+        : gameDays && gameDays.length > 1
+          ? groupByFn(gameDays, x => x?.game_day?.title ?? JSON.stringify(x.game_day))
+          : [];
 
 $: {
     if (reverseDays) groups = groups.toSorted((a, b) => Number(b.key) - Number(a.key));

@@ -46,8 +46,9 @@
     <LeagueFilter
         bind:filterEvent="{filter}"
         getJuniorFn="{league => league.IsJunior === '1'}"
-        getFemaleFn="{league => league.isFemale === '1'}"
-        getLeagueFn="{item => item}"
+        getFemaleFn="{league => league.IsFemale === '1'}"
+        getLeagueFn="{league => league}"
+        getLeagueTypeFn={null}
     />
 
     <div class="mb-4 border-r-4 border-teal-500 pr-2 text-right text-sm">{gls.length} Tore</div>
@@ -93,6 +94,8 @@ let filter;
 
 export let goals;
 
+// $:console.dir(goals.goals)
+
 export let periodLength = 20;
 
 function timeToMinutes(timeStr: string) {
@@ -110,6 +113,6 @@ $: periods = [...new Set(combinedEvents.map(ev => Number(ev.Period)))];
 $: numPeriods = periods.length;
 $: periodsArray = periods.sort((a, b) => a - b);
 
-$: ass = filter ? goals.assists.filter(x => (filter ? filter(x) : true)) : [];
-$: gls = filter ? goals.goals.filter(x => filter(x)) : [];
+$: ass = filter ? goals.assists.filter(filter) : [];
+$: gls = filter ? goals.goals.filter(filter) : [];
 </script>

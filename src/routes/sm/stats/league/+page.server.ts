@@ -14,9 +14,10 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
     const leagueType = league?.league_type as SM.LeagueType
 
     return {
-        // league,
+        league,
         // init,
         // leagueSeasonId,
+        gameOpLogo: init?.game_operations.find( x => x.id === league.game_operation_id)?.logo_url ?? "",
         leagueType,
         leagueName: league?.name ?? '',
         seasonName: init?.seasons?.find( x => x.id == leagueSeasonId )?.name ?? '',

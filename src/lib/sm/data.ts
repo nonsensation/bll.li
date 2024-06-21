@@ -61,6 +61,13 @@ export const SmData = {
         if( data && data.success && data.data ) return data.data as SM.LeagueWithSimilarLeagues
     },
 
+    getLeagues: async () =>
+    {
+        const data = await fetchData( SM.getLeaguesUrl() )
+
+        if( data && data.success && data.data ) return data.data as SM.LeaguePreview[]
+    },
+
     getLeagueGroupedTeamTable: async ( leagueId: number ) =>
     {
         const data = await fetchData( SM.getLeagueGroupedTableUrl( leagueId ) )

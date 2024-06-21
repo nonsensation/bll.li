@@ -3,7 +3,6 @@ import { and, asc, desc, eq, getTableColumns, gt, inArray } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { db, fetchFromMyDb, qb } from '$mysql/db'
 import { QueryBuilder, alias, withReplicas, type MySqlSelectBase, type MySqlSelectQueryBuilderBase } from 'drizzle-orm/mysql-core'
-import { SocketAddress } from 'net'
 import type { PageServerLoadEvent } from './$types'
 
 export async function load( serverLoadEvent: PageServerLoadEvent )
@@ -99,6 +98,9 @@ async function getGoalsColumn( column: any , serverLoadEvent: PageServerLoadEven
         .$dynamic()
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
+
+    // // somehow IsFemale is string!?
+    // console.dir( data as unknown as typeof data._.result )
 
     return data as unknown as typeof data._.result
 }

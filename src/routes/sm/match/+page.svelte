@@ -1,126 +1,137 @@
 <style lang="postcss">
+.event {
+    display: grid;
+    grid-template-columns:
+        [middle] 4em
+        [status home_status guest_status] 1fr
+        [player home_player guest_player] 2fr
+        [logo home_logo guest_logo] 4em;
+}
+
+@media (min-width: 768px) {
     .event {
         display: grid;
         grid-template-columns:
-            [middle] 4em
-            [status home_status guest_status] 1fr
-            [player home_player guest_player] 2fr
-            [logo home_logo guest_logo] 4em;
+            [home_logo] 5em
+            [home_player] 2fr
+            [home_status] 1fr
+            [middle] 8em
+            [guest_status] 1fr
+            [guest_player] 2fr
+            [guest_logo] 5em;
     }
+}
 
-    @media (min-width: 768px) {
-        .event {
-            display: grid;
-            grid-template-columns:
-                [home_logo] 5em
-                [home_player] 2fr
-                [home_status] 1fr
-                [middle] 8em
-                [guest_status] 1fr
-                [guest_player] 2fr
-                [guest_logo] 5em;
-        }
-    }
+.col-home-logo {
+    grid-column: home_logo;
+}
+.col-home-player {
+    grid-column: home_player;
+}
+.col-home-status {
+    grid-column: home_status;
+}
+.col-middle {
+    grid-column: middle;
+}
+.col-logo {
+    grid-column: logo;
+}
+.col-status {
+    grid-column: status;
+}
+.col-player {
+    grid-column: player;
+}
+.col-guest-status {
+    grid-column: guest_status;
+}
+.col-guest-player {
+    grid-column: guest_player;
+}
+.col-guest-logo {
+    grid-column: guest_logo;
+}
 
-    .col-home-logo {
-        grid-column: home_logo;
+@media (max-height: 600px) {
+    .header {
+        position: relative;
     }
-    .col-home-player {
-        grid-column: home_player;
-    }
-    .col-home-status {
-        grid-column: home_status;
-    }
-    .col-middle {
-        grid-column: middle;
-    }
-    .col-logo {
-        grid-column: logo;
-    }
-    .col-status {
-        grid-column: status;
-    }
-    .col-player {
-        grid-column: player;
-    }
-    .col-guest-status {
-        grid-column: guest_status;
-    }
-    .col-guest-player {
-        grid-column: guest_player;
-    }
-    .col-guest-logo {
-        grid-column: guest_logo;
-    }
+}
 
-    @media (max-height: 600px) {
-        .header {
-            position: relative;
-        }
-    }
+.ingame {
+    @apply text-prim;
+}
+.paused {
+    @apply text-prim;
+}
 
-    .ingame {
-        @apply text-prim;
-    }
-    .paused {
-        @apply text-prim;
-    }
+.score {
+    font-size: min(10vw, 5rem);
+    line-height: 75%;
+}
+.sc {
+    font-family: 'Quantico';
+}
 
-    .score {
-        font-size: min(10vw, 5rem);
-        line-height: 75%;
-    }
-    .sc {
-        font-family: 'Quantico';
-    }
+.even {
+}
 
-    .even {
+@keyframes pulse {
+    50% {
+        opacity: 0.5;
     }
+}
 
-    @keyframes pulse {
-        50% {
-            opacity: 0.5;
-        }
-    }
+.min::after {
+    /* content: "'"; */
+}
+.sec::after {
+    /* content: "''"; */
+}
 
-    .min::after {
-        /* content: "'"; */
-    }
-    .sec::after {
-        /* content: "''"; */
-    }
+.timeline {
+    word-break: normal;
+}
 
-    .timeline {
-        word-break: normal;
-    }
+.highlighted {
+    animation: fade 10s ease-in-out 0s;
+}
 
-    .highlighted {
-        animation: fade 10s ease-in-out 0s;
+@keyframes fade {
+    from {
+        background-color: var(--color-primary);
     }
-
-    @keyframes fade {
-        from {
-            background-color: var(--color-primary);
-        }
-    }
+}
 </style>
 
 <!-- {JSON.stringify(data)} -->
 
-<div transition:fade class="timeline flex w-full flex-col gap-8 py-8">
+<div
+    transition:fade
+    class="timeline flex w-full flex-col gap-8 py-8"
+>
     <div class="events mb-8 flex flex-col gap-8">
         <div
             class="header sticky top-0 z-10 mb-4 grid grid-cols-3 border-b border-b-prim bg-sf py-4 *:flex *:flex-col *:place-content-center *:items-center"
         >
-            <a href="/sm/stats/team?id={game.home_team_id}" class="home">
-                <img src="https://saisonmanager.de/{game.home_team_logo}" alt="" class="h-[15vw] max-h-32 max-w-full" />
+            <a
+                href="/sm/stats/team?id={game.home_team_id}"
+                class="home"
+            >
+                <img
+                    src="https://saisonmanager.de/{game.home_team_logo}"
+                    alt=""
+                    class="h-[15vw] max-h-32 max-w-full"
+                />
                 <div class="name pt-4 text-center text-sm sm:font-bold">{game.home_team_name}</div>
             </a>
             <div class="items-between flex w-full flex-col justify-between rounded-xl">
                 <div
                     class="sc score grid grid-cols-3 text-center font-bold"
-                    class:ingame={(game.game_status ?? SM.GameState.NoRecord) === SM.GameState.Ingame}
-                    class:paused={game.ingame_status?.startsWith('pause') ?? false}
+                    class:ingame="{(game.game_status ?? SM.GameState.NoRecord) ===
+                        SM.GameState.Ingame}"
+                    class:paused="{game.ingame_status?.startsWith('pause') ?? false}"
                 >
                     <div class="">{game.result?.home_goals ?? 0}</div>
                     <div class="">
@@ -137,8 +148,8 @@
                     {/if}
                     <div
                         class="animate-pule rounded bg-prim p-2 px-6 text-center text-txtinv"
-                        class:hidden={game.game_status !== SM.GameState.Ingame}
-                        class:animate-pulse={game.game_status === SM.GameState.Ingame}
+                        class:hidden="{game.game_status !== SM.GameState.Ingame}"
+                        class:animate-pulse="{game.game_status === SM.GameState.Ingame}"
                     >
                         LIVE
                     </div>
@@ -153,7 +164,10 @@
                     {/each}
                 </div>
             </div>
-            <a href="/sm/stats/team?id={game.guest_team_id}" class="guest">
+            <a
+                href="/sm/stats/team?id={game.guest_team_id}"
+                class="guest"
+            >
                 <img
                     src="https://saisonmanager.de/{game.guest_team_logo}"
                     alt=""
@@ -184,13 +198,23 @@
             <div class="media">
                 {#if game.live_stream_link}
                     <div class="live_stream_link">
-                        <a href={game.live_stream_link} title="Livestream" target="_blank" rel="noopener noreferrer">
+                        <a
+                            href="{game.live_stream_link}"
+                            title="Livestream"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             <Icon icon="VIDEO" /> Livestream
                         </a>
                     </div>
                 {:else if game.vod_link}
                     <div class="vod_link">
-                        <a href={game.vod_link} title="Video" target="_blank" rel="noopener noreferrer">
+                        <a
+                            href="{game.vod_link}"
+                            title="Video"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             <Icon icon="VIDEO" /> Video
                         </a>
                     </div>
@@ -213,15 +237,20 @@
                 (e.event_type == SM.EventType.Goal && e.goal_type == SM.GoalType.Owngoal)}
 
             {#if checkPeriod(e.period)}
-                <h3 class="w-full py-8 font-normal text-txt2 md:text-center">{getPeriodTitle(game, e)}</h3>
+                <h3 class="w-full py-8 font-normal text-txt2 md:text-center">
+                    {getPeriodTitle(game, e)}
+                </h3>
             {/if}
 
             <div
-                class:even={idx % 2 === 0}
-                class:highlighted={$page.url.hash?.slice(1) == 'event-' + idx}
+                class:even="{idx % 2 === 0}"
+                class:highlighted="{$page.url.hash?.slice(1) == 'event-' + idx}"
                 class="event event-{idx} relative border-l border-r border-transparent px-1 *:row-start-1 *:border-b-2 *:border-b-txt *:py-4 hover:border-prim"
             >
-                <span id="event-{idx}" class="invisible absolute top-[50vw]"></span>
+                <span
+                    id="event-{idx}"
+                    class="invisible absolute top-[50vw]"
+                ></span>
                 <div class="sc col-middle">
                     <div class="time grid grid-cols-[1fr,auto,1fr] text-txt2">
                         <span class="min place-self-end">{min}</span>
@@ -229,14 +258,19 @@
                         <span class="sec">{sec}</span>
                     </div>
                     {#if displayGoals}
-                        <div class="goals grid grid-cols-[1fr,auto,1fr] text-center text-xl font-bold sm:text-3xl">
+                        <div
+                            class="goals grid grid-cols-[1fr,auto,1fr] text-center text-xl font-bold sm:text-3xl"
+                        >
                             <span class="">{e.home_goals ?? 0}</span>
                             <span class="">{scoreSep}</span>
                             <span class="">{e.guest_goals ?? 0}</span>
                         </div>
                     {:else}
                         <div class="flex w-full justify-center">
-                            <Icon icon="WHISTLE" class="w-8" />
+                            <Icon
+                                icon="WHISTLE"
+                                class="w-8"
+                            />
                         </div>
                     {/if}
                 </div>
@@ -296,7 +330,9 @@
                             {#if e.assist}
                                 {@const a = getPlayerByNumber(game, team, e.assist)}
                                 <div class="text-sm text-txt2">
-                                    <span class="font-bold">{a.player_firstname} {a.player_name}</span>
+                                    <span class="font-bold"
+                                        >{a.player_firstname} {a.player_name}</span
+                                    >
                                     <!-- <span class="sc">#{e.assist}</span> -->
                                 </div>
                             {/if}
@@ -323,58 +359,82 @@
         <h2 class="roster col-span-full mt-0 pt-0">Aufstellung</h2>
         {#each ['home', 'guest'] as team}
             <div class="team team-{team}">
-                <h3 class="teamname">{game[team + '_team_name']}</h3>
-                {#each sortPlayers((game.players ?? [])[team]) as p}
-                    {@const { goals, assists, penaltiesString } = getScorer(game, team, p.trikot_number ?? -1)}
-                    <div
-                        class="player grid grid-cols-[3em,1fr,4em,2em] items-center gap-2 border border-transparent border-b-sf2 py-1 hover:border-l-prim hover:border-r-prim"
-                    >
+                {#if game.players && game.players[team]}
+                    <h3 class="teamname">{game[team + '_team_name']}</h3>
+                    {#each sortPlayers(game.players[team]) as p}
+                        {@const { goals, assists, penaltiesString } = getScorer(
+                            game,
+                            team,
+                            p.trikot_number ?? -1
+                        )}
                         <div
-                            class="sc flex h-full items-center place-self-end border-r border-prim px-4 font-bold"
-                            class:captain={p.captain}
-                            class:goalkeeper={p.goalkeeper}
+                            class="player grid grid-cols-[3em,1fr,4em,2em] items-center gap-2 border border-transparent border-b-sf2 py-1 hover:border-l-prim hover:border-r-prim"
                         >
-                            {p.trikot_number}
-                        </div>
-                        <div class="name px-2">
-                            <a href="/sm/stats/player?id={p.player_id}">
-                                {p.player_firstname}
-                                {p.player_name}
-                                {#if p.captain}
-                                    (C)
+                            <div
+                                class="sc flex h-full items-center place-self-end border-r border-prim px-4 font-bold"
+                                class:captain="{p.captain}"
+                                class:goalkeeper="{p.goalkeeper}"
+                            >
+                                {p.trikot_number}
+                            </div>
+                            <div class="name px-2">
+                                <a href="/sm/stats/player?id={p.player_id}">
+                                    {p.player_firstname}
+                                    {p.player_name}
+                                    {#if p.captain}
+                                        (C)
+                                    {/if}
+                                </a>
+                            </div>
+                            <div class="name flex cursor-help flex-col text-sm leading-3 text-txt2">
+                                {#if goals}
+                                    <div
+                                        class="goals flex gap-2"
+                                        title="Tore: {goals}"
+                                    >
+                                        <Icon
+                                            icon="GOAL"
+                                            class="w-4"
+                                        />
+                                        {goals}
+                                    </div>
                                 {/if}
-                            </a>
+                                {#if assists}
+                                    <div
+                                        class="assists flex gap-2"
+                                        title="Vorlagen: {assists}"
+                                    >
+                                        <Icon
+                                            icon="FLOORBALL2"
+                                            class="w-4"
+                                        />
+                                        {assists}
+                                    </div>
+                                {/if}
+                                {#if penaltiesString}
+                                    <div
+                                        class="penalties flex gap-2"
+                                        title="Strafen: {penaltiesString}"
+                                    >
+                                        <Icon
+                                            icon="WHISTLE"
+                                            class="w-4"
+                                        />
+                                        {penaltiesString}
+                                    </div>
+                                {/if}
+                            </div>
+                            <div class="name text-center text-sm leading-3 text-txt2">
+                                <!-- {p.position} -->
+                                {#if p.goalkeeper}
+                                    Tor
+                                {:else}
+                                    Feld
+                                {/if}
+                            </div>
                         </div>
-                        <div class="name flex cursor-help flex-col text-sm leading-3 text-txt2">
-                            {#if goals}
-                                <div class="goals flex gap-2" title="Tore: {goals}">
-                                    <Icon icon="GOAL" class="w-4" />
-                                    {goals}
-                                </div>
-                            {/if}
-                            {#if assists}
-                                <div class="assists flex gap-2" title="Vorlagen: {assists}">
-                                    <Icon icon="FLOORBALL2" class="w-4" />
-                                    {assists}
-                                </div>
-                            {/if}
-                            {#if penaltiesString}
-                                <div class="penalties flex gap-2" title="Strafen: {penaltiesString}">
-                                    <Icon icon="WHISTLE" class="w-4" />
-                                    {penaltiesString}
-                                </div>
-                            {/if}
-                        </div>
-                        <div class="name text-center text-sm leading-3 text-txt2">
-                            <!-- {p.position} -->
-                            {#if p.goalkeeper}
-                                Tor
-                            {:else}
-                                Feld
-                            {/if}
-                        </div>
-                    </div>
-                {/each}
+                    {/each}
+                {/if}
             </div>
         {/each}
     </div>
@@ -410,7 +470,9 @@
             </div>
             <div class="">
                 <div class="">Spielbeginn</div>
-                <div class="text-right font-bold">{game.actual_start_time ?? game.start_time ?? '-'}</div>
+                <div class="text-right font-bold">
+                    {game.actual_start_time ?? game.start_time ?? '-'}
+                </div>
             </div>
             <div class="">
                 <div class="">Zuschauerzahl</div>
@@ -426,131 +488,132 @@
 </div>
 
 <script lang="ts">
-    import Icon from '$lib/components/Icon.svelte';
-    import { onMount, afterUpdate } from 'svelte';
-    import { fade } from 'svelte/transition';
-    import { page } from '$app/stores';
-    import { Saisonmanager as SM } from 'floorball-saisonmanager';
+import Icon from '$lib/components/Icon.svelte';
+import { onMount, afterUpdate } from 'svelte';
+import { fade } from 'svelte/transition';
+import { page } from '$app/stores';
+import { Saisonmanager as SM } from 'floorball-saisonmanager';
 
-    export let data;
+export let data;
 
-    const game = data.game as SM.Game;
+const game = data.game as SM.Game;
 
-    const timeSep = ':';
-    const scoreSep = '-';
+const timeSep = ':';
+const scoreSep = '-';
 
-    let visible = false;
-    let lastPeriod = -1;
+let visible = false;
+let lastPeriod = -1;
 
-    afterUpdate(() => {
-        setTimeout(() => {
-            const { hash } = document.location;
-            const scrollTo = hash && document.getElementById(hash.slice(1));
-            if (scrollTo) scrollTo.scrollIntoView(false);
-        }, 1000);
-    });
+afterUpdate(() => {
+    setTimeout(() => {
+        const { hash } = document.location;
+        const scrollTo = hash && document.getElementById(hash.slice(1));
+        if (scrollTo) scrollTo.scrollIntoView(false);
+    }, 1000);
+});
 
-    function checkPeriod(period: number | null) {
-        // gameId=20114 period is 9..?!
-        if (period == null) return false;
+function checkPeriod(period: number | null) {
+    // gameId=20114 period is 9..?!
+    if (period == null) return false;
 
-        if (period <= 0 || period > 5) return false;
+    if (period <= 0 || period > 5) return false;
 
-        const isCurrentPeriod = period != lastPeriod;
+    const isCurrentPeriod = period != lastPeriod;
 
-        lastPeriod = period;
+    lastPeriod = period;
 
-        return isCurrentPeriod;
-    }
+    return isCurrentPeriod;
+}
 
-    function getPeriodTitle(game: SM.Game, e: SM.Event) {
-        // do this in checkPeriod() or some strange bug where it
-        // only updates/runs it at consistent random times
-        // when using {#if e.period != lastPeriod}
-        //
-        // with {#if checkPeriod(e.period)} it works..
-        //
-        // See: https://github.com/sveltejs/svelte/issues/11572
-        //
-        //// lastPeriod = e.period;
+function getPeriodTitle(game: SM.Game, e: SM.Event) {
+    // do this in checkPeriod() or some strange bug where it
+    // only updates/runs it at consistent random times
+    // when using {#if e.period != lastPeriod}
+    //
+    // with {#if checkPeriod(e.period)} it works..
+    //
+    // See: https://github.com/sveltejs/svelte/issues/11572
+    //
+    //// lastPeriod = e.period;
 
-        if (game.period_titles) {
-            for (const period of game.period_titles) {
-                if (period.period === e.period) {
-                    return period.title;
-                }
+    if (game.period_titles) {
+        for (const period of game.period_titles) {
+            if (period.period === e.period) {
+                return period.title;
             }
         }
-
-        return e.period + '. Drittel';
     }
 
-    function sortPlayers(players: SM.TeamPlayer[]) {
-        players.sort((p1, p2) => (p1.trikot_number ?? 0) - (p2.trikot_number ?? 0));
+    return e.period + '. Drittel';
+}
 
-        return players;
-    }
+function sortPlayers(players: SM.TeamPlayer[]) {
+    players.sort((p1, p2) => (p1.trikot_number ?? 0) - (p2.trikot_number ?? 0));
 
-    function getPlayerByNumber(game: SM.Game, team: string | null, num: number | null) {
-        const teamPlayers: SM.TeamPlayer[] = (team == 'home' ? game?.players?.home : game?.players?.guest) ?? [];
+    return players;
+}
 
-        return (
-            teamPlayers.filter(p => p.trikot_number == num)[0] ?? {
-                player_id: -1,
-                player_name: '',
-                player_firstname: '',
-            }
-        );
-    }
+function getPlayerByNumber(game: SM.Game, team: string | null, num: number | null) {
+    const teamPlayers: SM.TeamPlayer[] =
+        (team == 'home' ? game?.players?.home : game?.players?.guest) ?? [];
 
-    function extractTime(time: string | null) {
-        if (time == null)
-            return {
-                min: 0,
-                sec: 0,
-            };
+    return (
+        teamPlayers.filter(p => p.trikot_number == num)[0] ?? {
+            player_id: -1,
+            player_name: '',
+            player_firstname: '',
+        }
+    );
+}
 
-        const parts = time.split(':');
-
-        let min = (Number(parts[0]) % 20) + '' ?? '00';
-        let sec = (Number(parts[1]) % 60) + '' ?? '00';
-
-        if (min.length < 2) min = '0' + min;
-        if (sec.length < 2) sec = '0' + sec;
-
+function extractTime(time: string | null) {
+    if (time == null)
         return {
-            min,
-            sec,
+            min: 0,
+            sec: 0,
         };
-    }
 
-    function getScorer(game: SM.Game, team: string | null, trikotNumber: number) {
-        const teamEvents = (game.events ?? []).filter(e => e.event_team == team);
-        const numberEvents = teamEvents.filter(e => (e.number ?? -1) == trikotNumber);
+    const parts = time.split(':');
 
-        const penaltiesString = numberEvents
-            .filter(e => e.event_type == SM.EventType.Penalty)
-            .filter(e => (e.number ?? -1) == trikotNumber)
-            .map(e => e.penalty_type_string ?? '')
-            .join(' , ');
+    let min = (Number(parts[0]) % 20) + '' ?? '00';
+    let sec = (Number(parts[1]) % 60) + '' ?? '00';
 
-        const goals = numberEvents.filter(e => e.event_type == SM.EventType.Goal).length;
-        const assists = teamEvents
-            .filter(e => e.event_type == SM.EventType.Goal)
-            .filter(e => e.assist && e.assist == trikotNumber).length;
+    if (min.length < 2) min = '0' + min;
+    if (sec.length < 2) sec = '0' + sec;
 
-        return {
-            goals,
-            assists,
-            penaltiesString,
-        };
-    }
+    return {
+        min,
+        sec,
+    };
+}
 
-    const range = (stop: number, start: number = 0, step: number = 1) =>
-        Array.from(
-            {
-                length: (stop - 1 - start) / step + 1,
-            },
-            (_, i) => start + i * step
-        );
+function getScorer(game: SM.Game, team: string | null, trikotNumber: number) {
+    const teamEvents = (game.events ?? []).filter(e => e.event_team == team);
+    const numberEvents = teamEvents.filter(e => (e.number ?? -1) == trikotNumber);
+
+    const penaltiesString = numberEvents
+        .filter(e => e.event_type == SM.EventType.Penalty)
+        .filter(e => (e.number ?? -1) == trikotNumber)
+        .map(e => e.penalty_type_string ?? '')
+        .join(' , ');
+
+    const goals = numberEvents.filter(e => e.event_type == SM.EventType.Goal).length;
+    const assists = teamEvents
+        .filter(e => e.event_type == SM.EventType.Goal)
+        .filter(e => e.assist && e.assist == trikotNumber).length;
+
+    return {
+        goals,
+        assists,
+        penaltiesString,
+    };
+}
+
+const range = (stop: number, start: number = 0, step: number = 1) =>
+    Array.from(
+        {
+            length: (stop - 1 - start) / step + 1,
+        },
+        (_, i) => start + i * step
+    );
 </script>
