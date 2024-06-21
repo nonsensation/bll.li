@@ -20,7 +20,7 @@
                 <div class="">Platz</div>
                 <div class="text-left">Team</div>
                 <div class="">Punkte</div>
-                <div class="flex hidden flex-col items-center sm:inline">
+                <div class="hidden flex-col items-center sm:flex">
                     <div class="">Spiele</div>
                     <div class="text-sm font-normal text-txt2">S • U • N</div>
                 </div>

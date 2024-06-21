@@ -1,6 +1,4 @@
-
 import { Saisonmanager as SM } from 'floorball-saisonmanager'
-
 
 export type ApiGetResponse = {
     success: boolean
@@ -55,7 +53,6 @@ export async function fetchData( requestUrl: string, forceDownload: boolean = fa
     }
 }
 
-
 export const SmData = {
     getLeague: async ( leagueId: number ) =>
     {
@@ -83,6 +80,7 @@ export const SmData = {
         const data = await fetchData( SM.getLeagueTableUrl( leagueId ) )
 
         if( data && data.success && data.data ) return data.data as SM.Team[]
+        return []
     },
 
     getLeagueSchedule: async ( leagueId: number ) =>
@@ -90,6 +88,7 @@ export const SmData = {
         const data = await fetchData( SM.getLeagueScheduleUrl( leagueId ) )
 
         if( data && data.success && data.data ) return data.data as SM.ScheduledGame[]
+        return []
     },
 
     getLeagueScorer: async ( leagueId: number ) =>
@@ -97,5 +96,22 @@ export const SmData = {
         const data = await fetchData( SM.getLeagueScorerUrl( leagueId ) )
 
         if( data && data.success && data.data ) return data.data as SM.Scorer[]
+        return []
+    },
+
+    getGameOperationLeagues: async ( gameOperationId: number ) =>
+    {
+        const data = await fetchData( SM.getGameOperationLeaguesUrl( gameOperationId ) )
+
+        if( data && data.success && data.data ) return data.data as SM.League[]
+        return []
+    },
+
+    getLeagueGameDayScheduledGames: async ( leagueId: number, gameDay: number | 'current' ) =>
+    {
+        const data = await fetchData( SM.getLeagueGameDayScheduleUrl( leagueId, gameDay ) )
+
+        if( data && data.success && data.data ) return data.data as SM.ScheduledGame[]
+        return []
     },
 }

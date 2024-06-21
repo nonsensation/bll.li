@@ -1,10 +1,10 @@
 <style>
-    :global(.icon svg) {
-        @apply inline;
-    }
+:global(.icon svg) {
+    /* @apply inline; */
+}
 </style>
 
-<div class="icon {classes}" >
+<div class="icon {classes}">
     {#if icon in iconsSvgImport}
         {@html iconsSvgImport[icon]}
 <!--
@@ -14,93 +14,95 @@
         {/await}
 -->
     {:else if icon in iconsSvelte}
-        <svelte:component this={iconsSvelte[icon]}></svelte:component>
+        <svelte:component this="{iconsSvelte[icon]}"></svelte:component>
     {:else}
         [?]
     {/if}
 </div>
 
 <script lang="ts">
-    // Use: <Icon icon="CAPTAIN" class=""/>
+// Use: <Icon icon="CAPTAIN" class=""/>
 
-    export let icon: IconKey;
-    type IconKey = keyof typeof iconsSvelte | keyof typeof iconsSvgImport ; // | keyof typeof iconsSvgFetch;
+export let icon: IconKey;
+type IconKey = keyof typeof iconsSvelte | keyof typeof iconsSvgImport; // | keyof typeof iconsSvgFetch;
 
-    const classes = $$restProps.class ?? 'w-6';
+const classes = $$restProps.class ?? 'w-6';
 
-    // svg
-    // import HOME from '$lib/assets/icons/HOME.svg?raw';
-    import LIGHTMODE from '$lib/assets/icons/LIGHTMODE.svg?raw';
-    import DARKMODE from '$lib/assets/icons/DARKMODE.svg?raw';
-    import VIDEO from '$lib/assets/icons/VIDEO.svg?raw';
+// svg
+// import HOME from '$lib/assets/icons/HOME.svg?raw';
+import LIGHTMODE from '$lib/assets/icons/LIGHTMODE.svg?raw';
+import DARKMODE from '$lib/assets/icons/DARKMODE.svg?raw';
+import VIDEO from '$lib/assets/icons/VIDEO.svg?raw';
+import LINK from '$lib/assets/icons/LINK.svg?raw';
 
-    import CAPTAIN from '$lib/assets/icons/floorball/CAPTAIN.svg?raw';
-    import CARD from '$lib/assets/icons/floorball/CARD.svg?raw';
-    import FLOORBALL from '$lib/assets/icons/floorball/FLOORBALL.svg?raw';
-    import FLOORBALL2 from '$lib/assets/icons/floorball/FLOORBALL2.svg?raw';
-    import GOAL from '$lib/assets/icons/floorball/GOAL.svg?raw';
-    import HELMET from '$lib/assets/icons/floorball/HELMET.svg?raw';
-    import HELMET2 from '$lib/assets/icons/floorball/HELMET2.svg?raw';
-    import REFEREE from '$lib/assets/icons/floorball/REFEREE.svg?raw';
-    import TRIKOT from '$lib/assets/icons/floorball/TRIKOT.svg?raw';
-    import WHISTLE from '$lib/assets/icons/floorball/WHISTLE.svg?raw';
-    import TIMEOUT from '$lib/assets/icons/floorball/TIMEOUT.svg?raw';
-    import PLAYER from '$lib/assets/icons/floorball/PLAYER.svg?raw';
-    import STICKS_FULL from '$lib/assets/icons/floorball/STICKS_FULL.svg?raw';
-    import STICKS_OUTLINE from '$lib/assets/icons/floorball/STICKS_OUTLINE.svg?raw';
+import CAPTAIN from '$lib/assets/icons/floorball/CAPTAIN.svg?raw';
+import CARD from '$lib/assets/icons/floorball/CARD.svg?raw';
+import FLOORBALL from '$lib/assets/icons/floorball/FLOORBALL.svg?raw';
+import FLOORBALL2 from '$lib/assets/icons/floorball/FLOORBALL2.svg?raw';
+import GOAL from '$lib/assets/icons/floorball/GOAL.svg?raw';
+import HELMET from '$lib/assets/icons/floorball/HELMET.svg?raw';
+import HELMET2 from '$lib/assets/icons/floorball/HELMET2.svg?raw';
+import REFEREE from '$lib/assets/icons/floorball/REFEREE.svg?raw';
+import TRIKOT from '$lib/assets/icons/floorball/TRIKOT.svg?raw';
+import WHISTLE from '$lib/assets/icons/floorball/WHISTLE.svg?raw';
+import TIMEOUT from '$lib/assets/icons/floorball/TIMEOUT.svg?raw';
+import PLAYER from '$lib/assets/icons/floorball/PLAYER.svg?raw';
+import STICKS_FULL from '$lib/assets/icons/floorball/STICKS_FULL.svg?raw';
+import STICKS_OUTLINE from '$lib/assets/icons/floorball/STICKS_OUTLINE.svg?raw';
 
-    import STATS from '$lib/assets/icons/floorball/STATS.svg?raw';
+import STATS from '$lib/assets/icons/floorball/STATS.svg?raw';
 
-    import YT from '$lib/assets/icons/logos/YT.svg?raw';
-    import DISCORD from '$lib/assets/icons/logos/DISCORD.svg?raw';
+import YT from '$lib/assets/icons/logos/YT.svg?raw';
+import DISCORD from '$lib/assets/icons/logos/DISCORD.svg?raw';
 
-    const iconsSvgImport = {
-        // HOME,
-        LIGHTMODE,
-        DARKMODE ,
-        VIDEO ,
+const iconsSvgImport = {
+    // HOME,
+    LIGHTMODE,
+    DARKMODE,
+    VIDEO,
 
-        CARD ,
-        FLOORBALL ,
-        FLOORBALL2 ,
-        GOAL ,
-        HELMET ,
-        HELMET2 ,
-        REFEREE ,
-        TRIKOT ,
-        WHISTLE ,
-        TIMEOUT ,
-        CAPTAIN ,
-        PLAYER,
-        STICKS_FULL,
-        STICKS_OUTLINE,
+    CARD,
+    FLOORBALL,
+    FLOORBALL2,
+    GOAL,
+    HELMET,
+    HELMET2,
+    REFEREE,
+    TRIKOT,
+    WHISTLE,
+    TIMEOUT,
+    CAPTAIN,
+    PLAYER,
+    STICKS_FULL,
+    STICKS_OUTLINE,
 
-        STATS,
+    STATS,
+    LINK,
 
-        DISCORD ,
-        YT ,
-    };
+    DISCORD,
+    YT,
+};
 
-    // import SvelteIcon from '$lib/assets/icons/logos/DISCORD.svelte';
-    const iconsSvelte = {
-        // SvelteIcon: SvelteIcon,
-    };
+// import SvelteIcon from '$lib/assets/icons/logos/DISCORD.svelte';
+const iconsSvelte = {
+    // SvelteIcon: SvelteIcon,
+};
 
-    // function fetchSvg(svgRoute: string) {
-    //     return new Promise((resolve) => {
-    //         fetch(svgRoute + '?raw')
-    //             .then((response) => response.text())
-    //             .then((svg) => resolve(svg))
-    //             .catch((e) => console.error('ERROR: ' + e));
-    //     });
-    // }
-    //
-    // // See: https://stackoverflow.com/a/75950500/11341498
-    // const iconsSvgFetch = {
-    //      // yt1: '$lib/assets/icons/home.svg', // doesnt work
-    //      home: '/icons/home.svg',
-    //      'light-mode': '/icons/light-mode.svg',
-    //      'dark-mode': '/icons/dark-mode.svg',
-    //      'logo-discord': '/icons/logo-discord.svg',
-    // };
+// function fetchSvg(svgRoute: string) {
+//     return new Promise((resolve) => {
+//         fetch(svgRoute + '?raw')
+//             .then((response) => response.text())
+//             .then((svg) => resolve(svg))
+//             .catch((e) => console.error('ERROR: ' + e));
+//     });
+// }
+//
+// // See: https://stackoverflow.com/a/75950500/11341498
+// const iconsSvgFetch = {
+//      // yt1: '$lib/assets/icons/home.svg', // doesnt work
+//      home: '/icons/home.svg',
+//      'light-mode': '/icons/light-mode.svg',
+//      'dark-mode': '/icons/dark-mode.svg',
+//      'logo-discord': '/icons/logo-discord.svg',
+// };
 </script>

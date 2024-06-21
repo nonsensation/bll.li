@@ -1,82 +1,56 @@
 <style lang="postcss">
-    .timeline {
-        --size: 8px;
+.timeline {
+    --size: 8px;
+    position: relative;
+
+    & .period {
         position: relative;
+        height: 0px;
+        border-bottom: 1px solid var(--color-text);
+    }
 
-        & .period {
-            position: relative;
-            height: 0px;
-            border-bottom: 1px solid var(--color-text);
-        }
+    & .goal {
+        position: absolute;
+        top: 0;
+        width: var(--size);
+        height: var(--size);
+        border-radius: 50%;
+        border: 1px solid var(--color-text);
+        background-color: var(--color-surface);
 
-        & .goal {
-            position: absolute;
-            top: 0;
-            width: var(--size);
-            height: var(--size);
-            border-radius: 50%;
-            border: 1px solid var(--color-text);
-            background-color: var(--color-surface);
-
-            &:hover,
-            &:focus-within {
-                border-width: 2px;
-                --size: 10px;
-            }
-        }
-
-        & .goal-s {
-            top: calc(var(--size) * -1.5);
-            @apply border-teal-500;
-        }
-
-        & .goal-r {
-            top: calc(var(--size) * 0.5);
-            @apply border-violet-500;
-        }
-
-        & .penalty_shot {
-            @apply bg-orange-500;
-            z-index: 10;
+        &:hover,
+        &:focus-within {
+            border-width: 2px;
+            --size: 10px;
         }
     }
 
-    .filter {
-        @apply  select-none;
-
-        & label {
-            @apply cursor-pointer rounded border px-2 py-1 text-txt bg-sf3;
-
-            &:has(input:checked) {
-                @apply border-prim;
-            }
-            &:has(:not(input:checked)) {
-                @apply border-sf2;
-            }
-            & input {
-                display: none;
-            }
-        }
+    & .goal-s {
+        top: calc(var(--size) * -1.5);
+        @apply border-teal-500;
     }
+
+    & .goal-r {
+        top: calc(var(--size) * 0.5);
+        @apply border-violet-500;
+    }
+
+    & .penalty_shot {
+        @apply bg-orange-500;
+        z-index: 10;
+    }
+}
 </style>
 
 <div class="my-10">
-    <div class=" flex flex-wrap justify-center gap-8 gap-y-2 text-sm filter *:flex *:gap-2">
-        <div class="">
-            <label><input type="checkbox" bind:checked={isFemale} />Damen</label>
-            <label><input type="checkbox" bind:checked={isNotFemale} />Herren</label>
-        </div>
-        <div class="">
-            <label><input type="checkbox" bind:checked={isJunior} />Jugend</label>
-            <label><input type="checkbox" bind:checked={isNotJunior} />Erwachsen</label>
-        </div>
-        <div class="">
-            <label><input type="checkbox" bind:checked={fieldSizeKF} />Kleinfeld</label>
-            <label><input type="checkbox" bind:checked={fieldSizeGF} />Großfeld</label>
-        </div>
-    </div>
+    <LeagueFilter
+        bind:filterEvent="{filter}"
+        getJuniorFn="{league => league.IsJunior === '1'}"
+        getFemaleFn="{league => league.isFemale === '1'}"
+        getLeagueFn="{item => item}"
+    />
 
-    <div class="mb-4 text-right text-sm border-r-4 border-teal-500 pr-2">{gls.length} Tore</div>
+    <div class="mb-4 border-r-4 border-teal-500 pr-2 text-right text-sm">{gls.length} Tore</div>
     <div class="timeline flex flex-col gap-10 md:grid md:grid-cols-{numPeriods}">
         {#each periodsArray as period}
             <div class="period period-{period}">
@@ -85,8 +59,9 @@
                         href="/sm/match?gameId={g.GameId}#event-{g.EventId}"
                         class="goal goal-s {g.GoalType}"
                         style="left: calc({calculatePosition(g.Time)}% - 0.5 * var(--size))"
-                        title="{g.GoalType == 'penalty_shot' ? 'Strafschuss' : 'Tor'} - {g.Period}. Drittel {g.Time}"
-                        ><span></span></a
+                        title="{g.GoalType == 'penalty_shot'
+                            ? 'Strafschuss'
+                            : 'Tor'} - {g.Period}. Drittel {g.Time}"><span></span></a
                     >
                 {/each}
 
@@ -101,7 +76,9 @@
             </div>
         {/each}
     </div>
-    <div class="mt-4 text-right text-sm border-r-4 border-violet-500 pr-2">{ass.length} Vorlagen</div>
+    <div class="mt-4 border-r-4 border-violet-500 pr-2 text-right text-sm">
+        {ass.length} Vorlagen
+    </div>
 </div>
 
 <!-- <h1>Periods Information</h1>
@@ -110,46 +87,29 @@
 <!-- <p>Periods Array: {JSON.stringify(goals)}</p>  -->
 
 <script lang="ts">
-    export let goals;
+import LeagueFilter from '$lib/components/sm/LeagueFilter.svelte';
 
-    export let periodLength = 20;
+let filter;
 
-    function timeToMinutes(timeStr: string) {
-        const [minutes, seconds] = timeStr.split(':').map(Number);
-        return (minutes % 21) + seconds / 60;
-    }
+export let goals;
 
-    function calculatePosition(timeStr: string) {
-        const minutes = timeToMinutes(timeStr);
-        return (minutes / periodLength) * 100;
-    }
+export let periodLength = 20;
 
-    $: combinedEvents = [...gls, ...ass];
-    $: periods = [...new Set(combinedEvents.map(ev => Number(ev.Period)))];
-    $: numPeriods = periods.length;
-    $: periodsArray = periods.sort((a, b) => a - b);
+function timeToMinutes(timeStr: string) {
+    const [minutes, seconds] = timeStr.split(':').map(Number);
+    return Math.min(Math.max(0, (minutes % 21) + seconds / 60), periodLength);
+}
 
-    $: isFemale = true;
-    $: isNotFemale = true;
-    $: isJunior = true;
-    $: isNotJunior = true;
-    $: fieldSizeGF = true;
-    $: fieldSizeKF = true;
+function calculatePosition(timeStr: string) {
+    const minutes = timeToMinutes(timeStr);
+    return (minutes / periodLength) * 100;
+}
 
-    $: ass = goals.assists.filter(x => filterEvent(x));
-    $: gls = goals.goals.filter(x => filterEvent(x));
+$: combinedEvents = [...gls, ...ass];
+$: periods = [...new Set(combinedEvents.map(ev => Number(ev.Period)))];
+$: numPeriods = periods.length;
+$: periodsArray = periods.sort((a, b) => a - b);
 
-    // TODO: why is .IsFemale a string?!
-    $: filterEvent = item => {
-        const genderMatch =
-            (isFemale && isNotFemale) || (isFemale && item.IsFemale === '1') || (isNotFemale && item.IsFemale === '0');
-        const juniorMatch =
-            (isJunior && isNotJunior) || (isJunior && item.IsJunior === '1') || (isNotJunior && item.IsJunior === '0');
-        const fieldSizeMatch =
-            (fieldSizeGF && fieldSizeKF) ||
-            (fieldSizeGF && item.FieldSize === 'GF') ||
-            (fieldSizeKF && item.FieldSize === 'KF');
-
-        return genderMatch && juniorMatch && fieldSizeMatch;
-    };
+$: ass = filter ? goals.assists.filter(x => (filter ? filter(x) : true)) : [];
+$: gls = filter ? goals.goals.filter(x => filter(x)) : [];
 </script>

@@ -1,4 +1,7 @@
 <style lang="postcss">
+.clubs {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 25rem));
+}
 </style>
 
 <div class="">
@@ -23,21 +26,25 @@
             </div>
 
             {#if d.clubs && d.clubs.length > 0}
-                <h3>Verein</h3>
-                <div class="*:rounded odd:*:bg-sf3">
+                <h3 class="mt-8 text-center text-2xl">
+                    {#if d.clubs.length > 1}
+                        Vereine
+                    {:else}
+                        Verein
+                    {/if}
+                </h3>
+                <div class="clubs grid justify-evenly gap-8">
                     {#each d.clubs as club}
                         <a
                             href="/sm/stats/club?id={club.Id}"
-                            class="flex items-center gap-4 pl-4"
+                            class="flex flex-col items-center rounded border border-dashed border-transparent hover:border-prim hover:bg-sf3"
                         >
-                            <div class="flex items-center gap-4">
-                                <img
-                                    src="https://bll.wik.li/{club.LogoUrl}"
-                                    alt="Logo"
-                                    class="m-2 w-12"
-                                />
-                                <div class="font-bold">{club.Name}</div>
-                            </div>
+                            <img
+                                src="https://bll.wik.li/{club.LogoUrl}"
+                                alt="Logo"
+                                class="m-2 w-12"
+                            />
+                            <span class="font-bold"> {club.Name}</span>
                         </a>
                     {/each}
                 </div>
@@ -48,8 +55,10 @@
             <div class="text-txt2">Liga</div>
             <a
                 class="text-4xl"
-                href="/sm/stats/league?id={d.team.LeagueId}">{d.team.LeagueName}</a
+                href="/sm/stats/league?id={d.team.LeagueId}"
             >
+                <span>{d.team.LeagueName}</span>
+            </a>
         </h2>
 
         <TimeLine goals="{d.goals}"></TimeLine>
@@ -109,6 +118,7 @@ import TimeLine from './timeline.svelte';
 import GameDays from '$lib/components/sm/GameDays.svelte';
 import TeamPlayer from '$lib/components/sm/TeamPlayer.svelte';
 import TeamTable from '$lib/components/sm/TeamTable.svelte';
+import Icon from '$lib/components/Icon.svelte';
 
 export let data;
 </script>

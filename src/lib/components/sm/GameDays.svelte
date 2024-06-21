@@ -5,7 +5,10 @@
 </style>
 
 {#if scheduledGames && scheduledGames.length > 0}
-    <div class="rounded" class:odd:*:bg-sf3={showGameDayTitle===false}>
+    <div
+        class="rounded"
+        class:odd:*:bg-sf3="{!showGameDayTitle && groups.length == 1}"
+    >
         {#each groups as gd}
             {#if groups.length > 1 && showGameDayTitle}
                 <div class="text-center">
@@ -13,7 +16,10 @@
                 </div>
             {/if}
 
-            <div class="" class:odd:*:bg-sf3={showGameDayTitle===true}>
+            <div
+                class=""
+                class:odd:*:bg-sf3="{showGameDayTitle || groups.length > 1}"
+            >
                 {#if gd.values}
                     {#each gd.values as g}
                         <a
