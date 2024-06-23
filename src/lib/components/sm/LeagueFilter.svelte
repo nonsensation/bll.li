@@ -112,7 +112,7 @@ const getJunior = league => {
 const getFemale = league => {
     if ('IsFemale' in league) return league.IsFemale as boolean;
     if ('isFemale' in league) return league.isFemale as boolean;
-    if ('female' in league) return (league.female as string) === '1';
+    if ('female' in league) return (league.female as string) == '1';
     if ('name' in league)
         return ['Damen', 'innen', 'Frauen'].some(word => league.name?.includes(word));
     return false;
