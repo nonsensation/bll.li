@@ -28,7 +28,7 @@
 
         {#each scorer as s}
             <a
-                href="/sm/stats/player?id={s.player_id}"
+                href="/sm/player?id={s.player_id}"
                 class="row rounded hover:bg-sf2"
             >
                 <div class="text-sm md:text-base">{s.position}.</div>

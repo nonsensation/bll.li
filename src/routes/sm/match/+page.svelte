@@ -116,7 +116,7 @@
             class="header sticky top-0 z-10 mb-4 grid grid-cols-3 border-b border-b-prim bg-sf py-4 *:flex *:flex-col *:place-content-center *:items-center"
         >
             <a
-                href="/sm/stats/team?id={game.home_team_id}"
+                href="/sm/team?id={game.home_team_id}"
                 class="home"
             >
                 <img
@@ -165,7 +165,7 @@
                 </div>
             </div>
             <a
-                href="/sm/stats/team?id={game.guest_team_id}"
+                href="/sm/team?id={game.guest_team_id}"
                 class="guest"
             >
                 <img
@@ -378,7 +378,7 @@
                                 {p.trikot_number}
                             </div>
                             <div class="name px-2">
-                                <a href="/sm/stats/player?id={p.player_id}">
+                                <a href="/sm/player?id={p.player_id}">
                                     {p.player_firstname}
                                     {p.player_name}
                                     {#if p.captain}
@@ -449,7 +449,7 @@
             <div class="">
                 <div class="">Liga</div>
                 <div class="text-right font-bold">
-                    <a href="/sm/stats/league?id={game.league_id}">{game.league_name ?? '-'}</a>
+                    <a href="/sm/league?id={game.league_id}">{game.league_name ?? '-'}</a>
                 </div>
             </div>
             <div class="">

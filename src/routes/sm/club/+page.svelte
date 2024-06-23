@@ -27,7 +27,7 @@
                         {#each g.values as t}
                             <div class="grid grid-cols-2 gap-4 rounded border border-transparent p-2">
                                 <div class="">
-                                    <a href="/sm/stats/league?id={t.LeagueId}" class="flex justify-between">
+                                    <a href="/sm/league?id={t.LeagueId}" class="flex justify-between">
                                         <div class="">{t.LeagueName}</div>
                                         <div class="hidden md:flex opacity-25">
                                             <!-- {#if t.IsFemale == true}
@@ -48,7 +48,7 @@
                                     </a>
                                 </div>
                                 <div class="">
-                                    <a href="/sm/stats/team?id={t.Id}" class="flex gap-2">
+                                    <a href="/sm/team?id={t.Id}" class="flex gap-2">
                                         <img class="h-6" src="http://bll.wik.li/{t.LogoUrl}" alt="Logo" />
                                         <div class="">{t.Name}</div>
                                     </a>
@@ -74,7 +74,7 @@
         </div>
         {#each data.scorer.slice(0, 10) as s}
             <a
-                href="/sm/stats/player?id={s.PlayerId}"
+                href="/sm/player?id={s.PlayerId}"
                 class="grid grid-cols-[4fr,1fr,1fr,1fr,1fr] gap-2 rounded border border-transparent p-1 *:text-center"
             >
                 <div class="text-center">{s.FirstName} {s.LastName}</div>
@@ -92,7 +92,7 @@
                 {#each data.scorer.slice(10) as s}
                     {#if s != null && s.LastName != null}
                         <a
-                            href="/sm/stats/player?id={s.PlayerId}"
+                            href="/sm/player?id={s.PlayerId}"
                             class="grid grid-cols-[4fr,1fr,1fr,1fr,1fr] gap-2 rounded border border-transparent p-1 *:text-center"
                         >
                             <div class="text-center">{s.FirstName} {s.LastName}</div>

@@ -27,11 +27,11 @@
             <div class="row rounded">
                 <div class="font-bold">{s.position}.</div>
                 <a
-                    href="/sm/stats/player?id={s.player_id}"
+                    href="/sm/player?id={s.player_id}"
                     class="font-bold">{s.first_name} {s.last_name}</a
                 >
                 <a
-                    href="/sm/stats/team?id={s.team_id}"
+                    href="/sm/team?id={s.team_id}"
                     class="flex items-center justify-center sm:justify-start"
                 >
                     <img
@@ -63,11 +63,11 @@
                         <div class="row">
                             <div class="font-bold">{s.position}.</div>
                             <a
-                                href="/sm/stats/player?id={s.player_id}"
+                                href="/sm/player?id={s.player_id}"
                                 class="font-bold">{s.first_name} {s.last_name}</a
                             >
                             <a
-                                href="/sm/stats/teams?id={s.team_id}"
+                                href="/sm/teams?id={s.team_id}"
                                 class="flex items-center justify-center sm:justify-start"
                             >
                                 <img

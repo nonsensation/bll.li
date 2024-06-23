@@ -12,10 +12,21 @@ h3 {
     <div class="text-txt2">Liga</div>
     <div class="">{data.leagueName}</div>
     <div class="text-lg text-txt2">Saison {data.seasonName}</div>
+    <a
+        class="text-lg text-txt2 inline-block"
+        title="{data.league?.game_operation_name}"
+        href="/sm/game-operation?id={data.league?.game_operation_id}"
+    >
+        <img
+            src="{data.gameOpLogo}"
+            alt="Spielbetrieb: {data.league?.game_operation_name}"
+            class="h-[5rem]"
+        />
+    </a>
 </h2>
 
 {#await data.leagueTable}
-    Lade leagueTable
+    <div class="">Lade leagueTable</div>
 {:then leagueTable}
     {#if leagueTable && leagueTable.length > 0}
         <h3>
@@ -29,7 +40,7 @@ h3 {
     {/if}
 
     {#await data.leagueScorer}
-        Lade leagueScorer
+        <div class="">Lade leagueScorer</div>
     {:then leagueScorer}
         {#if leagueScorer && leagueScorer.length > 0}
             <h3>Topscorer</h3>
@@ -47,7 +58,7 @@ h3 {
 
 {#if data.leagueGroupedTable}
     {#await data.leagueGroupedTable}
-        Lade leagueGroupedTable
+        <div class="">Lade leagueGroupedTable</div>
     {:then leagueGroupedTable}
         {#await data.leagueSchedule}
             Lade leagueSchedule
@@ -64,7 +75,7 @@ h3 {
     {/await}
 {:else if data.leagueSchedule}
     {#await data.leagueSchedule}
-        Lade leagueSchedule
+        <div class="">Lade leagueSchedule</div>
     {:then leagueSchedule}
         <GameDays
             scheduledGames="{leagueSchedule}"

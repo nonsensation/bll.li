@@ -138,7 +138,7 @@
     {:then scorers}
         {#each scorers as scorer, idx}
             <a
-                href="/sm/stats/player?id={scorer.PlayerId}"
+                href="/sm/player?id={scorer.PlayerId}"
                 class="row rounded border border-transparent *:py-2 odd:bg-sf3 hover:border-txt2"
             >
                 <div class="text-right">{scorer.FirstName} {scorer.LastName}</div>
@@ -160,7 +160,7 @@
 
 <div class="my-8 flex w-full flex-wrap justify-center gap-2 *:rounded *:border *:px-4 *:py-2">
     {#if currentPage > count + 1}
-        <a href="/sm/stats/scorer?">1</a>
+        <a href="/sm/scorer?">1</a>
         <div class="">...</div>
     {/if}
     {#each pages as idx}
@@ -180,7 +180,7 @@
             .filter( key => $form[key] != null )
             .map( key => `${key}=${$form[key]}`)
             .join('&')
-        return `/sm/stats/scorer?skip=${skip}&${filters}`
+        return `/sm/scorer?skip=${skip}&${filters}`
     }
 
     import SuperDebug from 'sveltekit-superforms';

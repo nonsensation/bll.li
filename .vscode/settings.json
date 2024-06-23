@@ -122,5 +122,6 @@
 	},
 	"[rust]": {
 		"editor.defaultFormatter": null
-	}
+	},
+	"CodeGPT.apiKey": "CodeGPT Plus Beta"
 }

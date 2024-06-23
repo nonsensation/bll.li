@@ -1,8 +1,23 @@
 import * as schema from '$mysql/schema'
 import { fetchFromMyDb } from '$mysql/db'
-import { and, asc, desc, eq, ne, inArray, isNotNull, like, gt, notLike, type SQLWrapper, or, max } from 'drizzle-orm'
+import
+    {
+        and,
+        asc,
+        desc,
+        eq,
+        ne,
+        inArray,
+        isNotNull,
+        like,
+        gt,
+        notLike,
+        type SQLWrapper,
+        or,
+        max,
+    } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
-import { QueryBuilder, type MySqlSelectQueryBuilder } from 'drizzle-orm/mysql-core'
+import { MySqlColumn, QueryBuilder, type MySqlSelectQueryBuilder } from 'drizzle-orm/mysql-core'
 import type { Actions, PageServerLoadEvent } from './$types'
 import { message, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
@@ -146,12 +161,20 @@ async function getScorers( serverLoadEvent: PageServerLoadEvent )
     query = query.where( and( ...filterName( serverLoadEvent ) ) )
     query = query
         .groupBy( sql`PlayerId`, sql`FirstName`, sql`LastName` /*, sql`LeagueName`*/ )
-        .orderBy( sql`TotalGoals DESC`, sql`TotalAssists DESC`, sql`TotalGames ASC`, sql`TotalPenaltyMs ASC` )
+        .orderBy(
+            sql`TotalGoals DESC`,
+            sql`TotalAssists DESC`,
+            sql`TotalGames ASC`,
+            sql`TotalPenaltyMs ASC`
+        )
     query = withPagination( query, serverLoadEvent )
 
     const scorers = await fetchFromMyDb( query, serverLoadEvent.fetch )
     const s = scorers as unknown as typeof scorers._.result
-    return s ?? [] 
+
+    // console.log( s[ 0 ].PlayerId, typeof s[ 0 ].PlayerId )
+
+    return s ?? []
 }
 
 // TODO
@@ -165,14 +188,12 @@ function filter( serverLoadEvent: PageServerLoadEvent )
     const enableFemaleLeagues = url.searchParams.get( 'female' )
     const enableFieldSize = url.searchParams.get( 'fieldSize' )
     const enableSeason = url.searchParams.get( 'season' )
-    const filters = []
+    const filters: MySqlColumn[] = []
 
     if( enableFieldSize != null )
     {
-        if( enableFieldSize == 'KF' )
-            filters.push( eq( schema.leagues.fieldSize, 'KF' ) )
-        else if( enableFieldSize == 'GF' )
-            filters.push( eq( schema.leagues.fieldSize, 'GF' ) )
+        if( enableFieldSize == 'KF' ) filters.push( eq( schema.leagues.fieldSize, 'KF' ) )
+        else if( enableFieldSize == 'GF' ) filters.push( eq( schema.leagues.fieldSize, 'GF' ) )
     }
 
     if( enableJuniorLeagues != null )
@@ -206,13 +227,18 @@ function filterName( serverLoadEvent: PageServerLoadEvent )
     if( name != null )
     {
         const likeStr = `%${ name }%`
-        filters.push( sql`CONCAT( ${ schema.players.firstName } , ' ' , ${ schema.players.lastName } ) LIKE ${ likeStr }` )
+        filters.push(
+            sql`CONCAT( ${ schema.players.firstName } , ' ' , ${ schema.players.lastName } ) LIKE ${ likeStr }`
+        )
     }
 
     return filters
 }
 
-function withPagination<T extends MySqlSelectQueryBuilder>( qb: T, serverLoadEvent: PageServerLoadEvent )
+function withPagination<T extends MySqlSelectQueryBuilder>(
+    qb: T,
+    serverLoadEvent: PageServerLoadEvent
+)
 {
     const { url } = serverLoadEvent
     const pageSize = getPageSize( url )

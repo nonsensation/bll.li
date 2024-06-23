@@ -75,7 +75,7 @@
                                     <td class="pt-8 text-left">
                                         <!-- img -->
                                         <div class="">
-                                            <a href="/sm/stats/team?id={l.TeamId}" class="flex gap-2">
+                                            <a href="/sm/team?id={l.TeamId}" class="flex gap-2">
                                                 <img src="https://bll.wik.li/{l.TeamLogoUrl}" alt="Logo" class="h-6" />
                                                 <div class="font-bold">{l.TeamName}</div>
                                             </a>
@@ -90,10 +90,10 @@
                             <tr class:border-b={isLast} class="hover:bg-sf3">
                                 <td class="max-md:hidden"></td>
                                 <td class="pl-4 text-left text-sm md:pl-8 md:text-base">
-                                    <a href="/sm/stats/league?id={l.LeagueId}">{l.LeagueName}</a>
+                                    <a href="/sm/league?id={l.LeagueId}">{l.LeagueName}</a>
                                 </td>
                                 <td class="text-center md:hidden">
-                                    <a href="/sm/stats/league?id={l.LeagueId}" class="px-4">
+                                    <a href="/sm/league?id={l.LeagueId}" class="px-4">
                                         {l.Games} • {l.Goals} • {l.Assists}
                                     </a>
                                 </td>

@@ -31,7 +31,7 @@
             </div>
         {/if}
         {#each teams as team}
-            <a class="row rounded" href="/sm/stats/team?id={team.team_id}">
+            <a class="row rounded" href="/sm/team?id={team.team_id}">
                 <div class="pr-4 font-bold text-lg">{team.position}.</div>
                 <div class="flex items-center gap-4">
                     <img src="https://bll.wik.li/{team.team_logo}" alt="Logo" class="m-2 w-12" />

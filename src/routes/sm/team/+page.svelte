@@ -36,7 +36,7 @@
                 <div class="clubs grid justify-evenly gap-8">
                     {#each d.clubs as club}
                         <a
-                            href="/sm/stats/club?id={club.Id}"
+                            href="/sm/club?id={club.Id}"
                             class="flex flex-col items-center rounded border border-dashed border-transparent hover:border-prim hover:bg-sf3"
                         >
                             <img
@@ -55,7 +55,7 @@
             <div class="text-txt2">Liga</div>
             <a
                 class="text-4xl"
-                href="/sm/stats/league?id={d.team.LeagueId}"
+                href="/sm/league?id={d.team.LeagueId}"
             >
                 <span>{d.team.LeagueName}</span>
             </a>

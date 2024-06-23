@@ -2,7 +2,14 @@ import * as schema from '$mysql/schema'
 import { and, asc, desc, eq, getTableColumns, gt, inArray } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { db, fetchFromMyDb, qb } from '$mysql/db'
-import { QueryBuilder, alias, withReplicas, type MySqlSelectBase, type MySqlSelectQueryBuilderBase } from 'drizzle-orm/mysql-core'
+import
+{
+    QueryBuilder,
+    alias,
+    withReplicas,
+    type MySqlSelectBase,
+    type MySqlSelectQueryBuilderBase,
+} from 'drizzle-orm/mysql-core'
 import type { PageServerLoadEvent } from './$types'
 
 export async function load( serverLoadEvent: PageServerLoadEvent )
@@ -21,12 +28,12 @@ export async function load( serverLoadEvent: PageServerLoadEvent )
         .$dynamic()
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
-    const player = (data as unknown as typeof data._.result)[0]
+    const player = ( data as unknown as typeof data._.result )[ 0 ]
 
     return {
         player,
         seasons: getAllSeasons( serverLoadEvent, playerId ),
-        goals: await getGoals( serverLoadEvent, playerId ) ,
+        goals: await getGoals( serverLoadEvent, playerId ),
     }
 }
 
@@ -57,7 +64,12 @@ async function getAllSeasons( serverLoadEvent: PageServerLoadEvent, playerId: nu
         .leftJoin( schema.seasons, eq( schema.leagues.seasonId, schema.seasons.id ) )
         .leftJoin( schema.teams, eq( schema.leagueScorers.teamId, schema.teams.id ) )
         .leftJoin( schema.clubs, eq( schema.teams.clubId, schema.clubs.id ) ) // TODO: syndicate
-        .groupBy( schema.leagues.seasonId, schema.teams.id , schema.leagueScorers.playerId , schema.leagueScorers.leagueId  )
+        .groupBy(
+            schema.leagues.seasonId,
+            schema.teams.id,
+            schema.leagueScorers.playerId,
+            schema.leagueScorers.leagueId
+        )
         .orderBy( desc( schema.seasons.id ), desc( schema.leagueScorers.games ) )
         .$dynamic()
 
@@ -67,16 +79,15 @@ async function getAllSeasons( serverLoadEvent: PageServerLoadEvent, playerId: nu
     return d ?? []
 }
 
-
 async function getGoals( serverLoadEvent: PageServerLoadEvent, playerId: number )
 {
     return {
         goals: await getGoalsColumn( schema.goals.scoringPlayerId, serverLoadEvent, playerId ),
         assists: await getGoalsColumn( schema.goals.assistPlayerId, serverLoadEvent, playerId ),
-    };
+    }
 }
 
-async function getGoalsColumn( column: any , serverLoadEvent: PageServerLoadEvent, playerId: number )
+async function getGoalsColumn( column: any, serverLoadEvent: PageServerLoadEvent, playerId: number )
 {
     let query = qb
         .select( {
@@ -93,14 +104,20 @@ async function getGoalsColumn( column: any , serverLoadEvent: PageServerLoadEven
         .from( schema.goals )
         .leftJoin( schema.games, eq( schema.goals.gameId, schema.games.id ) )
         .leftJoin( schema.leagues, eq( schema.leagues.id, schema.games.leagueId ) )
-        .where( eq( column , playerId ) )
+        .where( eq( column, playerId ) )
         .orderBy( asc( schema.goals.period ), asc( schema.goals.time ) )
         .$dynamic()
 
     const data = await fetchFromMyDb( query, serverLoadEvent.fetch )
 
-    // // somehow IsFemale is string!?
-    // console.dir( data as unknown as typeof data._.result )
+    // const result = ( data as unknown as any[] ).map( x => convertObject<typeof data._.result>( x ) )
+    // const result = convertArray<typeof data._.result>( data )
+    const result = data as unknown as typeof data._.result
 
-    return data as unknown as typeof data._.result
+    // somehow IsFemale is string!?
+    // console.dir( result )
+    // console.log( result[ 0 ].IsFemale, typeof result[ 0 ].IsFemale )
+    // console.log( result[ 0 ].Period, typeof result[ 0 ].Period )
+
+    return result
 }

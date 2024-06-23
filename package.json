@@ -53,6 +53,7 @@
     "@next/env": "^14.2.3",
     "@planetscale/database": "^1.18.0",
     "@vercel/postgres": "^0.8.0",
+    "biome": "^0.3.3",
     "csv-parse": "^5.5.6",
     "drizzle-orm": "^0.30.10",
     "drizzle-zod": "^0.5.1",

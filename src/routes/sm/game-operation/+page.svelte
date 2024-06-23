@@ -44,7 +44,7 @@ h3 {
             {#each leaguesWithGameDays as l, lIdx}
                 <a
                     class="rounded hover:bg-sf2"
-                    href="/sm/stats/league?id={l.league.id}"
+                    href="/sm/league?id={l.league.id}"
                 >
                     <div class="text-xs font-bold sm:text-sm md:text-base">{l.league.name}</div>
                 </a>
@@ -56,7 +56,7 @@ h3 {
                 <div class="flex justify-center pb-6 pt-16">
                     <a
                         class="text-center"
-                        href="/sm/stats/league?id={l.league.id}"
+                        href="/sm/league?id={l.league.id}"
                     >
                         <div class="text-2xl font-bold">{l.league.name}</div>
                         <div class="text-lg font-bold text-txt2">
@@ -89,7 +89,7 @@ h3 {
                 <div class="flex flex-col odd:*:bg-sf3">
                     {#each llg.values.toReversed() as l}
                         <!-- <div class="">{JSON.stringify(l)}</div> -->
-                        <a href="/sm/stats/league?id={l.id}" class="p-2 rounded hover:bg-sf2">{l.name}</a>
+                        <a href="/sm/league?id={l.id}" class="p-2 rounded hover:bg-sf2">{l.name}</a>
                     {/each}
                 </div>
             </details>
