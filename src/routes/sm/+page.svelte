@@ -16,7 +16,19 @@
     </a>
 </h2>
 
-<h2 class="text-center">Spielbetrieb: {data.gameOperations[currentGameOperationId].name}</h2>
+<h2 class="text-center">
+    <a href="/sm/game-operation?id={data.gameOperations[currentGameOperationId].id}">
+        <div class="">Spielbetrieb: {data.gameOperations[currentGameOperationId].name}</div>
+        <img
+            class="h-16 w-full object-contain"
+            title="Gehe zu SPielbetrieb {data.gameOperations[currentGameOperationId].name}"
+            src="https://bll.wik.li/sm-data/images/GameOperationLogos/{data.gameOperations[
+                currentGameOperationId
+            ].short_name}.png"
+            alt=""
+        />
+    </a>
+</h2>
 
 <LeagueFilter bind:filterEvent="{filter}" />
 
@@ -29,6 +41,7 @@
                     hover:border-prim
                     md:p-4"
                 class:border-prim="{currentGameOperationId == goIdx}"
+                class:border-sf2="{currentGameOperationId != goIdx}"
                 class:bg-sf3="{currentGameOperationId == goIdx}"
                 onclick="{() => (currentGameOperationId = goIdx)}"
                 title="Spielbetrieb: {go.name}"
@@ -36,13 +49,14 @@
                 <img
                     src="https://bll.wik.li/sm-data/images/GameOperationLogos/{go.short_name}.png"
                     alt=""
-                    class="hidden h-12 object-contain md:block"
+                    class="hidden h-12 object-contain md:block dark:hue-rotate-180 dark:invert"
                 />
                 <img
                     src="https://bll.wik.li/sm-data/images/GameOperationLogos/{go.short_name}_quad.png"
                     alt=""
-                    class="h-12 object-contain md:hidden"
+                    class="h-12 object-contain md:hidden dark:hue-rotate-180 dark:invert"
                 />
+
                 <div class="text-xs font-normal md:text-sm md:font-bold">{go.name}</div>
             </button>
         {/each}
@@ -61,7 +75,13 @@
     {/if}
 </div>
 
-<div class="">{JSON.stringify(data.gameOperations.map(x=>{return {slug:x.short_name ,logo: x.logo_url, quad: x.logo_quad_url}}))}</div>
+<div class="">
+    {JSON.stringify(
+        data.gameOperations.map(x => {
+            return { slug: x.short_name, logo: x.logo_url, quad: x.logo_quad_url };
+        })
+    )}
+</div>
 
 <script lang="ts">
 import { Saisonmanager as SM } from 'floorball-saisonmanager';
@@ -74,6 +94,30 @@ let filter;
 
 $: currentGameOperationId = 0;
 
-$: console.dir(data.gameOperations.map(x=>{return {slug:x.short_name ,logo: x.logo_url, quad: x.logo_quad_url}}))
+$: console.dir(
+    data.gameOperations.map(x => {
+        return { slug: x.short_name, logo: x.logo_url, quad: x.logo_quad_url };
+    })
+);
 
+const blendModes = [
+    'normal',
+    'multiply',
+    'screen',
+    'overlay',
+    'darken',
+    'lighten',
+    'color-dodge',
+    'color-burn',
+    'hard-light',
+    'soft-light',
+    'difference',
+    'exclusion',
+    'hue',
+    'saturation',
+    'color',
+    'luminosity',
+    'plus-darker',
+    'plus-lighter',
+];
 </script>
