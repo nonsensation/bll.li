@@ -5,7 +5,7 @@ input {
 
 label {
     @apply flex cursor-pointer items-center justify-center
-     bg-sf3 px-2 py-1 text-sm font-bold text-txt2 border-b ;
+     bg-sf3 px-2 py-1 text-sm font-bold text-txt2 border border-sf2 rounded ;
 }
 label:has(input:checked) {
     @apply border-b border-prim shadow text-txt;
