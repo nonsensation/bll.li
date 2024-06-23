@@ -157,8 +157,8 @@ $: filterEvent = item => {
 
     if (getFemaleFn !== null) {
         const isFemaleLeague = getFemaleFn(league);
-        console.log("isFemaleLeague: "+isFemaleLeague)
-        console.log("league.female: "+league.female)
+        // console.log("isFemaleLeague: "+isFemaleLeague)
+        // console.log("league.female: "+league.female)
         const genderMatch =
             (isFemale && isNotFemale) ||
             (isFemale && isFemaleLeague) ||

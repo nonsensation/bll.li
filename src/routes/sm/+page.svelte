@@ -1,11 +1,4 @@
 <style lang="postcss">
-summary img {
-    height: 100%;
-}
-
-.lol {
-    height: 3rem;
-}
 </style>
 
 <!-- <div class="">{JSON.stringify(data)}</div> -->
@@ -27,25 +20,30 @@ summary img {
 
 <LeagueFilter bind:filterEvent="{filter}" />
 
-<div class="my-12 grid grid-cols-[1fr,2fr] justify-center gap-4 rounded p-4">
-    <div class="flex flex-col items-center gap-4">
+<div class="my-12 grid grid-cols-[1fr,2fr] justify-center gap-4 rounded shadow-inner">
+    <div class="flex h-full flex-col items-center gap-4">
         {#each data.gameOperations as go, goIdx}
             <button
-                class="flex w-full justify-center rounded border-2 p-4 hover:border-dashed"
+                class="flex w-full flex-col justify-center gap-2
+                    rounded border-2
+                    hover:border-prim
+                    md:p-4"
                 class:border-prim="{currentGameOperationId == goIdx}"
+                class:bg-sf3="{currentGameOperationId == goIdx}"
                 onclick="{() => (currentGameOperationId = goIdx)}"
                 title="Spielbetrieb: {go.name}"
             >
                 <img
-                    src="{go.logo_url}"
+                    src="https://bll.wik.li/sm-data/images/GameOperationLogos/{go.short_name}.png"
                     alt=""
-                    class="hidden h-12 md:block"
+                    class="hidden h-12 object-contain md:block"
                 />
                 <img
-                    src="{go.logo_quad_url}"
+                    src="https://bll.wik.li/sm-data/images/GameOperationLogos/{go.short_name}_quad.png"
                     alt=""
                     class="h-12 object-contain md:hidden"
                 />
+                <div class="text-xs font-normal md:text-sm md:font-bold">{go.name}</div>
             </button>
         {/each}
     </div>
@@ -56,14 +54,14 @@ summary img {
                 <a
                     href="/sm/league?id={l.id}"
                     title="Liga: {l.name}"
-                    class="rounded p-2 hover:bg-sf2">{l.name}</a
+                    class="rounded p-2 text-sm hover:bg-sf2 md:text-base">{l.name}</a
                 >
             {/each}
         </div>
     {/if}
 </div>
 
-<!-- <div class="">{JSON.stringify(data.gameOperations)}</div> -->
+<div class="">{JSON.stringify(data.gameOperations.map(x=>{return {slug:x.short_name ,logo: x.logo_url, quad: x.logo_quad_url}}))}</div>
 
 <script lang="ts">
 import { Saisonmanager as SM } from 'floorball-saisonmanager';
@@ -75,4 +73,7 @@ export let data;
 let filter;
 
 $: currentGameOperationId = 0;
+
+$: console.dir(data.gameOperations.map(x=>{return {slug:x.short_name ,logo: x.logo_url, quad: x.logo_quad_url}}))
+
 </script>
