@@ -5,10 +5,10 @@ input {
 
 label {
     @apply flex cursor-pointer items-center justify-center
-    rounded  bg-sf3 px-2 py-1 text-sm font-bold text-txt;
+     bg-sf3 px-2 py-1 text-sm font-bold text-txt2 border-b ;
 }
 label:has(input:checked) {
-    @apply border-b border-prim shadow;
+    @apply border-b border-prim shadow text-txt;
 }
 
 .filter > div {

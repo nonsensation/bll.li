@@ -40,13 +40,13 @@ h3 {
 {#if data.leaguesWithGameDays && data.leaguesWithGameDays.length > 0}
     {@const leaguesWithGameDays = data.leaguesWithGameDays.filter(filter)}
     {#if leaguesWithGameDays && leaguesWithGameDays.length > 0}
-        <div class="gap grid items-center justify-center py-8 lg:grid-cols-2 lg:justify-between">
+        <div class="flex flex-col py-8 gap-1 lg:grid-cols-2 lg:justify-between odd:*:bg-sf3">
             {#each leaguesWithGameDays as l, lIdx}
                 <a
-                    class="rounded hover:bg-sf2"
+                    class="rounded hover:bg-sf2 p-1"
                     href="/sm/league?id={l.league.id}"
                 >
-                    <div class="text-xs font-bold sm:text-sm md:text-base">{l.league.name}</div>
+                    <div class="text-xs sm:text-sm md:text-base">{l.league.name}</div>
                 </a>
             {/each}
         </div>

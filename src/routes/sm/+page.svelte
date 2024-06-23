@@ -1,4 +1,5 @@
 <style lang="postcss">
+
 </style>
 
 <!-- <div class="">{JSON.stringify(data)}</div> -->
@@ -20,8 +21,8 @@
     <a href="/sm/game-operation?id={data.gameOperations[currentGameOperationId].id}">
         <div class="">Spielbetrieb: {data.gameOperations[currentGameOperationId].name}</div>
         <img
-            class="h-16 w-full object-contain"
-            title="Gehe zu SPielbetrieb {data.gameOperations[currentGameOperationId].name}"
+            class="h-16 w-full object-contain dark:invert dark:hue-rotate-180"
+            title="Gehe zu Spielbetrieb {data.gameOperations[currentGameOperationId].name}"
             src="https://bll.wik.li/sm-data/images/GameOperationLogos/{data.gameOperations[
                 currentGameOperationId
             ].short_name}.png"
@@ -36,7 +37,7 @@
     <div class="flex h-full flex-col items-center gap-4">
         {#each data.gameOperations as go, goIdx}
             <button
-                class="flex w-full flex-col justify-center gap-2
+                class="flex w-full flex-col items-center justify-center gap-2
                     rounded border-2
                     hover:border-prim
                     md:p-4"
@@ -49,12 +50,12 @@
                 <img
                     src="https://bll.wik.li/sm-data/images/GameOperationLogos/{go.short_name}.png"
                     alt=""
-                    class="hidden h-12 object-contain md:block dark:hue-rotate-180 dark:invert"
+                    class="dark:invert dark:hue-rotate-180 hidden h-12 object-contain md:block"
                 />
                 <img
                     src="https://bll.wik.li/sm-data/images/GameOperationLogos/{go.short_name}_quad.png"
                     alt=""
-                    class="h-12 object-contain md:hidden dark:hue-rotate-180 dark:invert"
+                    class="dark:invert dark:hue-rotate-180 h-12 object-contain md:hidden"
                 />
 
                 <div class="text-xs font-normal md:text-sm md:font-bold">{go.name}</div>
@@ -75,14 +76,6 @@
     {/if}
 </div>
 
-<div class="">
-    {JSON.stringify(
-        data.gameOperations.map(x => {
-            return { slug: x.short_name, logo: x.logo_url, quad: x.logo_quad_url };
-        })
-    )}
-</div>
-
 <script lang="ts">
 import { Saisonmanager as SM } from 'floorball-saisonmanager';
 import Icon from '$lib/components/Icon.svelte';
@@ -93,31 +86,4 @@ export let data;
 let filter;
 
 $: currentGameOperationId = 0;
-
-$: console.dir(
-    data.gameOperations.map(x => {
-        return { slug: x.short_name, logo: x.logo_url, quad: x.logo_quad_url };
-    })
-);
-
-const blendModes = [
-    'normal',
-    'multiply',
-    'screen',
-    'overlay',
-    'darken',
-    'lighten',
-    'color-dodge',
-    'color-burn',
-    'hard-light',
-    'soft-light',
-    'difference',
-    'exclusion',
-    'hue',
-    'saturation',
-    'color',
-    'luminosity',
-    'plus-darker',
-    'plus-lighter',
-];
 </script>
