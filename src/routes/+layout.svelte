@@ -24,8 +24,8 @@
                 <DarkMode class="w-6 md:hidden" />
                 <div class=""><a class="" href="/sm" title="Saisonmanager"><Icon icon="STATS" /></a></div>
                 <div class=""><a class="" href="/" title="Start">Start</a></div>
-                <div class=""><a class="" href="/wiki" title="Wiki">Wiki</a></div>
-                <div class=""><a class="" href="/info" title="Info">Info</a></div>
+                <!-- <div class=""><a class="" href="/wiki" title="Wiki">Wiki</a></div> -->
+                <!-- <div class=""><a class="" href="/info" title="Info">Info</a></div> -->
             </div>
         </div>
     </header>
