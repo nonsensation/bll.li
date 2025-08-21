@@ -15,12 +15,12 @@ export type ErrorProps = {
     error: string
 }
 
-export async function fetchData( requestUrl: string, forceDownload: boolean = false )
+export async function fetchData( requestUrl: string, forceDownload: boolean = true )
 {
     const apiUrls = [
-        `https://bll.wik.li/cachedDownload.php?forceDownload=${ forceDownload ? 1 : 0 }&url=https://saisonmanager.de/api/v2`,
-        `https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2`,
-        `https://saisonmanager.de/api/v2`,
+        // `https://bll.wik.li/cachedDownload.php?forceDownload=${ forceDownload ? 1 : 0 }&url=https://saisonmanager.de/api/v2`,
+        // `https://raw.githubusercontent.com/nonsensation/floorball-saisonmanager-data/main/data/api/v2`,
+        `https://saisonmanager.de/api/v2/`,
     ]
 
     for( const apiUrl of apiUrls )
@@ -31,13 +31,19 @@ export async function fetchData( requestUrl: string, forceDownload: boolean = fa
         {
             const data: ApiGetResponse = await fetch( url )
                 .then( response => response.json() )
-                .then( json => json as ApiGetResponse )
+                .then( json =>
+                {
+                    return {
+                        success: true,
+                        data: json,
+                    } as DataProps
+                } )
                 .catch( err =>
                 {
                     return {
                         success: false,
                         error: err,
-                    } as ApiGetResponse
+                    } as ErrorProps
                 } )
 
             return data
@@ -48,12 +54,21 @@ export async function fetchData( requestUrl: string, forceDownload: boolean = fa
             return {
                 success: false,
                 error: `Error fetching data: ${ url }`,
-            } as ApiGetResponse
+            } as ErrorProps
         }
     }
 }
 
 export const SmData = {
+    getGame: async ( gameId: number ) =>
+    {
+        const data = await fetchData( SM.getGameUrl( gameId ) )
+
+        console.debug( data )
+
+        if( data && data.success && data.data ) return data.data as SM.Game
+    },
+
     getLeague: async ( leagueId: number ) =>
     {
         const data = await fetchData( SM.getLeagueUrl( leagueId ) )

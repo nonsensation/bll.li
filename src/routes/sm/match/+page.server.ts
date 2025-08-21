@@ -1,6 +1,6 @@
 import { Saisonmanager as SM } from 'floorball-saisonmanager'
 import { error } from '@sveltejs/kit'
-import { fetchData } from '$lib/sm/data.js'
+import { fetchData, SmData } from '$lib/sm/data.js'
 
 export async function load( { fetch, url } )
 {
@@ -20,13 +20,9 @@ export async function load( { fetch, url } )
 
     try
     {
-        // const getGame = async () => await getData<SM.Game>( fetch, `games/${ gameId }.json` )
-
         return {
             gameId,
-            game: await getData<SM.Game>( fetch, `games/${ gameId }.json` ),
-            // game: await getData<SM.Game>( fetch, SM.getGameUrl( gameId ) ),
-            // game: await getData<SM.Game>( fetch, { gameId } ),
+            game: await SmData.getGame( gameId ),
         }
     } catch( err )
     {
@@ -40,7 +36,6 @@ async function getData<T extends object>(
     forceDownload: boolean = false
 ): Promise<T | void>
 {
-    // async function getData<T>( fetch: any, apiUrl: string, useSmApi: boolean = false ): Promise<T | void>
     try
     {
         const jsonResponse = await fetchData( apiUrl, forceDownload )
@@ -62,12 +57,12 @@ async function getData<T extends object>(
         }
         const game = jsonResponse.data as T
 
-        if( 'ended' in game && ( game.ended as boolean ) === false && !forceDownload )
-        {
-            console.log( `Try reverting to SM because game hasent ended yet` )
-
-            return getData<T>( fetch, apiUrl, ( forceDownload = true ) )
-        }
+        // if( 'ended' in game && ( game.ended as boolean ) === false && !forceDownload )
+        // {
+        //     console.log( `Try reverting to SM because game hasent ended yet` )
+        //
+        //     return getData<T>( fetch, apiUrl, ( forceDownload = true ) )
+        // }
 
         return game
     } catch( err )
